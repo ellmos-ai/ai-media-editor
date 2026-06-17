@@ -1,97 +1,100 @@
 <p align="center"><img src="assets/banner.svg" alt="ai-media-editor — Video · Audio · Podcast, local" width="100%"></p>
 
-# ai-media-editor — KI-Medien-Editor (Video · Audio · Podcast, lokal, ohne ElevenLabs)
+# ai-media-editor — local AI media editor (Video · Audio · Podcast)
 
-Claude Code als Video-/Podcast-Editor (Setup nach YouTube `_7bhJYTi5e0`,
-Julian Ivanov), aber mit **eigener Transkription statt ElevenLabs Scribe**.
+Use an AI coding agent (e.g. Claude Code) as a video/podcast editor — with **local
+transcription instead of ElevenLabs Scribe**. The orchestrator (`editor.py`) handles the
+deterministic prep (route to the right STT engine/compute, produce Scribe-JSON, pack takes);
+the creative cutting/animation work is then driven by the agent.
 
-## Was es ist
+## What it is
 
-Der Drei-Werkzeug-Stack aus dem Video:
-- **video-use** — schneidet anhand des Wort-Transkripts (Pausen/Versprecher raus)
-- **Hyperframes** — HTML/CSS/JS → MP4-Animationen
-- **`frontend-design`-Skill** — erzeugt Motion-Graphics/Branding (ersetzt das
-  Web-Tool „Claude Design")
+A three-tool stack:
+- **video-use** — cuts based on the word-level transcript (removes pauses/stumbles)
+- **Hyperframes** — HTML/CSS/JS → MP4 animations
+- **`frontend-design` skill** — generates motion graphics / branding
 
-…wobei die **ElevenLabs-Scribe-Transkription** ersetzt ist durch lokale Engines
-(**faster-whisper** für 1 Sprecher, **WhisperX** für Gespräche) mit
-**Mac-Studio-primär, Laptop-Fallback**. Der Ersatz schreibt byte-kompatibles
-Scribe-JSON — video-use läuft dadurch komplett ungepatcht.
+…with **ElevenLabs Scribe transcription replaced** by local engines (**faster-whisper** for a
+single speaker, **WhisperX** for conversations), with an optional **remote-host-primary,
+local-fallback** compute routing. The replacement writes **byte-compatible Scribe-JSON**, so
+video-use runs completely unpatched.
 
 ## Setup
 
-1. **Konfig anlegen:** `config/settings.example.json` → `config/settings.json` kopieren und
-   eigene Werte eintragen (Compute `local`/`mac`, Engines, `paths.*`).
-2. **`<TOOLS_ROOT>`** in dieser Doku = `paths.tools_root` aus deiner `settings.json` — der Ort der
-   schweren Tools + venv (`video-use`, ffmpeg, Node ≥ 22). **Nicht** in einem synchronisierten
-   Cloud-Ordner anlegen (venv-/Sync-Konflikte). `<OPENMONTAGE_DIR>` = optionaler OpenMontage-Klon
-   (nur für Werbeclip-Usecase 8).
-3. Externe Werkzeuge: `video-use` (browser-use-basierter Transkript-Schnitt), Hyperframes (HTML→MP4),
-   sowie der `frontend-design`-Skill. STT lokal via faster-whisper/WhisperX.
+1. **Create config:** copy `config/settings.example.json` → `config/settings.json` and fill in
+   your values (compute `local`/`mac`, engines, `paths.*`).
+2. **`<TOOLS_ROOT>`** in this documentation = `paths.tools_root` from your `settings.json` — the
+   location of the heavy tools + venv (`video-use`, ffmpeg, Node ≥ 22). Do **not** place it inside
+   a synchronized cloud folder (venv/sync conflicts). `<OPENMONTAGE_DIR>` = optional OpenMontage
+   clone (only for ad-clip usecase 8).
+3. External tools: `video-use` (browser-use-based transcript cutting), Hyperframes (HTML→MP4) and
+   the `frontend-design` skill. STT is local via faster-whisper/WhisperX.
 
-## Schnellstart
+## Quickstart
 
 ```bash
 VENV="<TOOLS_ROOT>/.venv/Scripts/python.exe"
 
-# Umgebung prüfen
+# Environment check
 PYTHONIOENCODING=utf-8 "$VENV" editor.py doctor
 
-# Usecase-Tabelle
+# Usecase table
 PYTHONIOENCODING=utf-8 "$VENV" editor.py modes
 
-# Projekt vorbereiten (transkribieren + packen)
-PYTHONIOENCODING=utf-8 "$VENV" editor.py prepare "C:/pfad/zu/aufnahme.mp4" --mode 3 --project mein-video
+# Prepare a project (transcribe + pack)
+PYTHONIOENCODING=utf-8 "$VENV" editor.py prepare "/path/to/recording.mp4" --mode 3 --project my-video
 ```
 
-Danach faehrt **Claude Code** den kreativen Schnitt/Animations-Teil — Anleitung in
-[`CLAUDE.md`](CLAUDE.md) und [`docs/USECASES.md`](docs/USECASES.md).
+Then the agent drives the creative cutting/animation part — see [`CLAUDE.md`](CLAUDE.md) (German,
+agent-facing) and [`docs/USECASES.md`](docs/USECASES.md).
 
-## Die 8 Usecases
+## The 8 usecases
 
-| # | Eingang | Sprecher | Output |
+| # | Input | Speakers | Output |
 |---|---|---|---|
-| 1 | Audio | 1 | Audio-Podcast geschnitten |
-| 2 | Audio | mehrere | Audio-Podcast, sprechergetrennt |
-| 3 | Video (A+V) | 1 | Video geschnitten + Animationen |
-| 4 | Video (A+V) | mehrere | Video + Animationen + Sprecher-Tracking |
-| 5 | Video → nur Tonspur | 1/mehrere | Audio-Podcast (Bild verworfen) |
-| 6 | Audio | 1/mehrere | Erklärvideo voll generiert |
-| 7 | Audio | 1 | Audio + animiertes Cover |
-| 8 | Audio/Brief | 1 | Werbeclip/Ad (15–60 s, 16:9 + 9:16) — OpenMontage clip-factory / Hyperframes |
+| 1 | Audio | 1 | Audio podcast, cut |
+| 2 | Audio | multiple | Audio podcast, speaker-separated |
+| 3 | Video (A+V) | 1 | Video cut + animations |
+| 4 | Video (A+V) | multiple | Video + animations + speaker tracking |
+| 5 | Video → audio only | 1/multiple | Audio podcast (video discarded) |
+| 6 | Audio | 1/multiple | Fully generated explainer video |
+| 7 | Audio | 1 | Audio + animated cover |
+| 8 | Audio/brief | 1 | Ad clip (15–60 s, 16:9 + 9:16) — OpenMontage clip-factory / Hyperframes |
 
-## Struktur
+## Structure
 
 ```
-ai-media-editor/                         (OneDrive — Code/Doku/Projekte)
-├── CLAUDE.md                    ← Anleitung für Claude Code (Editor-Workflow)
+ai-media-editor/                  (code/docs/projects)
+├── CLAUDE.md                     ← agent guide (editor workflow, German)
 ├── README.md
-├── editor.py                    ← Orchestrator (prepare / modes / doctor)
+├── editor.py                     ← orchestrator (prepare / modes / doctor)
 ├── stt/
-│   ├── scribe_schema.py         ← Scribe-JSON-Format (Vertrag mit video-use)
-│   ├── transcribe_local.py      ← faster-whisper + WhisperX → Scribe-JSON
-│   └── mac_remote.py            ← Compute-Routing (Mac primär, lokal Fallback)
-├── config/settings.json         ← Mac-SSH, Engines, Modelle, HF-Token
-├── brand/design-tokens.css      ← Branding für generierte Animationen
-├── docs/USECASES.md             ← Schritt-für-Schritt je Modus
-└── projects/<name>/edit/        ← pro Projekt: transcripts/, takes_packed.md, …
+│   ├── scribe_schema.py          ← Scribe-JSON format (contract with video-use)
+│   ├── transcribe_local.py       ← faster-whisper + WhisperX → Scribe-JSON
+│   └── mac_remote.py             ← compute routing (remote primary, local fallback)
+├── config/settings.example.json  ← template: compute, engines, models, paths, HF token
+├── brand/design-tokens.css       ← branding tokens for generated animations
+├── docs/USECASES.md              ← step-by-step per mode
+└── projects/<name>/edit/         ← per project: transcripts/, takes_packed.md, … (gitignored)
 
-<TOOLS_ROOT>/     (NICHT OneDrive — venv/Tools)
-├── .venv/                       ← Python-venv (faster-whisper, video-use, …)
-└── video-use/                   ← geklontes browser-use/video-use (ungepatcht)
+<TOOLS_ROOT>/                     (NOT a cloud folder — venv/tools)
+├── .venv/                        ← Python venv (faster-whisper, video-use, …)
+└── video-use/                    ← cloned browser-use/video-use (unpatched)
 ```
 
-## Voraussetzungen
+> `config/settings.json` and `projects/` content are user-specific and **gitignored** —
+> copy `settings.example.json` to get started.
 
-- **Lokal:** ffmpeg ✅, Node ≥ 22 ✅ (Hyperframes), venv unter `<TOOLS_ROOT>`.
-- **Mac Studio:** faster-whisper + WhisperX im `science`-venv ✅, per SSH erreichbar.
-- **HuggingFace-Token** nur für WhisperX-Sprechertrennung (UC2/UC4) — in
-  `config/settings.json`.
+## Requirements
 
-## Herkunft / Lizenzen
+- **Local:** ffmpeg, Node ≥ 22 (Hyperframes), a Python venv under `<TOOLS_ROOT>`.
+- **Optional remote host** (e.g. a more powerful machine): faster-whisper + WhisperX in a venv,
+  reachable via SSH (configure under `mac` in `settings.json`).
+- **HuggingFace token** only for WhisperX speaker diarization (UC2/UC4) — in `config/settings.json`.
+
+## Credits / Licenses
 
 - video-use: [browser-use/video-use](https://github.com/browser-use/video-use)
 - Hyperframes: [heygen-com/hyperframes](https://github.com/heygen-com/hyperframes) (Apache-2.0)
-- STT: faster-whisper (MIT), WhisperX (BSD-2) — die WhisperX-Integration basiert
-  auf dem MetaMedia-Prototyp (`.UMBRUCH/.../MetaMedia/prototype`), die
-  faster-whisper-Basis auf dem USB-Podcast-Studio.
+- STT: faster-whisper (MIT), WhisperX (BSD-2)
+- This project: **MIT** — see [LICENSE](LICENSE).

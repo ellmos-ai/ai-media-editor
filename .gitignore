@@ -25,7 +25,13 @@ __pycache__/
 .venv/
 venv/
 .env
+*.db
+
+# --- Data ---
+data/
 
 # --- OS / editor ---
 .DS_Store
 Thumbs.db
+.idea/
+.vscode/
