@@ -1,0 +1,50 @@
+/* design-tokens.css — Branding für generierte Animationen (Usecase 3/4/6/7).
+ *
+ * Ersetzt den "Claude Design"-Web-Export aus dem Video: statt im Browser ein
+ * Design-System zu bauen und als ZIP zu exportieren, definierst du dein
+ * Branding hier als CSS-Custom-Properties. Der `frontend-design`-Skill und
+ * Hyperframes lesen diese Tokens, wenn sie Motion-Graphics/Overlays erzeugen.
+ *
+ * Passe Farben, Fonts, Logo an dein Projekt an. Ein eigenes Token-Set pro
+ * Marke kann als brand/<name>.css abgelegt und beim Prompt referenziert werden.
+ */
+
+:root {
+  /* --- Farben --- */
+  --brand-bg:            #0d1117;   /* Hintergrund / Lower-Third-Flächen */
+  --brand-fg:            #f0f6fc;   /* Primärtext */
+  --brand-muted:         #8b949e;   /* Sekundärtext */
+  --brand-accent:        #2f81f7;   /* Akzent / Hervorhebungen */
+  --brand-accent-2:      #3fb950;   /* zweiter Akzent / Erfolg */
+  --brand-warn:          #d29922;   /* Warn-/Aufmerksamkeits-Ton */
+
+  /* --- Typografie --- */
+  --brand-font-display:  "Helvetica Neue", "Arial", sans-serif;  /* Titel/Einblendungen */
+  --brand-font-body:     "Inter", "Segoe UI", sans-serif;        /* Fließtext/Untertitel */
+  --brand-weight-bold:   700;
+  --brand-weight-normal: 400;
+
+  /* --- Untertitel (video-use rendert 2-Wort-UPPERCASE-Chunks) --- */
+  --sub-font:            "Helvetica Neue", sans-serif;
+  --sub-size:            18px;
+  --sub-margin-bottom:   35px;
+  --sub-color:           #ffffff;
+  --sub-outline:         #000000;
+
+  /* --- Layout / Motion --- */
+  --safe-margin:         6%;        /* Sicherheitsabstand für Karten neben dem Gesicht */
+  --radius:              14px;
+  --anim-in:             0.35s;     /* Einblend-Dauer */
+  --anim-out:            0.30s;
+  --anim-ease:           cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* --- Assets --- */
+  --logo-path:           "../assets/logo.svg";  /* eigenes Logo hier ablegen */
+}
+
+/* Hinweis für den frontend-design-Skill:
+ * - Animationen NICHT mittig aufs Gesicht legen — links/rechts daneben
+ *   (siehe --safe-margin). Im Video: "geleserne Karten" neben dem Sprecher.
+ * - Timings an die Wort-Zeitstempel aus takes_packed.md koppeln.
+ * - Bei Multi-Speaker (UC4): Lower-Third-Namenskarte pro Sprecher (S0/S1...).
+ */

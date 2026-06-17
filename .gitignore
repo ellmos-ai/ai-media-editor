@@ -1,0 +1,31 @@
+# --- Private / user-specific (NEVER commit) ---
+# real host/user/ssh/paths/tokens — use settings.example.json instead
+config/settings.json
+# machine-specific install snapshot (kept as a local reference only)
+docs/OPENMONTAGE-KOMPONENTEN.md
+docs/OPENMONTAGE-KOMPONENTEN.pdf
+
+# --- Content / projects (personal media) ---
+/projects/*
+!/projects/.gitkeep
+
+# --- Media ---
+*.wav
+*.mp3
+*.mp4
+*.mov
+*.m4a
+*.png
+*.jpg
+*.jpeg
+
+# --- Python / build ---
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db

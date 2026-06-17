@@ -1,0 +1,36 @@
+{
+  "compute": {
+    "prefer": "local",
+    "fallback": "local",
+    "_comment": "prefer=mac|local. Bei 'mac' wird zuerst ein Remote-Host (SSH) versucht, bei Fehler automatisch lokal. Ohne Remote-Host auf 'local' lassen."
+  },
+  "mac": {
+    "host": "YOUR_HOST_OR_TAILSCALE_IP",
+    "user": "youruser",
+    "ssh_key": "~/.ssh/id_ed25519",
+    "venv_activate": "source ~/.venvs/science/bin/activate",
+    "workdir": "~/podcast_stt_work",
+    "connect_timeout": 12
+  },
+  "engines": {
+    "single_speaker": "faster",
+    "multi_speaker": "faster",
+    "_diarization": "llm",
+    "_diarization_note": "Diarisierung tokenfrei per LLM-Zuordnung (diarize_llm.py): faster-whisper transkribiert, dann ordnet das LLM Sprecher aus dem Text zu. Alternative 'whisperx' (akustisch) braucht HF-Token in hf_token."
+  },
+  "models": {
+    "faster_local": "medium",
+    "faster_mac": "large-v3",
+    "whisperx_local": "large-v3",
+    "whisperx_mac": "large-v3"
+  },
+  "language": "de",
+  "paths": {
+    "tools_root": "/path/to/podcast-editor",
+    "venv_python": "/path/to/podcast-editor/.venv/Scripts/python.exe",
+    "video_use": "/path/to/podcast-editor/video-use"
+  },
+  "hf_token": "",
+  "_hf_note": "HuggingFace-Token fuer WhisperX-Sprecher-Diarisierung (pyannote, gated). Nur fuer Usecase 2 und 4 noetig. Leer lassen wenn nur 1-Sprecher-Modi genutzt werden.",
+  "_setup": "Kopiere diese Datei nach config/settings.json und trage deine echten Werte ein. tools_root/video_use zeigen auf die schweren Tools + venv (NICHT in einem synchronisierten Cloud-Ordner anlegen)."
+}
