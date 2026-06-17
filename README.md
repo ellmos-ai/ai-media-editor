@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/banner.svg" alt="ai-media-editor — Video · Audio · Podcast, local" width="100%"></p>
+
 # ai-media-editor — KI-Medien-Editor (Video · Audio · Podcast, lokal, ohne ElevenLabs)
 
 Claude Code als Video-/Podcast-Editor (Setup nach YouTube `_7bhJYTi5e0`,
