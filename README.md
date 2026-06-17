@@ -43,6 +43,10 @@ PYTHONIOENCODING=utf-8 "$VENV" editor.py modes
 
 # Prepare a project (transcribe + pack)
 PYTHONIOENCODING=utf-8 "$VENV" editor.py prepare "/path/to/recording.mp4" --mode 3 --project my-video
+
+# Video only (UC3/4/8): timestamped frames so the agent can judge the picture over time
+PYTHONIOENCODING=utf-8 "$VENV" editor.py frames my-video --contact-sheet          # coarse overview
+PYTHONIOENCODING=utf-8 "$VENV" editor.py frames my-video --from 30 --to 45 --step 0.25  # zoom in
 ```
 
 Then the agent drives the creative cutting/animation part — see [`CLAUDE.md`](CLAUDE.md) (German,
@@ -67,7 +71,11 @@ agent-facing) and [`docs/USECASES.md`](docs/USECASES.md).
 ai-media-editor/                  (code/docs/projects)
 ├── CLAUDE.md                     ← agent guide (editor workflow, German)
 ├── README.md
-├── editor.py                     ← orchestrator (prepare / modes / doctor)
+├── editor.py                     ← orchestrator (prepare / frames / modes / doctor)
+├── tools/
+│   ├── cut_view.py               ← pauses as explicit cut candidates
+│   ├── frame_view.py             ← video → timestamped frames ("video-scatterer", UC3/4/8)
+│   └── compose_cover.py          ← UC7: loop a cover over the audio
 ├── stt/
 │   ├── scribe_schema.py          ← Scribe-JSON format (contract with video-use)
 │   ├── transcribe_local.py       ← faster-whisper + WhisperX → Scribe-JSON

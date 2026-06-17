@@ -23,6 +23,8 @@ Die 7 Usecases (vom User definiert):
 
 Usage:
     python editor.py prepare <media> --mode 3 [--project <name>] [--num-speakers N]
+    python editor.py frames <video|projekt> [--every 10]      # Bild-Übersicht
+    python editor.py frames <video|projekt> --from 30 --to 45 --step 0.25  # Zoom
     python editor.py modes        # Tabelle aller Usecases
     python editor.py doctor       # Umgebungs-Check (Mac, venv, ffmpeg, hyperframes)
 """
@@ -37,10 +39,14 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE / "stt"))
+sys.path.insert(0, str(HERE / "tools"))
 
 import transcribe_local  # noqa: E402
 import mac_remote  # noqa: E402
 import diarize_llm  # noqa: E402
+import frame_view  # noqa: E402
+
+VIDEO_EXTS = {".mp4", ".mov", ".mkv", ".webm", ".avi", ".m4v"}
 
 
 # --------------------------------------------------------------------------- #
@@ -216,6 +222,40 @@ def _wrap(text: str, width: int = 64) -> list[str]:
 
 
 # --------------------------------------------------------------------------- #
+# frames: Video → zeitgestempelte Frames (Video-Scatterer)
+# --------------------------------------------------------------------------- #
+def _resolve_video(target: str, project: str | None) -> tuple[Path, Path]:
+    """target = Videodatei ODER Projektname. Liefert (video, edit_dir)."""
+    p = Path(target)
+    if p.exists() and p.is_file():
+        proj_name = project or p.stem
+        edit_dir = HERE / "projects" / proj_name / "edit"
+        return p.resolve(), edit_dir
+    # Sonst: Projektname -> Video im Projektordner suchen
+    proj_dir = HERE / "projects" / target
+    if not proj_dir.exists():
+        sys.exit(f"Weder Datei noch Projekt gefunden: {target}")
+    vids = sorted(f for f in proj_dir.iterdir()
+                  if f.is_file() and f.suffix.lower() in VIDEO_EXTS)
+    if not vids:
+        sys.exit(f"Kein Video ({'/'.join(sorted(VIDEO_EXTS))}) in {proj_dir}")
+    if len(vids) > 1:
+        print(f"  [i] mehrere Videos in {proj_dir}, nehme: {vids[0].name}")
+    return vids[0].resolve(), proj_dir / "edit"
+
+
+def frames(target: str, project: str | None, every: float, frm: float | None,
+           to: float | None, step: float | None, sheet: bool, cols: int,
+           rows: int, width: int, max_frames: int, font: str | None,
+           label: bool) -> int:
+    video, edit_dir = _resolve_video(target, project)
+    edit_dir.mkdir(parents=True, exist_ok=True)
+    print(f"  Video: {video}")
+    return frame_view.run(video, edit_dir, every, frm, to, step, sheet,
+                          cols, rows, width, max_frames, font, label)
+
+
+# --------------------------------------------------------------------------- #
 # modes / doctor
 # --------------------------------------------------------------------------- #
 def show_modes() -> int:
@@ -295,6 +335,23 @@ def main() -> None:
     p.add_argument("--project", type=str, default=None)
     p.add_argument("--num-speakers", type=int, default=None)
 
+    f = sub.add_parser("frames", help="Video → zeitgestempelte Frames (Video-Scatterer)")
+    f.add_argument("target", type=str, help="Videodatei ODER Projektname")
+    f.add_argument("--project", type=str, default=None)
+    f.add_argument("--every", type=float, default=10.0, help="Übersichts-Rate in Sekunden (Default 10)")
+    f.add_argument("--from", dest="frm", type=float, default=None, help="Zoom-Start (Sekunden)")
+    f.add_argument("--to", type=float, default=None, help="Zoom-Ende (Sekunden)")
+    f.add_argument("--step", type=float, default=None, help="Zoom-Schrittweite (Sekunden, z. B. 0.25)")
+    f.add_argument("--step-ms", type=float, default=None, help="Zoom-Schrittweite in ms (Alternative zu --step)")
+    f.add_argument("--contact-sheet", action="store_true", help="Übersicht als gekacheltes Sheet")
+    f.add_argument("--cols", type=int, default=4)
+    f.add_argument("--rows", type=int, default=4)
+    f.add_argument("--width", type=int, default=640, help="Frame-Breite px (kleiner = sparsamer)")
+    f.add_argument("--max-frames", type=int, default=60, help="Obergrenze Einzelframes (Token-Schutz)")
+    f.add_argument("--font", type=str, default=None, help="TTF-Pfad für Zeitstempel (sonst Auto)")
+    f.add_argument("--label", action="store_true",
+                   help="Zeitstempel in Einzelframes einbrennen (Default aus; Sheets immer)")
+
     sub.add_parser("modes", help="Usecase-Tabelle")
     sub.add_parser("doctor", help="Umgebungs-Check")
 
@@ -304,6 +361,13 @@ def main() -> None:
         if not media.exists():
             sys.exit(f"Datei nicht gefunden: {media}")
         sys.exit(prepare(media, args.mode, args.project, args.num_speakers))
+    elif args.cmd == "frames":
+        step = args.step
+        if args.step_ms is not None:
+            step = args.step_ms / 1000.0
+        sys.exit(frames(args.target, args.project, args.every, args.frm, args.to,
+                        step, args.contact_sheet, args.cols, args.rows,
+                        args.width, args.max_frames, args.font, args.label))
     elif args.cmd == "modes":
         sys.exit(show_modes())
     elif args.cmd == "doctor":

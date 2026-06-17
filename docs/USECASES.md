@@ -42,6 +42,10 @@ PYTHONIOENCODING=utf-8 "$VENV" editor.py prepare "<media>" --mode <#> --project 
 ## UC3 — Video (A+V), 1 Sprecher → geschnittenes Video + Animationen *(das Original-Setup)*
 - **Engine:** faster-whisper · voller video-use-Workflow
 1. `prepare --mode 3`
+1b. **Bild-Ebene** (`editor.py frames`): grobe Übersicht `--contact-sheet`, dann
+    interessante Stellen `--from x --to y --step z` nachsampeln. Bilder per Read-Tool
+    beurteilen → `frame_view.md` mappt Bild↔Zeit (Scribe-Zeitbasis). Liefert visuelle
+    Schnitt-/Overlay-Hinweise, die der reine Transkript-Schnitt nicht sieht.
 2. Schnitt wie UC1 (Wortgrenzen, Padding, harte Regeln in `$VU/SKILL.md`).
 3. **Animationen:** Storyboard aus dem Transkript → pro Beat eine HTML-Animation.
    - Mit `frontend-design`-Skill HTML/Motion-Graphics erzeugen (Branding aus
@@ -53,8 +57,10 @@ PYTHONIOENCODING=utf-8 "$VENV" editor.py prepare "<media>" --mode <#> --project 
 
 ## UC4 — Video (A+V), mehrere Sprecher → Video + Animationen + Sprecher-Tracking
 - **Engine:** faster-whisper + **tokenfreie LLM-Diarisierung** (wie UC2, kein HF-Token)
-- Wie UC3, zusätzlich: Sprecher-Zuordnung via `diarize_llm` (Schritt 2 aus UC2),
-  dann Lower-Third-Namenskarten pro Sprecher (S0/S1…), Schnitt folgt Sprecherwechseln.
+- Wie UC3 (inkl. **Bild-Ebene** via `editor.py frames` — hilft hier zusätzlich, Sprecher
+  im Bild zu verorten/zu bestätigen), zusätzlich: Sprecher-Zuordnung via `diarize_llm`
+  (Schritt 2 aus UC2), dann Lower-Third-Namenskarten pro Sprecher (S0/S1…), Schnitt folgt
+  Sprecherwechseln.
 
 ## UC5 — Video-Ausgangsmaterial, nur Tonspur nutzen → Audio-Podcast
 - **Engine:** faster-whisper (bzw. WhisperX bei `--num-speakers>1`)

@@ -50,6 +50,10 @@ PYTHONIOENCODING=utf-8 "$VENV" editor.py doctor
 
 # 1. Vorbereiten: transkribieren (geroutet) + packen → takes_packed.md
 PYTHONIOENCODING=utf-8 "$VENV" editor.py prepare "<media>" --mode <1-7> [--project <name>] [--num-speakers N]
+
+# 1b. (nur Video, UC3/4/8) Bild-Ebene: zeitgestempelte Frames für die visuelle Beurteilung
+PYTHONIOENCODING=utf-8 "$VENV" editor.py frames <video|projekt> --contact-sheet   # grobe Übersicht
+PYTHONIOENCODING=utf-8 "$VENV" editor.py frames <video|projekt> --from 30 --to 45 --step 0.25  # Zoom
 ```
 
 `prepare` legt `projects/<name>/edit/` an mit `transcripts/<stem>.json` (Scribe-Format),
@@ -68,6 +72,30 @@ nachgelagert.
 Danach faehrst **du** den kreativen Teil — lies dazu `<TOOLS_ROOT>\video-use\SKILL.md`
 (der vollständige video-use-Editor-Workflow inkl. **Hard Rules** für korrektes Rendern)
 und `docs/USECASES.md` (was je Modus zu tun ist).
+
+## Bild-Ebene: Frame-Ansicht (nur Video — UC3/4/8)
+
+Der Schnitt oben läuft über Ton/Transkript. Bei **Video**-Usecases brauchst du
+zusätzlich die **Bild-Ebene**, um zu beurteilen, was im Bild passiert (Slide-/
+B-Roll-Wechsel, Gestik, „hält etwas hoch", Framing für 9:16-Crops, leere Momente,
+wo Lower-Thirds/Animationen hinpassen). Dafür: `editor.py frames` (Tool
+`tools/frame_view.py`, „Video-Scatterer"). Coarse-to-fine, token-effizient:
+
+1. **Übersicht** — `editor.py frames <video|projekt> --contact-sheet` legt ein
+   gekacheltes Sheet alle paar Sekunden an (sehr sparsam). Alternativ Einzelframes:
+   `--every 10`.
+2. **Zoom** — interessanten Bereich feiner nachsampeln:
+   `--from 30 --to 45 --step 0.25` (oder `--step-ms 250`).
+3. Ergebnis: `projects/<name>/edit/frames/` + **`frame_view.md`** (Index Bild↔Zeit).
+
+**Zeit ↔ Bild:** Der Dateiname kodiert die exakte Quellzeit (`f_<ms>ms.jpg`,
+ms ab Start = **Scribe-/Schnitt-Zeitbasis**) und `frame_view.md` mappt jeden Frame
+auf MM:SS.s. Beim Öffnen eines Frames per Read-Tool ist die Zeit über Pfad + Tabelle
+eindeutig — eine Bildbeobachtung übersetzt sich direkt in einen Schnitt-/Overlay-
+Timestamp. **Contact-Sheets** tragen die Zeit je Kachel **eingebrannt** (sonst nicht
+unterscheidbar); Einzelframes bleiben pixelrein, Einbrennen nur mit `--label`
+(überdeckt sonst evtl. die Lower-Third-Region). Token sparen: `--width` klein halten,
+`--max-frames` begrenzt Einzelframes automatisch.
 
 ## Harte Regeln (aus video-use SKILL.md — nicht verhandelbar)
 
