@@ -26,7 +26,8 @@
 - [ ] Add a short end-to-end example (sample recording → cut) to README.
 
 ## MEDIUM PRIORITY
-- [ ] Add `CHANGELOG.md`, `CONTRIBUTING.md`, `SECURITY.md`.
+- [ ] Add `CONTRIBUTING.md`, `SECURITY.md`.
+- [x] Add `CHANGELOG.md`.
 - [ ] GitHub Actions CI (lint + import smoke).
 
 ## LOW PRIORITY

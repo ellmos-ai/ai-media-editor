@@ -1,0 +1,60 @@
+## Last-checked: 2026-06-30
+
+# ellmos-ai/ai-media-editor
+
+Local-first AI media editor for video, audio, and podcast workflows.
+
+Canonical repository:
+https://github.com/ellmos-ai/ai-media-editor
+
+## Summary
+
+`ai-media-editor` prepares media projects for agent-driven editing. It routes local or remote
+speech-to-text, writes Scribe-compatible JSON, packs transcript/cut context for `video-use`,
+generates timestamped frame views for visual judgment, and leaves the creative cut, animation,
+and Hyperframes composition to an AI coding agent.
+
+## Audience
+
+- AI agents that need a compact map of the repository before editing media.
+- Developers building local-first podcast, video, and transcript-editing workflows.
+- Creators who want transcript-based cuts without sending recordings to hosted STT.
+- Tool builders comparing `video-use`, Hyperframes, faster-whisper, and WhisperX workflows.
+
+## Important files
+
+- `README.md` — public overview, setup, quickstart, and discovery context.
+- `CLAUDE.md` — German agent-facing workflow guide and hard editing rules.
+- `docs/USECASES.md` — step-by-step instructions for the 8 supported media workflows.
+- `editor.py` — orchestrator for `doctor`, `modes`, `prepare`, and `frames`.
+- `stt/transcribe_local.py` — faster-whisper / WhisperX transcription path.
+- `stt/diarize_llm.py` — token-free LLM-based speaker assignment.
+- `tools/frame_view.py` — video frame sampling and contact-sheet context.
+- `tools/cut_view.py` — pause-aware transcript cut candidates.
+- `brand/design-tokens.css` — design tokens for generated motion graphics.
+
+## Search Phrases
+
+```text
+ellmos-ai ai-media-editor
+local AI media editor video podcast transcription
+agent driven video editor with local transcription
+Claude Code video podcast editor Hyperframes
+faster-whisper WhisperX Scribe JSON video-use
+transcript based video cutting local first
+Hyperframes motion graphics podcast editor
+local first podcast editing AI agent workflow
+```
+
+## Disambiguation
+
+Not a hosted SaaS editor, generic ffmpeg GUI, stock-media marketplace, mobile video editor,
+or ElevenLabs Scribe wrapper. This repository is an orchestration and agent-workflow layer
+for local transcript, frame, and edit context.
+
+## External Discovery Notes
+
+As of 2026-06-30, GitHub search and broad web search still surface mostly GitHub or topic
+context for this repo. Additional external listing or editorial launch work should target
+local-first creator tools, AI-video-editing workflows, transcript-based editing, Hyperframes,
+and agent-driven media production.

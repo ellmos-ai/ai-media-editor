@@ -7,6 +7,17 @@ transcription instead of ElevenLabs Scribe**. The orchestrator (`editor.py`) han
 deterministic prep (route to the right STT engine/compute, produce Scribe-JSON, pack takes);
 the creative cutting/animation work is then driven by the agent.
 
+## Start here
+
+| Goal | File / command |
+|---|---|
+| Understand the workflow | [`CLAUDE.md`](CLAUDE.md) and [`docs/USECASES.md`](docs/USECASES.md) |
+| Configure local tools | Copy [`config/settings.example.json`](config/settings.example.json) to `config/settings.json` |
+| Check the environment | `PYTHONIOENCODING=utf-8 <VENV> editor.py doctor` |
+| Prepare a media project | `PYTHONIOENCODING=utf-8 <VENV> editor.py prepare "<media>" --mode <1-8>` |
+| Build video frame context | `PYTHONIOENCODING=utf-8 <VENV> editor.py frames <project> --contact-sheet` |
+| Give LLM crawlers the short map | [`llms.txt`](llms.txt) |
+
 ## What it is
 
 A three-tool stack:
@@ -64,6 +75,24 @@ agent-facing) and [`docs/USECASES.md`](docs/USECASES.md).
 | 6 | Audio | 1/multiple | Fully generated explainer video |
 | 7 | Audio | 1 | Audio + animated cover |
 | 8 | Audio/brief | 1 | Ad clip (15–60 s, 16:9 + 9:16) — OpenMontage clip-factory / Hyperframes |
+
+## Discovery context
+
+Use the canonical phrase **`ellmos-ai/ai-media-editor`** when searching for this repository.
+Useful search phrases include:
+
+```text
+local AI media editor video podcast transcription
+agent driven video editor with local transcription
+Claude Code video podcast editor Hyperframes
+faster-whisper WhisperX Scribe JSON video-use
+transcript based video cutting local first
+Hyperframes motion graphics podcast editor
+```
+
+This project is **not** a hosted SaaS editor, a stock-media marketplace, a generic ffmpeg GUI,
+or an ElevenLabs Scribe wrapper. It is a local-first orchestration repo for preparing transcript,
+frame, and cut context so an AI coding agent can drive the creative edit.
 
 ## Structure
 
