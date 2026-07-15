@@ -18,7 +18,7 @@ PYTHONIOENCODING=utf-8 "$VENV" editor.py prepare "<media>" --mode <#> --project 
 ---
 
 ## UC1 — Audio, 1 Sprecher → geschnittener Audio-Podcast
-- **Engine:** faster-whisper · **Compute:** Mac→lokal
+- **Engine:** faster-whisper · **Compute:** lokal (optional Remote→lokal)
 1. `prepare --mode 1`
 2. `takes_packed.md` lesen → Füllwörter, lange Pausen (≥0,4 s), Versprecher/Retakes markieren.
 3. `edl.json` bauen (nur `sources` + Segmente, keine Overlays).
@@ -63,7 +63,8 @@ PYTHONIOENCODING=utf-8 "$VENV" editor.py prepare "<media>" --mode <#> --project 
   Sprecherwechseln.
 
 ## UC5 — Video-Ausgangsmaterial, nur Tonspur nutzen → Audio-Podcast
-- **Engine:** faster-whisper (bzw. WhisperX bei `--num-speakers>1`)
+- **Engine:** faster-whisper (bei mehreren Sprechern plus LLM-Diarisierung;
+  WhisperX nur wenn entsprechend konfiguriert)
 1. `prepare --mode 5` — extrahiert nur die Audiospur, Bild wird verworfen.
 2. Weiter wie UC1/UC2 (reiner Audioschnitt).
 
@@ -107,16 +108,20 @@ PYTHONIOENCODING=utf-8 "$VENV" editor.py prepare "<media>" --mode <#> --project 
 6. **Lizenz-Gate (kommerziell!):** Werbung = kommerzielle Nutzung → für **jedes** verwendete
    Modell/Asset die kommerzielle Lizenz prüfen. Manche lokale Video-Modelle (einzelne
    WAN/Hunyuan/CogVideo-Gewichte) und „free"-Stock sind **research-/non-commercial-only**.
-   Der AGPLv3-Code von OpenMontage färbt **nicht** auf den Clip ab — nur die Asset-/Modell-Lizenzen zählen.
+   Vor Veröffentlichung die aktuellen Tool-, Asset-, Modell- und Musiklizenzen für den
+   konkreten Vertriebsweg prüfen.
 
 ---
 
 ## Engine- & Compute-Hinweise
-- **HF-Token** (WhisperX-Diarisierung, UC2/UC4): in `config/settings.json` → `hf_token`.
-  Ohne Token läuft WhisperX, markiert aber alles als `speaker_0`.
-- **Compute:** Default Mac Studio. Bei SSH-Ausfall automatisch lokal. Schalter:
-  `config/settings.json` → `compute.prefer` = `mac` | `local`.
-- **Cache:** Transkripte werden pro Quelle gecached (`--force` zum Neu-Transkribieren).
-- **Scribe-Kompatibilität:** Unser `transcripts/<stem>.json` hat exakt das
-  ElevenLabs-Scribe-Format (`words[]` mit type/text/start/end/speaker_id), daher
-  funktionieren alle video-use-Helfer (`pack_transcripts`, `render`) unverändert.
+- **HF-Token:** nur nötig, wenn `engines.multi_speaker="whisperx"` gesetzt ist. Ohne
+  Token liefert WhisperX keine akustische Sprechertrennung; der Standardweg mit
+  faster-whisper + LLM-Diarisierung braucht keinen Token.
+- **Compute:** Default lokal. Optional `compute.prefer="mac"`; bei SSH-Ausfall wird lokal
+  weitergearbeitet. Remote-Modus überträgt die vollständige Eingabedatei an den
+  konfigurierten Host und darf nur mit entsprechender Freigabe verwendet werden.
+- **Cache:** gültig nur bei gleichem Quellenhash sowie gleicher Engine-, Modell-, Sprach-,
+  Geräte- und Sprecherkonfiguration. Veraltete oder beschädigte Caches werden erneuert.
+- **Scribe-Kompatibilität:** `transcripts/<stem>.json` enthält die Felder, die die
+  eingesetzten video-use-Helfer lesen (`words[]` mit type/text/start/end/speaker_id).
+  Es ist ein konsumentenkompatibler Teilvertrag, keine vollständige Byte-Replik.

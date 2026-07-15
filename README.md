@@ -16,6 +16,7 @@ the creative cutting/animation work is then driven by the agent.
 | Check the environment | `PYTHONIOENCODING=utf-8 <VENV> editor.py doctor` |
 | Prepare a media project | `PYTHONIOENCODING=utf-8 <VENV> editor.py prepare "<media>" --mode <1-8>` |
 | Build video frame context | `PYTHONIOENCODING=utf-8 <VENV> editor.py frames <project> --contact-sheet` |
+| See verified vs. guarded release claims | [`RELEASE_GATE.md`](RELEASE_GATE.md) |
 | Give LLM crawlers the short map | [`llms.txt`](llms.txt) |
 
 ## What it is
@@ -25,10 +26,11 @@ A three-tool stack:
 - **Hyperframes** — HTML/CSS/JS → MP4 animations
 - **`frontend-design` skill** — generates motion graphics / branding
 
-…with **ElevenLabs Scribe transcription replaced** by local engines (**faster-whisper** for a
-single speaker, **WhisperX** for conversations), with an optional **remote-host-primary,
-local-fallback** compute routing. The replacement writes **byte-compatible Scribe-JSON**, so
-video-use runs completely unpatched.
+…with **ElevenLabs Scribe transcription replaced** by local engines. The default is
+**faster-whisper** plus text-based LLM speaker assignment for conversations; **WhisperX** is an
+optional acoustic-diarization engine. Compute is local by default, with optional
+**remote-host-primary, local-fallback** routing. The replacement writes the Scribe fields used by
+`video-use`, so those downstream helpers run unpatched.
 
 ## Setup
 
@@ -112,6 +114,9 @@ ai-media-editor/                  (code/docs/projects)
 ├── config/settings.example.json  ← template: compute, engines, models, paths, HF token
 ├── brand/design-tokens.css       ← branding tokens for generated animations
 ├── docs/USECASES.md              ← step-by-step per mode
+├── production/                   ← optional generative workflows (cloud gates apply)
+├── tests/test_core.py            ← dependency-free regression suite
+├── SECURITY.md                   ← private vulnerability reporting and security scope
 └── projects/<name>/edit/         ← per project: transcripts/, takes_packed.md, … (gitignored)
 
 <TOOLS_ROOT>/                     (NOT a cloud folder — venv/tools)
@@ -127,11 +132,45 @@ ai-media-editor/                  (code/docs/projects)
 - **Local:** ffmpeg, Node ≥ 22 (Hyperframes), a Python venv under `<TOOLS_ROOT>`.
 - **Optional remote host** (e.g. a more powerful machine): faster-whisper + WhisperX in a venv,
   reachable via SSH (configure under `mac` in `settings.json`).
-- **HuggingFace token** only for WhisperX speaker diarization (UC2/UC4) — in `config/settings.json`.
+- **HuggingFace token** only when `engines.multi_speaker` is set to `whisperx`; the default
+  faster-whisper + LLM route does not require one.
+
+## Generative production (optional)
+
+The [`production/`](production/OVERVIEW.md) folder covers workflows that create new music,
+speech, video, text, narrative, or PR material. These workflows are separate from the editor
+core and may use third-party cloud services. Before every upload, confirm that you have the
+necessary rights, consent, confidentiality clearance, and an acceptable provider retention
+policy. Never upload secrets or client material by default.
+
+## Privacy, rights, and operational limits
+
+- Local mode keeps transcription on the current machine. Remote mode uploads the complete input
+  media to the SSH host configured by the user, uses an isolated job directory, and removes it on
+  a best-effort basis after the run.
+- You are responsible for rights to source media, voices, music, generated assets, model output,
+  and commercial use. Voice cloning requires the recorded person's explicit authorization.
+- This project is not affiliated with ElevenLabs, HeyGen, browser-use, or any cloud provider named
+  in the optional workflows. Provider features, terms, prices, and model licenses can change.
+- The generated transcript is a consumer-compatible subset for the bundled `video-use` helpers,
+  not a byte-for-byte reproduction of every ElevenLabs response field.
+
+## Quality checks
+
+The repository's fast checks do not load STT models or require media files:
+
+```bash
+python -m unittest discover -s tests -v
+ruff check .
+python editor.py modes
+```
+
+Real transcription, ffmpeg rendering, SSH, and provider workflows remain environment-dependent;
+run `python editor.py doctor` before using them.
 
 ## Credits / Licenses
 
-- video-use: [browser-use/video-use](https://github.com/browser-use/video-use)
+- video-use: [browser-use/video-use](https://github.com/browser-use/video-use) (MIT)
 - Hyperframes: [heygen-com/hyperframes](https://github.com/heygen-com/hyperframes) (Apache-2.0)
 - STT: faster-whisper (MIT), WhisperX (BSD-2)
 - This project: **MIT** — see [LICENSE](LICENSE).

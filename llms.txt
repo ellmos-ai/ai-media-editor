@@ -1,4 +1,4 @@
-## Last-checked: 2026-06-30
+## Last-checked: 2026-07-15
 
 # ellmos-ai/ai-media-editor
 
@@ -10,7 +10,7 @@ https://github.com/ellmos-ai/ai-media-editor
 ## Summary
 
 `ai-media-editor` prepares media projects for agent-driven editing. It routes local or remote
-speech-to-text, writes Scribe-compatible JSON, packs transcript/cut context for `video-use`,
+speech-to-text, writes the Scribe fields consumed by `video-use`, packs transcript/cut context,
 generates timestamped frame views for visual judgment, and leaves the creative cut, animation,
 and Hyperframes composition to an AI coding agent.
 
@@ -31,6 +31,9 @@ and Hyperframes composition to an AI coding agent.
 - `stt/diarize_llm.py` — token-free LLM-based speaker assignment.
 - `tools/frame_view.py` — video frame sampling and contact-sheet context.
 - `tools/cut_view.py` — pause-aware transcript cut candidates.
+- `production/OVERVIEW.md` — optional generative workflows and mandatory cloud/rights gates.
+- `tests/test_core.py` — dependency-free regression contract for cache, remote, frames, and diarization.
+- `SECURITY.md` — vulnerability reporting and sensitive-media security scope.
 - `brand/design-tokens.css` — design tokens for generated motion graphics.
 
 ## Search Phrases

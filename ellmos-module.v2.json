@@ -1,0 +1,50 @@
+{
+  "schema": "ellmos.module.v2",
+  "id": "ai-media-editor",
+  "display_name": "ai-media-editor",
+  "version": "0.2.0",
+  "description": "Local-first AI-assisted audio/video preparation with optional remote STT and generative workflows.",
+  "package": null,
+  "entrypoints": {
+    "cli": "python editor.py",
+    "workflow": "CLAUDE.md"
+  },
+  "category": "domains",
+  "kind": "stack-candidate",
+  "status": "development",
+  "visibility": "public-candidate",
+  "provides": [
+    "domain.media.editing",
+    "workflow.media.pipeline"
+  ],
+  "requires": [],
+  "optional": [
+    "tool.stt",
+    "tool.video",
+    "tool.hyperframes"
+  ],
+  "conflicts": [],
+  "surfaces": [
+    "cli",
+    "workflow"
+  ],
+  "state": {
+    "ownership": "external",
+    "location": "project"
+  },
+  "boundaries": {
+    "network": "optional",
+    "data": "sensitive",
+    "platforms": [
+      "windows",
+      "macos",
+      "linux"
+    ]
+  },
+  "source_of_truth": {
+    "type": "git-repository",
+    "path": ".",
+    "repository": "https://github.com/ellmos-ai/ai-media-editor.git"
+  },
+  "adapters": []
+}

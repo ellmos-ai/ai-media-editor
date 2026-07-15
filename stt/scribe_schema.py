@@ -11,12 +11,13 @@ video-use erwartet die ElevenLabs-Scribe-Response-Struktur in
         nutzt start / end / text fuer die Master-SRT.
 
 Dieses Modul baut aus generischen Wort-Tripeln (text, start, end, speaker)
-ein byte-kompatibles Scribe-JSON. So muss an video-use selbst NICHTS
+ein für diese Konsumenten kompatibles Scribe-JSON. So muss an video-use selbst NICHTS
 gepatcht werden — wir schreiben nur dieselbe Datei, die sonst ElevenLabs
 schreiben wuerde. Quelle der Wahrheit fuer das Format: die beiden Helfer oben.
 """
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 
 
@@ -50,34 +51,50 @@ def build_scribe_payload(
     Returns:
         dict im Scribe-Format: {"language_code", "text", "words": [...]}.
     """
+    if not math.isfinite(spacing_eps) or spacing_eps < 0:
+        raise ValueError("spacing_eps muss eine endliche Zahl >= 0 sein.")
+    normalized: list[tuple[str, float, float, str]] = []
+    previous_start = -1.0
+    for word in words:
+        clean = word.text.strip()
+        if not clean:
+            continue
+        start = float(word.start)
+        end = float(word.end)
+        if not math.isfinite(start) or not math.isfinite(end) or start < 0 or end < start:
+            raise ValueError(f"Ungültiger Wort-Zeitbereich: {word!r}")
+        if start < previous_start:
+            raise ValueError("Wörter müssen chronologisch nach Startzeit sortiert sein.")
+        speaker = str(word.speaker).strip()
+        if not speaker:
+            raise ValueError("speaker_id darf nicht leer sein.")
+        normalized.append((clean, start, end, speaker))
+        previous_start = start
+
     out_words: list[dict] = []
     text_parts: list[str] = []
 
-    for i, w in enumerate(words):
-        clean = w.text.strip()
-        if not clean:
-            continue
+    for i, (clean, start, end, speaker) in enumerate(normalized):
         out_words.append({
             "type": "word",
             "text": clean,
-            "start": round(float(w.start), 3),
-            "end": round(float(w.end), 3),
-            "speaker_id": w.speaker,
+            "start": round(start, 3),
+            "end": round(end, 3),
+            "speaker_id": speaker,
         })
         text_parts.append(clean)
 
         # Spacing-Eintrag zum naechsten Wort (Stille-/Pausen-Signal)
-        if i + 1 < len(words):
-            nxt = words[i + 1]
-            gap_start = float(w.end)
-            gap_end = float(nxt.start)
+        if i + 1 < len(normalized):
+            _, gap_end, _, _ = normalized[i + 1]
+            gap_start = end
             if gap_end - gap_start > spacing_eps:
                 out_words.append({
                     "type": "spacing",
                     "text": " ",
                     "start": round(gap_start, 3),
                     "end": round(gap_end, 3),
-                    "speaker_id": w.speaker,
+                    "speaker_id": speaker,
                 })
 
     return {

@@ -4,6 +4,7 @@ config/settings.json
 # machine-specific install snapshot (kept as a local reference only)
 docs/OPENMONTAGE-KOMPONENTEN.md
 docs/OPENMONTAGE-KOMPONENTEN.pdf
+/_reports/
 
 # --- Content / projects (personal media) ---
 /projects/*
@@ -22,6 +23,9 @@ docs/OPENMONTAGE-KOMPONENTEN.pdf
 # --- Python / build ---
 __pycache__/
 *.pyc
+.pytest_cache/
+.ruff_cache/
+.coverage
 .venv/
 venv/
 .env

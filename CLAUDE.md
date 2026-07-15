@@ -14,13 +14,16 @@ Animations-Entscheidungen triffst du.
 | **Hyperframes** (HeyGen) | HTML/CSS/JS → MP4-Animationen | `npx --yes hyperframes …` (Node ≥ 22) |
 | ~~Claude Design (Web)~~ → **`frontend-design`-Skill** | Motion-Graphics/Branding generieren | lokaler Skill, kein Browser/ZIP nötig |
 
-**ElevenLabs Scribe ist ersetzt** durch `stt/transcribe_local.py` (faster-whisper
-für 1 Sprecher, WhisperX für mehrere) mit **Mac-Studio-primär, lokal-Fallback**.
-Der Ersatz erzeugt **byte-kompatibles Scribe-JSON** → video-use bleibt ungepatcht.
+**ElevenLabs Scribe ist ersetzt** durch `stt/transcribe_local.py`: standardmäßig
+faster-whisper plus tokenfreie LLM-Zuordnung für mehrere Sprecher; WhisperX ist
+die optionale akustische Alternative. Compute ist standardmäßig lokal, optional
+Remote-Host-primär mit lokalem Fallback. Der Ersatz erzeugt die von den verwendeten
+video-use-Helfern benötigten Scribe-Felder → diese bleiben ungepatcht.
 
 ## Architektur-Split (wichtig)
 
-- **Code/Doku/Projekte** liegen hier in `ai-media-editor` (OneDrive, versioniert).
+- **Code/Doku/Projekte** liegen im aktuellen Git-Checkout von `ai-media-editor`
+  (lokaler Arbeitsklon oder synchronisierte Projektkopie, versioniert).
 - **Schwere Tools + venv** liegen in `<TOOLS_ROOT>` (NICHT OneDrive —
   venv-/Sync-Konflikte vermeiden). Immer mit dem venv-Python arbeiten:
   `<TOOLS_ROOT>\.venv\Scripts\python.exe`.
@@ -30,9 +33,9 @@ Der Ersatz erzeugt **byte-kompatibles Scribe-JSON** → video-use bleibt ungepat
 | # | Usecase | Engine | Output |
 |---|---|---|---|
 | 1 | Audio, 1 Sprecher | faster-whisper | Audio-Podcast geschnitten |
-| 2 | Audio, mehrere Sprecher | WhisperX +diarize | Audio-Podcast, Sprecher-getrennt |
+| 2 | Audio, mehrere Sprecher | faster-whisper + LLM-Diarisierung | Audio-Podcast, Sprecher-getrennt |
 | 3 | Video (A+V), 1 Sprecher | faster-whisper | Video geschnitten + Animationen *(Original-Setup)* |
-| 4 | Video (A+V), mehrere Sprecher | WhisperX +diarize | Video geschnitten + Animationen + Sprecher-Tracking |
+| 4 | Video (A+V), mehrere Sprecher | faster-whisper + LLM-Diarisierung | Video geschnitten + Animationen + Sprecher-Tracking |
 | 5 | Video, nur Tonspur nutzen | je nach | Audio-Podcast (Bild verworfen) |
 | 6 | Erklärvideo aus Audio | je nach | voll generiertes Video (frontend-design + Hyperframes) |
 | 7 | Audio + animiertes Cover | faster-whisper | Audio + Hyperframes-Cover-Loop |
@@ -49,7 +52,7 @@ VENV="<TOOLS_ROOT>/.venv/Scripts/python.exe"
 PYTHONIOENCODING=utf-8 "$VENV" editor.py doctor
 
 # 1. Vorbereiten: transkribieren (geroutet) + packen → takes_packed.md
-PYTHONIOENCODING=utf-8 "$VENV" editor.py prepare "<media>" --mode <1-7> [--project <name>] [--num-speakers N]
+PYTHONIOENCODING=utf-8 "$VENV" editor.py prepare "<media>" --mode <1-8> [--project <name>] [--num-speakers N]
 
 # 1b. (nur Video, UC3/4/8) Bild-Ebene: zeitgestempelte Frames für die visuelle Beurteilung
 PYTHONIOENCODING=utf-8 "$VENV" editor.py frames <video|projekt> --contact-sheet   # grobe Übersicht
@@ -104,7 +107,8 @@ unterscheidbar); Einzelframes bleiben pixelrein, Einbrennen nur mit `--label`
 3. **Untertitel ZULETZT** in der Filterkette (nach allen Overlays).
 4. **Pro-Segment extrahieren → `-c copy` concat** (kein Single-Pass-Filtergraph).
 5. **30 ms Audio-Fades an jeder Segmentgrenze** (sonst Knackser).
-6. **Transkripte cachen** — nie neu transkribieren, außer die Quelle änderte sich.
+6. **Transkripte cachen** — der Cache gilt nur bei gleichem Quellenhash und gleicher
+   Engine-/Modell-/Sprach-/Sprecherkonfiguration; sonst wird er automatisch erneuert.
 7. **Animationen parallel** über mehrere `Agent`-Subagenten bauen.
 8. **Strategie vom User bestätigen lassen**, bevor du schneidest.
 
@@ -126,8 +130,10 @@ unterscheidbar); Einzelframes bleiben pixelrein, Einbrennen nur mit `--label`
   - **Akustische Alternative** (`whisperx`): präziser bei Cross-Talk, braucht aber
     den **HF-Token** (`hf_token`, pyannote ist gated). Nur nutzen wenn LLM-Zuordnung
     nicht reicht; `config/settings.json` → `engines.multi_speaker="whisperx"`.
-- **Compute:** Default Mac Studio (`compute.prefer="mac"`); bei SSH-Ausfall automatisch
-  lokal. Umstellen in `config/settings.json`.
+- **Compute:** Default lokal (`compute.prefer="local"`). Optional `"mac"` setzen; dann
+  wird die vollständige Eingabedatei in ein isoliertes Remote-Jobverzeichnis hochgeladen,
+  nach dem Lauf best-effort gelöscht und bei SSH-Fehlern lokal verarbeitet. Nur für Medien
+  verwenden, die auf diesen Host übertragen werden dürfen.
 
 ## Verweise
 

@@ -13,9 +13,10 @@ Zwei Pässe (coarse-to-fine, token-effizient):
   2. ZOOM       — bei interessantem Bereich feiner nachsampeln:
      --from x --to y --step z  (Sekunden, z. B. --step 0.25)  oder  --step-ms l.
 
-Der Zeitstempel wird per ffmpeg `drawtext` ins Bild gebrannt (mit Fallback ohne
-Text, falls drawtext/Font fehlt — die Zeit steckt dann weiter im Dateinamen +
-in der frame_view.md). Zeitbasis = Sekunden ab Videostart → identisch mit der
+Der Zeitstempel kann bei Einzelframes per ffmpeg `drawtext` eingebrannt werden
+(Fallback: Zeit in Dateiname + `frame_view.md`). Contact-Sheets benötigen einen
+funktionierenden `drawtext`-Filter, weil einzelne Kacheln sonst nicht eindeutig
+zugeordnet werden können. Zeitbasis = Sekunden ab Videostart → identisch mit der
 Scribe-JSON-Zeitbasis, damit Bildbeobachtungen auf Schnittkanten mappen.
 
 Ausgabe:
@@ -30,6 +31,7 @@ Usage (standalone):
 from __future__ import annotations
 
 import argparse
+import math
 import subprocess
 import sys
 from pathlib import Path
@@ -49,15 +51,21 @@ _FONT_CANDIDATES = [
 # Helfer
 # --------------------------------------------------------------------------- #
 def ffprobe_duration(path: Path) -> float:
-    r = subprocess.run(
-        ["ffprobe", "-v", "error", "-show_entries", "format=duration",
-         "-of", "csv=p=0", str(path)],
-        capture_output=True, text=True,
-    )
     try:
-        return float(r.stdout.strip())
+        r = subprocess.run(
+            ["ffprobe", "-v", "error", "-show_entries", "format=duration",
+             "-of", "csv=p=0", str(path)],
+            capture_output=True, text=True,
+        )
+    except OSError:
+        return 0.0
+    if r.returncode != 0:
+        return 0.0
+    try:
+        duration = float(r.stdout.strip())
     except ValueError:
         return 0.0
+    return duration if math.isfinite(duration) and duration >= 0 else 0.0
 
 
 def fmt_clock(t: float) -> str:
@@ -141,11 +149,15 @@ def extract_frame(video: Path, t: float, out: Path, width: int, font: str | None
     scale = f"scale={width}:-2"
 
     def _shot(vf: str) -> bool:
-        r = subprocess.run(
-            ["ffmpeg", "-nostdin", "-y", "-ss", f"{t:.3f}", "-i", str(video),
-             "-frames:v", "1", "-vf", vf, "-q:v", "3", str(out)],
-            capture_output=True, text=True,
-        )
+        out.unlink(missing_ok=True)
+        try:
+            r = subprocess.run(
+                ["ffmpeg", "-nostdin", "-y", "-ss", f"{t:.3f}", "-i", str(video),
+                 "-frames:v", "1", "-vf", vf, "-q:v", "3", str(out)],
+                capture_output=True, text=True,
+            )
+        except OSError:
+            return False
         return r.returncode == 0 and out.exists()
 
     if not label:
@@ -158,6 +170,14 @@ def extract_frame(video: Path, t: float, out: Path, width: int, font: str | None
 
 
 def gen_timestamps(start: float, stop: float, step: float, max_frames: int) -> tuple[list[float], bool]:
+    if not all(math.isfinite(value) for value in (start, stop, step)):
+        raise ValueError("Frame-Zeiten müssen endliche Zahlen sein.")
+    if start < 0 or stop < start:
+        raise ValueError("Frame-Bereich muss 0 <= Start <= Ende erfüllen.")
+    if step <= 0:
+        raise ValueError("Frame-Schrittweite muss größer als 0 sein.")
+    if max_frames < 1:
+        raise ValueError("--max-frames muss mindestens 1 sein.")
     ts: list[float] = []
     # Float-Akkumulation vermeiden: index-basiert
     i = 0
@@ -167,9 +187,9 @@ def gen_timestamps(start: float, stop: float, step: float, max_frames: int) -> t
             break
         ts.append(round(cur, 3))
         i += 1
-    capped = len(ts) > max_frames
-    if capped:
-        ts = ts[:max_frames]
+        if len(ts) > max_frames:
+            return ts[:max_frames], True
+    capped = False
     return ts, capped
 
 
@@ -198,6 +218,8 @@ def contact_sheet(video: Path, frames_dir: Path, every: float, cols: int, rows: 
     Sehr token-sparsamer Übersichts-Pass: viele Mini-Frames in einem Bild.
     """
     frames_dir.mkdir(parents=True, exist_ok=True)
+    for old in frames_dir.glob("sheet_*.jpg"):
+        old.unlink()
     thumb_w = max(160, width // 3)
     # %{pts:hms} brennt die echte Quellzeit je Frame ein. In Single-Quotes
     # wrappen UND den Doppelpunkt der pts-Funktion escapen (Windows-ffmpeg).
@@ -205,12 +227,14 @@ def contact_sheet(video: Path, frames_dir: Path, every: float, cols: int, rows: 
     vf = f"fps=1/{every},scale={thumb_w}:-2,{dt},tile={cols}x{rows}"
     out_pat = str(frames_dir / "sheet_%03d.jpg")
     cmd = ["ffmpeg", "-nostdin", "-y", "-i", str(video), "-vf", vf, "-q:v", "3", out_pat]
-    r = subprocess.run(cmd, capture_output=True, text=True)
+    try:
+        r = subprocess.run(cmd, capture_output=True, text=True)
+    except OSError:
+        return []
     if r.returncode != 0:
-        # Fallback ohne drawtext
-        vf_fb = f"fps=1/{every},scale={thumb_w}:-2,tile={cols}x{rows}"
-        subprocess.run(["ffmpeg", "-nostdin", "-y", "-i", str(video),
-                        "-vf", vf_fb, "-q:v", "3", out_pat], capture_output=True, text=True)
+        for partial in frames_dir.glob("sheet_*.jpg"):
+            partial.unlink()
+        return []
     sheets = sorted(p.name for p in frames_dir.glob("sheet_*.jpg"))
     return sheets
 
@@ -284,12 +308,25 @@ def run(video: Path, edit_dir: Path, every: float, frm: float | None, to: float 
         max_frames: int, font: str | None, label: bool = False) -> int:
     video = video.resolve()
     edit_dir = edit_dir.resolve()
-    if not video.exists():
+    if not video.is_file():
         print(f"  [XX] Video nicht gefunden: {video}")
         return 1
+    if not math.isfinite(every) or every <= 0:
+        raise ValueError("--every muss eine endliche Zahl größer als 0 sein.")
+    if (frm is None) != (to is None):
+        raise ValueError("--from und --to müssen gemeinsam angegeben werden.")
+    if step is not None and (not math.isfinite(step) or step <= 0):
+        raise ValueError("--step/--step-ms muss größer als 0 sein.")
+    if cols < 1 or rows < 1:
+        raise ValueError("--cols und --rows müssen mindestens 1 sein.")
+    if width < 16:
+        raise ValueError("--width muss mindestens 16 Pixel betragen.")
+    if max_frames < 1:
+        raise ValueError("--max-frames muss mindestens 1 sein.")
+    (edit_dir / "frame_view.md").unlink(missing_ok=True)
     duration = ffprobe_duration(video)
     if duration <= 0:
-        print(f"  [warn] konnte Dauer nicht lesen (ffprobe) — fahre dennoch fort.")
+        print("  [warn] konnte Dauer nicht lesen (ffprobe) — fahre dennoch fort.")
     font_path = find_font(font)
     frames_dir = edit_dir / "frames"
 
@@ -302,7 +339,7 @@ def run(video: Path, edit_dir: Path, every: float, frm: float | None, to: float 
     if frm is not None and to is not None:
         # ZOOM-Pass
         mode = "zoom"
-        st = step if step and step > 0 else 0.5
+        st = step if step is not None else 0.5
         ts, capped = gen_timestamps(frm, to, st, max_frames)
         entries, burn_fail = sample_frames(video, frames_dir, ts, width, font_path, label)
         zoom = (frm, to, st)
@@ -321,9 +358,13 @@ def run(video: Path, edit_dir: Path, every: float, frm: float | None, to: float 
         print(f"  Übersicht alle {every:g}s → {len(entries)} Frames"
               + ("  (Zeitstempel eingebrannt)" if label else "  (Zeit via Dateiname+Index)"))
 
-    if (label or sheet) and font_path is None:
-        print("  [warn] kein Font gefunden — Zeitstempel werden nicht eingebrannt "
-              "(Zeit bleibt in Dateiname + frame_view.md). --font <pfad.ttf> setzen.")
+    if not entries and not sheets:
+        print("  [XX] ffmpeg hat keine Frames erzeugt.")
+        return 1
+
+    if label and font_path is None:
+        print("  [i ] kein expliziter Font gefunden — ffmpeg-Standardfont wird versucht; "
+              "bei Fehler bleibt die Zeit in Dateiname + frame_view.md.")
     if label and burn_fail:
         print(f"  [warn] {burn_fail} Frame(s) ohne eingebrannten Text (drawtext) — "
               "Zeit bleibt in Dateiname + frame_view.md.")

@@ -11,7 +11,7 @@ aber mit lokalem/Mac-STT statt ElevenLabs):
 Die kreative Arbeit (Schnitt-Entscheidungen, Animationen, Render) faehrt
 danach Claude Code interaktiv, geleitet durch CLAUDE.md / USECASES.md.
 
-Die 7 Usecases (vom User definiert):
+Die 8 Usecases (vom User definiert):
 
   1  Audio,    1 Sprecher       -> Audio-Podcast geschnitten
   2  Audio,    N Sprecher       -> Audio-Podcast geschnitten, Sprecher-getrennt
@@ -31,9 +31,13 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import os
+import shutil
 import subprocess
 import sys
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -100,20 +104,84 @@ def load_config() -> dict:
             "config/settings.json fehlt. Kopiere config/settings.example.json -> "
             "config/settings.json und trage deine Pfade/Engines/Compute ein."
         )
-    return json.loads(cfg_path.read_text(encoding="utf-8"))
+    try:
+        cfg = json.loads(cfg_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise SystemExit(f"config/settings.json ist unlesbar oder ungültig: {exc}") from exc
+    for key in ("compute", "mac", "engines", "models", "paths", "language"):
+        if key not in cfg:
+            raise SystemExit(f"config/settings.json: Pflichtfeld fehlt: {key}")
+    return cfg
 
 
 def resolve_engine(uc: Usecase, num_speakers: int | None, cfg: dict) -> str:
-    """whisperx sobald Multi-Speaker (per Usecase ODER --num-speakers > 1)."""
+    """Use the configured multi-speaker engine when the mode requires it."""
     if uc.multi_speaker or (num_speakers and num_speakers > 1):
-        return cfg["engines"]["multi_speaker"]
-    return uc.engine
+        engine = cfg["engines"]["multi_speaker"]
+    else:
+        engine = cfg["engines"].get("single_speaker", uc.engine)
+    if engine not in {"faster", "whisperx"}:
+        raise ValueError(f"Unbekannte STT-Engine in settings.json: {engine!r}")
+    return engine
 
 
 def pick_model(engine: str, on_mac: bool, cfg: dict) -> str:
-    key = f"{engine if engine != 'faster' else 'faster'}_{'mac' if on_mac else 'local'}"
     key = ("whisperx_" if engine == "whisperx" else "faster_") + ("mac" if on_mac else "local")
     return cfg["models"].get(key, "medium")
+
+
+def _project_dir(name: str) -> Path:
+    """Resolve a project name without allowing it to escape ``projects/``."""
+    if not name or name in {".", ".."} or Path(name).name != name:
+        raise ValueError("Projektname muss ein einzelner Verzeichnisname sein.")
+    if any(char in name for char in '<>:"/\\|?*'):
+        raise ValueError("Projektname enthält ein unter Windows unzulässiges Zeichen.")
+    return HERE / "projects" / name
+
+
+def _run_helper(command: list[str], label: str) -> subprocess.CompletedProcess[str] | None:
+    """Run a deterministic helper and report launch/non-zero failures uniformly."""
+    try:
+        result = subprocess.run(command, capture_output=True, text=True)
+    except OSError as exc:
+        print(f"  [XX] {label} konnte nicht gestartet werden: {exc}")
+        return None
+    if result.returncode != 0:
+        detail = (result.stderr or result.stdout).strip()[-500:]
+        print(f"  [XX] {label} fehlgeschlagen (Exit {result.returncode}): {detail}")
+        return None
+    return result
+
+
+def _file_digest(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _sync_project_media(source: Path, destination: Path) -> None:
+    """Refresh a project source atomically when its bytes changed."""
+    if source.resolve() == destination.resolve():
+        return
+    unchanged = (
+        destination.is_file()
+        and source.stat().st_size == destination.stat().st_size
+        and _file_digest(source) == _file_digest(destination)
+    )
+    if unchanged:
+        return
+    fd, temporary_name = tempfile.mkstemp(
+        prefix=f".{destination.name}.", suffix=".tmp", dir=destination.parent
+    )
+    os.close(fd)
+    temporary = Path(temporary_name)
+    try:
+        shutil.copy2(source, temporary)
+        os.replace(temporary, destination)
+    finally:
+        temporary.unlink(missing_ok=True)
 
 
 # --------------------------------------------------------------------------- #
@@ -125,15 +193,15 @@ def prepare(media: Path, mode: int, project: str | None, num_speakers: int | Non
     engine = resolve_engine(uc, num_speakers, cfg)
 
     # Projekt-/Edit-Verzeichnis: in ai-media-editor/projects/<name>/edit
+    if num_speakers is not None and num_speakers < 1:
+        raise ValueError("--num-speakers muss mindestens 1 sein.")
     proj_name = project or media.stem
-    proj_dir = HERE / "projects" / proj_name
+    proj_dir = _project_dir(proj_name)
     edit_dir = proj_dir / "edit"
     edit_dir.mkdir(parents=True, exist_ok=True)
     # Quelle ins Projekt spiegeln, falls noch nicht dort
     local_media = proj_dir / media.name
-    if media.resolve() != local_media.resolve():
-        if not local_media.exists():
-            local_media.write_bytes(media.read_bytes())
+    _sync_project_media(media, local_media)
 
     hf_token = cfg.get("hf_token") or None
     if engine == "whisperx" and not hf_token:
@@ -142,10 +210,21 @@ def prepare(media: Path, mode: int, project: str | None, num_speakers: int | Non
 
     json_path: Path | None = None
     prefer = cfg["compute"]["prefer"]
+    if prefer not in {"local", "mac"}:
+        raise ValueError("compute.prefer muss 'local' oder 'mac' sein.")
+
+    preferred_model = pick_model(engine, on_mac=prefer == "mac", cfg=cfg)
+    cached_path = edit_dir / "transcripts" / f"{local_media.stem}.json"
+    if transcribe_local.cache_is_valid(
+        local_media, cached_path, engine, preferred_model, cfg["language"], "auto",
+        num_speakers, hf_token,
+    ):
+        print(f"  cached: {cached_path.name}")
+        json_path = cached_path
 
     # 1) Compute-Routing: Mac primaer
-    if prefer == "mac":
-        model = pick_model(engine, on_mac=True, cfg=cfg)
+    if json_path is None and prefer == "mac":
+        model = preferred_model
         print(f"  Engine={engine}  Modell={model}  Compute=Mac Studio (primaer)")
         json_path = mac_remote.run_remote(
             local_media, edit_dir, cfg["mac"], engine=engine, model=model,
@@ -162,22 +241,24 @@ def prepare(media: Path, mode: int, project: str | None, num_speakers: int | Non
             hf_token=hf_token,
         )
 
-    # 3) pack_transcripts -> takes_packed.md
+    # 3) pack_transcripts -> takes_packed.md. Remove old derived outputs first,
+    # so a nominally successful helper cannot pass on stale artifacts.
     venv_py = cfg["paths"]["venv_python"]
     pack = Path(cfg["paths"]["video_use"]) / "helpers" / "pack_transcripts.py"
-    r = subprocess.run(
-        [venv_py, str(pack), "--edit-dir", str(edit_dir)],
-        capture_output=True, text=True,
-    )
-    print(r.stdout.strip())
-    if r.returncode != 0:
-        print(f"  [warn] pack_transcripts: {r.stderr.strip()[-300:]}")
+    takes = edit_dir / "takes_packed.md"
+    takes.unlink(missing_ok=True)
+    r = _run_helper([venv_py, str(pack), "--edit-dir", str(edit_dir)], "pack_transcripts")
+    if r is None:
+        return 1
+    if r.stdout.strip():
+        print(r.stdout.strip())
 
     # Schnitt-Ansicht: Pausen als Schnittinformation (Kern jedes Usecases)
     cutview = Path(HERE) / "tools" / "cut_view.py"
-    subprocess.run([venv_py, str(cutview), "--edit-dir", str(edit_dir)],
-                   capture_output=True, text=True)
     cut_view_path = edit_dir / "cut_view.md"
+    cut_view_path.unlink(missing_ok=True)
+    if _run_helper([venv_py, str(cutview), "--edit-dir", str(edit_dir)], "cut_view") is None:
+        return 1
 
     # Multi-Speaker: tokenfreie Diarisierung per LLM-Zuordnung vorbereiten
     diar_prompt = None
@@ -186,7 +267,9 @@ def prepare(media: Path, mode: int, project: str | None, num_speakers: int | Non
         prompts = diarize_llm.build_prompt(edit_dir, max_speakers=num_speakers)
         diar_prompt = prompts[0] if prompts else None
 
-    takes = edit_dir / "takes_packed.md"
+    if not takes.is_file() or takes.stat().st_size == 0 or not cut_view_path.is_file() or cut_view_path.stat().st_size == 0:
+        print("  [XX] Vorbereitung unvollständig: takes_packed.md oder cut_view.md fehlt.")
+        return 1
     print("\n" + "=" * 70)
     print(f"  USECASE {uc.mode}: {uc.label}")
     print(f"  Projekt:        {proj_dir}")
@@ -229,10 +312,10 @@ def _resolve_video(target: str, project: str | None) -> tuple[Path, Path]:
     p = Path(target)
     if p.exists() and p.is_file():
         proj_name = project or p.stem
-        edit_dir = HERE / "projects" / proj_name / "edit"
+        edit_dir = _project_dir(proj_name) / "edit"
         return p.resolve(), edit_dir
     # Sonst: Projektname -> Video im Projektordner suchen
-    proj_dir = HERE / "projects" / target
+    proj_dir = _project_dir(target)
     if not proj_dir.exists():
         sys.exit(f"Weder Datei noch Projekt gefunden: {target}")
     vids = sorted(f for f in proj_dir.iterdir()
@@ -287,23 +370,37 @@ def doctor() -> int:
 
     # venv + video-use deps
     venv_py = cfg["paths"]["venv_python"]
-    check("venv python", Path(venv_py).exists(), venv_py)
+    venv_exists = Path(venv_py).is_file()
+    check("venv python", venv_exists, venv_py)
     for mod in ("faster_whisper", "requests", "librosa"):
-        r = subprocess.run([venv_py, "-c", f"import {mod}"], capture_output=True, text=True)
-        check(f"venv: {mod}", r.returncode == 0, "pip install im venv noch nicht fertig?")
+        if not venv_exists:
+            check(f"venv: {mod}", False, "venv python fehlt")
+            continue
+        try:
+            r = subprocess.run([venv_py, "-c", f"import {mod}"], capture_output=True, text=True)
+            check(f"venv: {mod}", r.returncode == 0, "pip install im venv noch nicht fertig?")
+        except OSError as exc:
+            check(f"venv: {mod}", False, str(exc))
 
     # Mac
-    reachable = mac_remote.is_reachable(cfg["mac"])
-    check("Mac Studio erreichbar", reachable)
-    if reachable:
-        r = subprocess.run(
-            mac_remote._ssh_base(cfg["mac"]) + [
-                mac_remote._target(cfg["mac"]),
-                f"{cfg['mac']['venv_activate']} && python3 -c "
-                "'import faster_whisper, whisperx; print(\"stt_ok\")'"
-            ], capture_output=True, text=True, timeout=40,
-        )
-        check("Mac STT-Stack (faster-whisper + whisperx)", "stt_ok" in r.stdout)
+    mac_required = cfg["compute"].get("prefer") == "mac"
+    reachable = mac_remote.is_reachable(cfg["mac"]) if mac_required else False
+    if mac_required:
+        check("Remote-STT-Host erreichbar", reachable)
+    else:
+        print("  [i ] Remote-STT-Host optional (compute.prefer=local)")
+    if mac_required and reachable:
+        try:
+            r = subprocess.run(
+                mac_remote._ssh_base(cfg["mac"]) + [
+                    mac_remote._target(cfg["mac"]),
+                    f"{cfg['mac']['venv_activate']} && python3 -c "
+                    "'import faster_whisper, whisperx; print(\"stt_ok\")'"
+                ], capture_output=True, text=True, timeout=40,
+            )
+            check("Remote-STT-Stack (faster-whisper + whisperx)", "stt_ok" in r.stdout)
+        except Exception as exc:
+            check("Remote-STT-Stack (faster-whisper + whisperx)", False, str(exc))
 
     # video-use Helpers
     vu = Path(cfg["paths"]["video_use"])
@@ -318,8 +415,10 @@ def doctor() -> int:
         check("Node.js", False, "Node 22+ fuer Hyperframes")
 
     # HF-Token (nur Info)
-    print(f"  [i ] HF-Token fuer WhisperX-Diarisierung: "
-          f"{'gesetzt' if cfg.get('hf_token') else 'LEER (nur fuer Usecase 2/4 noetig)'}")
+    whisperx_enabled = cfg["engines"].get("multi_speaker") == "whisperx"
+    token_state = "gesetzt" if cfg.get("hf_token") else "leer"
+    suffix = " (für WhisperX-Diarisierung erforderlich)" if whisperx_enabled else " (LLM-Diarisierung benötigt keinen Token)"
+    print(f"  [i ] HF-Token: {token_state}{suffix}")
 
     print("\n  -> " + ("Alles bereit." if ok else "Es fehlen noch Komponenten (siehe XX)."))
     return 0 if ok else 1
@@ -358,16 +457,22 @@ def main() -> None:
     args = ap.parse_args()
     if args.cmd == "prepare":
         media = args.media.resolve()
-        if not media.exists():
+        if not media.is_file():
             sys.exit(f"Datei nicht gefunden: {media}")
-        sys.exit(prepare(media, args.mode, args.project, args.num_speakers))
+        try:
+            sys.exit(prepare(media, args.mode, args.project, args.num_speakers))
+        except ValueError as exc:
+            sys.exit(str(exc))
     elif args.cmd == "frames":
         step = args.step
         if args.step_ms is not None:
             step = args.step_ms / 1000.0
-        sys.exit(frames(args.target, args.project, args.every, args.frm, args.to,
-                        step, args.contact_sheet, args.cols, args.rows,
-                        args.width, args.max_frames, args.font, args.label))
+        try:
+            sys.exit(frames(args.target, args.project, args.every, args.frm, args.to,
+                            step, args.contact_sheet, args.cols, args.rows,
+                            args.width, args.max_frames, args.font, args.label))
+        except ValueError as exc:
+            sys.exit(str(exc))
     elif args.cmd == "modes":
         sys.exit(show_modes())
     elif args.cmd == "doctor":

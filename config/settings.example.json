@@ -2,7 +2,7 @@
   "compute": {
     "prefer": "local",
     "fallback": "local",
-    "_comment": "prefer=mac|local. Bei 'mac' wird zuerst ein Remote-Host (SSH) versucht, bei Fehler automatisch lokal. Ohne Remote-Host auf 'local' lassen."
+    "_comment": "prefer=mac|local. Bei 'mac' wird die vollständige Eingabedatei an den eigenen SSH-Host übertragen; bei Fehler automatisch lokal. Ohne Freigabe/Remote-Host auf 'local' lassen."
   },
   "mac": {
     "host": "YOUR_HOST_OR_TAILSCALE_IP",
@@ -31,6 +31,6 @@
     "video_use": "/path/to/podcast-editor/video-use"
   },
   "hf_token": "",
-  "_hf_note": "HuggingFace-Token fuer WhisperX-Sprecher-Diarisierung (pyannote, gated). Nur fuer Usecase 2 und 4 noetig. Leer lassen wenn nur 1-Sprecher-Modi genutzt werden.",
+  "_hf_note": "HuggingFace-Token nur fuer akustische WhisperX-Sprecher-Diarisierung (pyannote, gated). Der Default faster + LLM-Diarisierung braucht keinen Token.",
   "_setup": "Kopiere diese Datei nach config/settings.json und trage deine echten Werte ein. tools_root/video_use zeigen auf die schweren Tools + venv (NICHT in einem synchronisierten Cloud-Ordner anlegen)."
 }

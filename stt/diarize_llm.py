@@ -27,29 +27,66 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
+import os
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 # pack_transcripts (Re-Pack) aus video-use wiederverwenden
-def _load_packer():
+def _packer_command(edit_dir: Path) -> list[str]:
     try:
         cfg = json.loads((Path(__file__).resolve().parent.parent / "config" / "settings.json").read_text(encoding="utf-8"))
-        vu = Path(cfg["paths"]["video_use"]) / "helpers"
-    except Exception:
-        import os
+        vu_root = Path(cfg["paths"]["video_use"])
+        python = str(cfg["paths"]["venv_python"])
+    except (OSError, KeyError, json.JSONDecodeError):
         vu_root = os.environ.get("VIDEO_USE_DIR")
         if not vu_root:
             raise RuntimeError(
                 "video-use-Pfad nicht konfiguriert: paths.video_use in config/settings.json "
                 "setzen (siehe settings.example.json) oder Umgebungsvariable VIDEO_USE_DIR."
             )
-        vu = Path(vu_root) / "helpers"
-    sys.path.insert(0, str(vu))
-    import pack_transcripts  # noqa: E402
-    return pack_transcripts
+        vu_root = Path(vu_root)
+        python = sys.executable
+    pack = vu_root / "helpers" / "pack_transcripts.py"
+    if not pack.is_file():
+        raise RuntimeError(f"pack_transcripts.py nicht gefunden: {pack}")
+    return [python, str(pack), "--edit-dir", str(edit_dir)]
 
 
 _SENT_END = (".", "?", "!", "…")
+
+
+def _safe_stem(stem: str) -> str:
+    if not stem or stem in {".", ".."} or Path(stem).name != stem:
+        raise ValueError("--stem muss ein einzelner Dateistamm sein.")
+    if any(char in stem for char in '<>:"/\\|?*'):
+        raise ValueError("--stem enthält ein unzulässiges Zeichen.")
+    return stem
+
+
+def _exact_int(value: object) -> int:
+    if isinstance(value, bool):
+        raise ValueError("Label-Indizes und Sprecher müssen Ganzzahlen sein.")
+    if isinstance(value, int):
+        return value
+    if isinstance(value, str) and value.lstrip("-").isdigit():
+        return int(value)
+    raise ValueError("Label-Indizes und Sprecher müssen Ganzzahlen sein.")
+
+
+def _write_text_atomic(path: Path, content: str) -> None:
+    fd, temporary_name = tempfile.mkstemp(
+        prefix=f".{path.name}.", suffix=".tmp", dir=path.parent
+    )
+    os.close(fd)
+    temporary = Path(temporary_name)
+    try:
+        temporary.write_text(content, encoding="utf-8")
+        os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
 
 
 def segment_sentences(words: list[dict], silence: float = 0.4) -> list[dict]:
@@ -94,6 +131,10 @@ def segment_sentences(words: list[dict], silence: float = 0.4) -> list[dict]:
 
 def build_prompt(edit_dir: Path, max_speakers: int | None = None, silence: float = 0.4) -> list[Path]:
     """Erzeugt pro Transkript einen Diarisierungs-Prompt + Phrasenliste."""
+    if max_speakers is not None and max_speakers < 1:
+        raise ValueError("max_speakers muss mindestens 1 sein.")
+    if silence <= 0:
+        raise ValueError("silence muss größer als 0 sein.")
     transcripts_dir = edit_dir / "transcripts"
     out_dir = edit_dir / "diarization"
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -105,13 +146,19 @@ def build_prompt(edit_dir: Path, max_speakers: int | None = None, silence: float
         phrases = segment_sentences(words, silence=silence)
         # Nummerierte, kompakte Phrasenliste
         items = [
-            {"i": i, "start": round(p["start"], 2), "end": round(p["end"], 2), "text": p["text"]}
+            {"i": i, "start": float(p["start"]), "end": float(p["end"]), "text": p["text"]}
             for i, p in enumerate(phrases)
         ]
         phrases_path = out_dir / f"{jf.stem}.phrases.json"
-        phrases_path.write_text(json.dumps(items, indent=2, ensure_ascii=False), encoding="utf-8")
+        _write_text_atomic(phrases_path, json.dumps(items, indent=2, ensure_ascii=False))
 
-        spk_hint = (f"Es sind genau {max_speakers} Sprecher." if max_speakers
+        metadata_path = out_dir / f"{jf.stem}.meta.json"
+        _write_text_atomic(
+            metadata_path,
+            json.dumps({"max_speakers": max_speakers}, indent=2, ensure_ascii=False),
+        )
+
+        spk_hint = (f"Verwende höchstens {max_speakers} Sprecher." if max_speakers
                     else "Bestimme die Anzahl der Sprecher selbst (meist 2-4).")
         listing = "\n".join(f"[{it['i']:>3}] ({it['start']:>7.2f}-{it['end']:>7.2f}) {it['text']}" for it in items)
         prompt = f"""# Sprecher-Diarisierung per LLM — {jf.stem}
@@ -135,64 +182,149 @@ einen Eintrag. Dann ausführen:
 {listing}
 """
         prompt_path = out_dir / f"{jf.stem}.prompt.md"
-        prompt_path.write_text(prompt, encoding="utf-8")
+        _write_text_atomic(prompt_path, prompt)
         written.append(prompt_path)
         print(f"  Diarisierungs-Prompt: {prompt_path}  ({len(items)} Phrasen)")
     return written
 
 
+def parse_label_map(
+    phrases: list[dict], raw_labels: object, max_speakers: int | None = None
+) -> dict[int, int]:
+    """Validate an exact phrase-to-speaker assignment without silent defaults."""
+    if max_speakers is not None and max_speakers < 1:
+        raise ValueError("max_speakers muss mindestens 1 sein.")
+    expected: set[int] = set()
+    for phrase in phrases:
+        if not isinstance(phrase, dict) or not all(key in phrase for key in ("i", "start", "end")):
+            raise ValueError("Jede Phrase braucht i, start und end.")
+        index = _exact_int(phrase["i"])
+        start, end = float(phrase["start"]), float(phrase["end"])
+        if not math.isfinite(start) or not math.isfinite(end) or start < 0 or end < start:
+            raise ValueError(f"Phrase {index} hat einen ungültigen Zeitbereich.")
+        expected.add(index)
+    if len(expected) != len(phrases):
+        raise ValueError("Phrasen enthalten doppelte Indizes.")
+
+    items: list[tuple[object, object]]
+    if isinstance(raw_labels, dict):
+        items = list(raw_labels.items())
+    elif isinstance(raw_labels, list):
+        items = []
+        for entry in raw_labels:
+            if not isinstance(entry, dict) or "i" not in entry or "speaker" not in entry:
+                raise ValueError("Jedes Label braucht die Felder 'i' und 'speaker'.")
+            items.append((entry["i"], entry["speaker"]))
+    else:
+        raise ValueError("Labels müssen ein JSON-Objekt oder eine JSON-Liste sein.")
+
+    result: dict[int, int] = {}
+    for raw_index, raw_speaker in items:
+        index = _exact_int(raw_index)
+        speaker = _exact_int(raw_speaker)
+        if index in result:
+            raise ValueError(f"Doppeltes Label für Phrase {index}.")
+        if speaker < 0:
+            raise ValueError("Sprecher-IDs müssen 0 oder größer sein.")
+        if max_speakers is not None and speaker >= max_speakers:
+            raise ValueError(
+                f"Sprecher-ID {speaker} überschreitet die Grenze von {max_speakers} Sprechern."
+            )
+        result[index] = speaker
+
+    missing = sorted(expected - result.keys())
+    extra = sorted(result.keys() - expected)
+    if missing or extra:
+        raise ValueError(f"Labels sind unvollständig (fehlend={missing}, unbekannt={extra}).")
+    return result
+
+
 def apply_labels(edit_dir: Path, stem: str, labels_path: Path) -> Path:
     """Schreibt Sprecher zeitbasiert ins Scribe-JSON zurück und re-packt."""
-    packer = _load_packer()
+    stem = _safe_stem(stem)
     out_dir = edit_dir / "diarization"
     phrases = json.loads((out_dir / f"{stem}.phrases.json").read_text(encoding="utf-8"))
     raw_labels = json.loads(Path(labels_path).read_text(encoding="utf-8"))
-
-    # labels: Liste [{"i":..,"speaker":..}] ODER Mapping {"0":1,...}
-    label_map: dict[int, int] = {}
-    if isinstance(raw_labels, dict):
-        label_map = {int(k): int(v) for k, v in raw_labels.items()}
-    else:
-        for e in raw_labels:
-            label_map[int(e["i"])] = int(e["speaker"])
+    metadata_path = out_dir / f"{stem}.meta.json"
+    max_speakers = None
+    if metadata_path.is_file():
+        metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+        if not isinstance(metadata, dict):
+            raise ValueError("Diarisierungs-Metadaten müssen ein JSON-Objekt sein.")
+        max_speakers = metadata.get("max_speakers")
+        if max_speakers is not None:
+            max_speakers = _exact_int(max_speakers)
+    label_map = parse_label_map(phrases, raw_labels, max_speakers=max_speakers)
 
     # Zeit-Segmente bauen: (start, end, speaker_id)
     segments: list[tuple[float, float, str]] = []
     for p in phrases:
-        spk = label_map.get(int(p["i"]), 0)
+        spk = label_map[int(p["i"])]
         segments.append((float(p["start"]), float(p["end"]), f"speaker_{spk}"))
 
     def speaker_at(t: float) -> str | None:
-        for s, e, spk in segments:
-            if s <= t <= e:
-                return spk
-        return None
+        matches = [(s, spk) for s, e, spk in segments if s - 1e-6 <= t <= e + 1e-6]
+        return max(matches, default=(0.0, None), key=lambda item: item[0])[1]
 
     jf = edit_dir / "transcripts" / f"{stem}.json"
-    data = json.loads(jf.read_text(encoding="utf-8"))
+    original = jf.read_text(encoding="utf-8")
+    data = json.loads(original)
     last = "speaker_0"
     changed = 0
     for w in data.get("words", []):
-        t = w.get("start")
-        if t is None:
+        if w.get("type") != "word":
             w["speaker_id"] = last
             continue
-        spk = speaker_at(float(t)) or last
+        t = w.get("start")
+        if t is None:
+            raise ValueError("Wort ohne Startzeit kann keiner Phrase zugeordnet werden.")
+        spk = speaker_at(float(t))
+        if spk is None:
+            raise ValueError(f"Wort bei {t}s liegt außerhalb aller Diarisierungsphrasen.")
         if w.get("speaker_id") != spk:
             changed += 1
         w["speaker_id"] = spk
         last = spk
-    jf.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+    _write_text_atomic(jf, json.dumps(data, indent=2, ensure_ascii=False))
 
     n_spk = len({s for _, _, s in segments})
-    print(f"  Sprecher angewendet: {n_spk} Sprecher, {changed} Wörter umgelabelt -> {jf.name}")
 
-    # Re-Pack
-    import subprocess
-    cfg = json.loads((Path(__file__).resolve().parent.parent / "config" / "settings.json").read_text(encoding="utf-8"))
-    venv_py = cfg["paths"]["venv_python"]
-    pack = Path(cfg["paths"]["video_use"]) / "helpers" / "pack_transcripts.py"
-    subprocess.run([venv_py, str(pack), "--edit-dir", str(edit_dir)], check=False)
+    # Re-Pack. Preserve and restore prior derived output if the downstream contract fails.
+    takes = edit_dir / "takes_packed.md"
+    previous_takes = takes.read_bytes() if takes.is_file() else None
+    takes.unlink(missing_ok=True)
+
+    def restore() -> None:
+        _write_text_atomic(jf, original)
+        if previous_takes is None:
+            takes.unlink(missing_ok=True)
+        else:
+            fd, takes_tmp_name = tempfile.mkstemp(
+                prefix=f".{takes.name}.", suffix=".tmp", dir=takes.parent
+            )
+            os.close(fd)
+            takes_tmp = Path(takes_tmp_name)
+            try:
+                takes_tmp.write_bytes(previous_takes)
+                os.replace(takes_tmp, takes)
+            finally:
+                takes_tmp.unlink(missing_ok=True)
+
+    try:
+        result = subprocess.run(_packer_command(edit_dir), capture_output=True, text=True)
+    except (OSError, RuntimeError) as exc:
+        restore()
+        raise RuntimeError(f"Re-Pack fehlgeschlagen; Transkript wiederhergestellt: {exc}") from exc
+    if result.returncode != 0:
+        restore()
+        detail = (result.stderr or result.stdout).strip()[-500:]
+        raise RuntimeError(
+            f"Re-Pack fehlgeschlagen (Exit {result.returncode}); Transkript wiederhergestellt: {detail}"
+        )
+    if not takes.is_file() or takes.stat().st_size == 0:
+        restore()
+        raise RuntimeError("Re-Pack meldete Erfolg, erzeugte aber keine takes_packed.md; Transkript wiederhergestellt.")
+    print(f"  Sprecher angewendet: {n_spk} Sprecher, {changed} Wörter umgelabelt -> {jf.name}")
     return jf
 
 

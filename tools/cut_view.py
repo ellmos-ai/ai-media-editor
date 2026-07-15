@@ -12,8 +12,8 @@ Klassifikation (an video-use SKILL.md angelehnt):
   0.15-0.40  ·   möglich (visuell/akustisch prüfen)
   < 0.15s        unsicher (mitten im Sprechfluss) — wird nicht als Cut gelistet
 
-Zusätzlich markiert: lange Stille am ANFANG/ENDE (Trim-Kandidaten, z.B.
-Soundcheck, Stille nach Stopp) und die längsten Pausen insgesamt.
+Zusätzlich markiert: lange Stille am ANFANG (Trim-Kandidat, z.B. Soundcheck)
+und die längsten Pausen innerhalb des Transkripts.
 
 Ausgabe: <edit>/cut_view.md  (lesbare Schnitt-Landkarte je Quelle)
 
@@ -33,14 +33,17 @@ def fmt(t: float) -> str:
     return f"{m:02d}:{s:05.2f}"
 
 
-def find_pauses(words: list[dict]) -> list[dict]:
+def find_pauses(words: list[dict]) -> tuple[list[dict], list[dict]]:
     """Alle Pausen zwischen aufeinanderfolgenden 'word'-Tokens (Sekunden)."""
     kept = [w for w in words if w.get("type") == "word" and w.get("start") is not None]
     pauses = []
     for a, b in zip(kept, kept[1:]):
-        gap = float(b["start"]) - float(a.get("end", a["start"]))
+        a_end = a.get("end")
+        if a_end is None:
+            a_end = a["start"]
+        gap = float(b["start"]) - float(a_end)
         if gap > 0:
-            pauses.append({"at": float(a.get("end", a["start"])), "dur": gap,
+            pauses.append({"at": float(a_end), "dur": gap,
                            "before": (b.get("text") or "").strip()})
     return pauses, kept
 
@@ -102,6 +105,9 @@ def main() -> None:
     ap.add_argument("-o", "--output", type=Path, default=None)
     args = ap.parse_args()
 
+    if not 0 <= args.weak <= args.good <= args.strong:
+        raise SystemExit("Schwellen müssen 0 <= weak <= good <= strong erfüllen.")
+
     edit_dir = args.edit_dir.resolve()
     tdir = edit_dir / "transcripts"
     jfs = sorted(tdir.glob("*.json"))
@@ -109,7 +115,8 @@ def main() -> None:
         raise SystemExit(f"keine Transkripte in {tdir}")
 
     blocks = ["# Schnitt-Ansicht — Pausen als Schnittinformation", "",
-              "✂✂ stark (≥0.8s) · ✂ gut (≥0.4s) · · möglich (≥0.15s). "
+              f"✂✂ stark (≥{args.strong:g}s) · ✂ gut (≥{args.good:g}s) · "
+              f"· möglich (≥{args.weak:g}s). "
               "Schneide an den stärksten Pausen; ⟦TRIM⟧ = Vorlauf/Stille zum Wegschneiden.", ""]
     stats = []
     for jf in jfs:

@@ -12,34 +12,47 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import math
 import subprocess
 import sys
 from pathlib import Path
 
 
 def ffprobe_duration(path: Path) -> float:
-    r = subprocess.run(
-        ["ffprobe", "-v", "error", "-show_entries", "format=duration",
-         "-of", "csv=p=0", str(path)],
-        capture_output=True, text=True,
-    )
     try:
-        return float(r.stdout.strip())
+        r = subprocess.run(
+            ["ffprobe", "-v", "error", "-show_entries", "format=duration",
+             "-of", "csv=p=0", str(path)],
+            capture_output=True, text=True,
+        )
+    except OSError:
+        return 0.0
+    if r.returncode != 0:
+        return 0.0
+    try:
+        duration = float(r.stdout.strip())
     except ValueError:
         return 0.0
+    return duration if math.isfinite(duration) and duration >= 0 else 0.0
 
 
 def compose(cover: Path, audio: Path, out: Path, fps: int, crf: int) -> int:
-    if not cover.exists():
+    if not cover.is_file():
         sys.exit(f"Cover nicht gefunden: {cover}")
-    if not audio.exists():
+    if not audio.is_file():
         sys.exit(f"Audio nicht gefunden: {audio}")
+    if out.resolve() in {cover.resolve(), audio.resolve()}:
+        sys.exit("Ausgabedatei darf Eingabedateien nicht überschreiben.")
+    if fps < 1 or not 0 <= crf <= 51:
+        sys.exit("--fps muss >= 1 und --crf zwischen 0 und 51 sein.")
     out.parent.mkdir(parents=True, exist_ok=True)
 
     audio_dur = ffprobe_duration(audio)
     cover_dur = ffprobe_duration(cover)
+    if cover_dur <= 0 or audio_dur <= 0:
+        sys.exit("ffprobe konnte Cover- oder Audiodauer nicht bestimmen.")
     print(f"  Cover-Loop: {cover_dur:.1f}s  |  Audio: {audio_dur:.1f}s  "
-          f"-> {audio_dur / cover_dur:.1f}x geloopt" if cover_dur else "")
+          f"-> {audio_dur / cover_dur:.1f}x geloopt")
 
     # Cover unendlich loopen (-stream_loop -1), Audio bestimmt die Länge (-shortest).
     cmd = [
@@ -54,7 +67,10 @@ def compose(cover: Path, audio: Path, out: Path, fps: int, crf: int) -> int:
         str(out),
     ]
     print("  ffmpeg: loope Cover über Audio …", flush=True)
-    r = subprocess.run(cmd, capture_output=True, text=True)
+    try:
+        r = subprocess.run(cmd, capture_output=True, text=True)
+    except OSError as exc:
+        raise SystemExit(f"ffmpeg konnte nicht gestartet werden: {exc}") from exc
     if r.returncode != 0:
         print(r.stderr[-800:])
         sys.exit("ffmpeg fehlgeschlagen")
