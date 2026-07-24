@@ -1,4 +1,4 @@
-## Last-checked: 2026-07-15
+## Last-checked: 2026-07-25
 
 # ellmos-ai/ai-media-editor
 

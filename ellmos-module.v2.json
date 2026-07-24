@@ -12,7 +12,7 @@
   "category": "domains",
   "kind": "stack-candidate",
   "status": "development",
-  "visibility": "public-candidate",
+  "visibility": "public",
   "provides": [
     "domain.media.editing",
     "workflow.media.pipeline"

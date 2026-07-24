@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Fixed
+
+- Correct `ellmos-module.v2.json` visibility from `public-candidate` to `public`.
+  The repository has been published for a while; the schema distinguishes the two
+  values, so catalog and discovery tooling reading the manifest classified this
+  module as not-yet-published.
+
 ### Added
 
 - Add 38 dependency-free regression tests plus GitHub Actions checks for Python
