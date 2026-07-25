@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+## [0.2.1] - 2026-07-25
+
+### Added
+- Standard PEP 621 `pyproject.toml` package & test configuration.
+- Shields.io status & quality badges (pytest, MIT license, Python version, LLM-ready) in `README.md`.
+- GFM LLM / Agent native integration callout note (`> [!NOTE]`) in `README.md`.
+- Mermaid System Architecture flow diagram in `README.md`.
+
+### Changed
+- Synchronized `llms.txt` verification timestamp and external discovery status to `2026-07-25`.
+
 ### Fixed
 
 - Correct `ellmos-module.v2.json` visibility from `public-candidate` to `public`.

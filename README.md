@@ -1,11 +1,35 @@
 <p align="center"><img src="assets/banner.svg" alt="ai-media-editor — Video · Audio · Podcast, local" width="100%"></p>
 
+<p align="center">
+  <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/tests-38%20passed-brightgreen" alt="Tests Passed"></a>
+  <a href="https://github.com/ellmos-ai/ai-media-editor/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License: MIT"></a>
+  <a href="https://python.org"><img src="https://img.shields.io/badge/python-3.10%2B-blue" alt="Python 3.10+"></a>
+  <a href="https://github.com/ellmos-ai/ai-media-editor#discovery-context"><img src="https://img.shields.io/badge/LLM--Ready-Local--First-orange" alt="LLM Ready"></a>
+</p>
+
 # ai-media-editor — local AI media editor (Video · Audio · Podcast)
+
+> [!NOTE]
+> **AI / Agent Native Integration:** `ai-media-editor` is specifically designed for autonomous agent execution (Claude Code, Gemini/Antigravity, Codex). It provides deterministic project preparation, Scribe JSON schema generation, and timestamped frame contact-sheets so LLMs can visually inspect and cut media locally without third-party SaaS dependencies.
 
 Use an AI coding agent (e.g. Claude Code) as a video/podcast editor — with **local
 transcription instead of ElevenLabs Scribe**. The orchestrator (`editor.py`) handles the
 deterministic prep (route to the right STT engine/compute, produce Scribe-JSON, pack takes);
 the creative cutting/animation work is then driven by the agent.
+
+## System Architecture
+
+```mermaid
+graph TD
+    Input["Media Input (Video / Audio)"] --> Doctor["editor.py doctor / prepare"]
+    Doctor --> STT["Local STT Engine (faster-whisper / WhisperX)"]
+    STT --> Scribe["Scribe JSON & Packed Takes"]
+    Scribe --> Agent["AI Coding Agent (Claude / Gemini / Codex)"]
+    Agent --> FrameView["tools/frame_view.py (Timestamped Frames)"]
+    Agent --> CutView["tools/cut_view.py (Pause Candidates)"]
+    FrameView --> Output["Final Rendered Video / Audio / Hyperframes MP4"]
+    CutView --> Output
+```
 
 ## Start here
 

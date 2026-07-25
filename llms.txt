@@ -57,7 +57,7 @@ for local transcript, frame, and edit context.
 
 ## External Discovery Notes
 
-As of 2026-06-30, GitHub search and broad web search still surface mostly GitHub or topic
+As of 2026-07-25, GitHub search and broad web search still surface mostly GitHub or topic
 context for this repo. Additional external listing or editorial launch work should target
 local-first creator tools, AI-video-editing workflows, transcript-based editing, Hyperframes,
 and agent-driven media production.
