@@ -16,7 +16,6 @@ the creative cutting/animation work is then driven by the agent.
 | Check the environment | `PYTHONIOENCODING=utf-8 <VENV> editor.py doctor` |
 | Prepare a media project | `PYTHONIOENCODING=utf-8 <VENV> editor.py prepare "<media>" --mode <1-8>` |
 | Build video frame context | `PYTHONIOENCODING=utf-8 <VENV> editor.py frames <project> --contact-sheet` |
-| See verified vs. guarded release claims | [`RELEASE_GATE.md`](RELEASE_GATE.md) |
 | Give LLM crawlers the short map | [`llms.txt`](llms.txt) |
 
 ## What it is
@@ -167,6 +166,14 @@ python editor.py modes
 
 Real transcription, ffmpeg rendering, SSH, and provider workflows remain environment-dependent;
 run `python editor.py doctor` before using them.
+
+## Development status
+
+Version 0.2.0 is a **development hardening state**, not a stable release — there is no tag yet.
+The deterministic pipeline has regression coverage, but real ffmpeg, STT, SSH and provider runs
+are environment-dependent and were not exercised by the fast gate. What is verified, what is
+explicitly *not* claimed, and what remains open before a stable tag is recorded in
+[`RELEASE_GATE.md`](RELEASE_GATE.md); the open work items are in [`TODO.md`](TODO.md).
 
 ## Credits / Licenses
 
