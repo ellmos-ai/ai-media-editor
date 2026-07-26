@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## [0.2.2] - 2026-07-27
+
+### Changed
+- Updated `llms.txt` verification timestamp to `2026-07-27` after discoverability, SEO, and test suite audit (38/38 unit tests passing).
+
 ## [0.2.1] - 2026-07-25
 
 ### Added
