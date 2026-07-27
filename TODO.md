@@ -1,6 +1,6 @@
 # Pre-Release TODO: ai-media-editor
 
-**Last review:** 2026-07-15
+**Last review:** 2026-07-27
 
 **Target repository:** `ellmos-ai/ai-media-editor`
 
@@ -22,13 +22,46 @@
 
 ## Remaining before a stable release
 
-- [ ] Define and test a reproducible external STT/video-use environment (supported Python version,
-  faster-whisper/WhisperX/torch matrix, and locked dependency set per platform).
-- [ ] Add a redistributable, rights-cleared end-to-end fixture covering media → transcript → pack → cut view.
-- [ ] Run real ffmpeg, faster-whisper, optional WhisperX, SSH-host, and video-use integration checks on the
-  supported Windows/macOS environments; unit tests deliberately mock these heavy/external paths.
-- [ ] Finish English API/docstring normalization where public Python modules remain German-first.
-- [ ] Add release tags/badges only after the environment and integration gates above are green.
+The following Taskplan items decompose the former release bullets into independently
+verifiable steps. Detailed source, acceptance criteria, verification path,
+dependencies, `effort`, `scope`, and priority rationale are stored with the
+corresponding Taskplan task.
+
+- [ ] **Task 1240** — Unterstützte STT-/video-use-Umgebungsmatrix entscheiden und dokumentieren
+  (`effort=special`, `scope=local`, `priority=high`).
+- [ ] **Task 1241** — Reproduzierbare Dependency-Locks für die unterstützten Plattformen implementieren
+  (`effort=medium`, `scope=local`, `priority=high`; abhängig von 1240).
+- [ ] **Task 1242** — Rechtegeklärtes reproduzierbares End-to-End-Fixture für die Kernpipeline hinzufügen
+  (`effort=special`, `scope=local`, `priority=high`; abhängig von 1240).
+- [ ] **Task 1243** — Reale ffmpeg-, STT-, SSH- und video-use-Integrationsgates ausführen und dokumentieren
+  (`effort=special`, `scope=local`, `priority=high`; abhängig von 1240–1242).
+- [ ] **Task 1244** — Öffentliche Python-API- und Docstrings auf Englisch normalisieren
+  (`effort=medium`, `scope=local`, `priority=medium`).
+- [ ] **Task 1245** — Versionsführung 0.2.0 versus Changelog 0.2.2 vor dem Stable-Release klären
+  (`effort=special`, `scope=local`, `priority=high`; Nutzer-/Maintainerentscheidung erforderlich).
+- [ ] **Task 1246** — Stable-Release-Tags und Badges erst nach vollständigem Gate-Nachweis vorbereiten
+  (`effort=special`, `scope=local`, `priority=high`; abhängig von 1240–1245 und expliziter Freigabe).
+
+## TASKWRITER-Register
+
+**2026-07-27 — Projekt:** `C:\_Local_DEV\repos\ai-media-editor`
+
+- Gelesene Steuerdateien: `AGENTS.md`, `CLAUDE.md`, `README.md`, `TODO.md`,
+  `CHANGELOG.md`, `CONTRIBUTING.md`, `SECURITY.md`, `RELEASE_GATE.md`,
+  `docs/USECASES.md`, `production/OVERVIEW.md`, alle sechs `production/*/WORKFLOW.md`,
+  `config/settings.example.json`, `pyproject.toml`, `requirements-dev.txt`,
+  `.github/workflows/ci.yml`, `ellmos-module.v2.json`, `llms.txt` und `VERSION`.
+- Ist-Stand: `main` ist sauber und ohne Projekt-Lock; der aufgezeichnete Fast-Gate-Stand
+  bleibt 38 Tests, Ruff, AST/Import und CLI-Smoke grün. Reale STT-/ffmpeg-/SSH-/video-use-
+  Läufe sind ausdrücklich nicht belegt.
+- Neu formalisiert: sieben offene Aufgaben (1240–1246), davon fünf `special` und zwei
+  `medium`, alle mit `scope=local`; keine Aufgabe wurde ausgeführt.
+- Zusammengeführt: Die bisherigen fünf Stable-Release-Bullets wurden in die Tasks 1240–1244
+  und 1246 zerlegt. Task 1245 dokumentiert zusätzlich die belegte Versionsabweichung
+  zwischen `CHANGELOG.md` (0.2.2) und den Versionsquellen (0.2.0).
+- Offene Entscheidungen: Supportumfang und Plattformmatrix, Rechteklärung bzw. Fixture,
+  verfügbare externe Integrationsumgebungen, Versionssemantik und spätere Stable-Release-
+  Freigabe. Kein Tag, Push, Upload oder Provider-Aufruf wurde autorisiert oder ausgeführt.
 
 ## Verification contract
 
