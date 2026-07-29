@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Fixed
+- Use real German umlauts in the user-facing use-case labels and next-step CLI output.
+
 ## [0.2.2] - 2026-07-27
 
 ### Changed

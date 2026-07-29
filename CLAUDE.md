@@ -72,7 +72,7 @@ möglich, plus ⟦TRIM⟧ für Vorlauf/Stille). Schneide an den stärksten Pause
 Wortgrenzen, padde die Kanten. Alles andere (Animationen, Cover, Diarisierung) ist
 nachgelagert.
 
-Danach faehrst **du** den kreativen Teil — lies dazu `<TOOLS_ROOT>\video-use\SKILL.md`
+Danach fährst **du** den kreativen Teil — lies dazu `<TOOLS_ROOT>\video-use\SKILL.md`
 (der vollständige video-use-Editor-Workflow inkl. **Hard Rules** für korrektes Rendern)
 und `docs/USECASES.md` (was je Modus zu tun ist).
 

@@ -8,7 +8,7 @@ aber mit lokalem/Mac-STT statt ElevenLabs):
            -> pack_transcripts -> takes_packed.md
            -> Hinweis, wie es je Usecase weitergeht.
 
-Die kreative Arbeit (Schnitt-Entscheidungen, Animationen, Render) faehrt
+Die kreative Arbeit (Schnitt-Entscheidungen, Animationen, Render) fährt
 danach Claude Code interaktiv, geleitet durch CLAUDE.md / USECASES.md.
 
 Die 8 Usecases (vom User definiert):
@@ -18,7 +18,7 @@ Die 8 Usecases (vom User definiert):
   3  Video A+V, 1 Sprecher      -> Video geschnitten + Animationen (Original-Setup)
   4  Video A+V, N Sprecher      -> Video geschnitten + Animationen, Sprecher-Tracking
   5  Video, nur Tonspur nutzen  -> Audio-Podcast (Bild verworfen)
-  6  Erklaervideo aus Audio     -> voll generiertes Video (frontend-design + Hyperframes)
+  6  Erklärvideo aus Audio      -> voll generiertes Video (frontend-design + Hyperframes)
   7  Audio + animiertes Cover   -> Audio + Hyperframes-Cover-Loop
 
 Usage:
@@ -69,9 +69,9 @@ class Usecase:
 
 USECASES: dict[int, Usecase] = {
     1: Usecase(1, "Audio, 1 Sprecher", "audio", False, "audio_cut", "faster",
-               "Schnitt: takes_packed.md lesen -> Fueller/Pausen/Versprecher raus -> "
-               "edl.json (audio-only) -> render.py --no-subtitles fuer reinen Audioschnitt."),
-    2: Usecase(2, "Audio, mehrere Sprecher (Gespraech)", "audio", True, "audio_cut", "faster+llm-diar",
+               "Schnitt: takes_packed.md lesen -> Füller/Pausen/Versprecher raus -> "
+               "edl.json (audio-only) -> render.py --no-subtitles für reinen Audioschnitt."),
+    2: Usecase(2, "Audio, mehrere Sprecher (Gespräch)", "audio", True, "audio_cut", "faster+llm-diar",
                "Sprecher tokenfrei per LLM zuordnen (diarize_llm, kein HF-Token), dann wie 1: "
                "S0/S1 im takes_packed.md beachten, Handoffs mit Luft (400-600ms)."),
     3: Usecase(3, "Video (A+V), 1 Sprecher", "video", False, "video_cut", "faster",
@@ -79,21 +79,21 @@ USECASES: dict[int, Usecase] = {
                "frontend-design + Hyperframes -> render.py (Subtitles LAST). Das Original-Setup."),
     4: Usecase(4, "Video (A+V), mehrere Sprecher", "video", True, "video_cut", "faster+llm-diar",
                "Wie 3 + Sprecher tokenfrei per LLM (diarize_llm) -> Lower-Thirds/Namens-Karten "
-               "pro Sprecher (S0/S1...) moeglich. Kein HF-Token."),
+               "pro Sprecher (S0/S1...) möglich. Kein HF-Token."),
     5: Usecase(5, "Video-Ausgangsmaterial, nur Tonspur", "video", False, "audio_cut", "faster",
                "Nur die Audiospur wird genutzt: extrahieren -> wie Usecase 1. Das Bild wird "
-               "verworfen (Ergebnis ist ein Audio-Podcast). --num-speakers fuer Gespraech setzen."),
-    6: Usecase(6, "Erklaervideo aus Audio", "audio", False, "generated_video", "faster",
+               "verworfen (Ergebnis ist ein Audio-Podcast). --num-speakers für Gespräch setzen."),
+    6: Usecase(6, "Erklärvideo aus Audio", "audio", False, "generated_video", "faster",
                "Transkript -> Storyboard -> frontend-design erzeugt HTML/Motion-Graphics pro Beat "
                "-> Hyperframes rendert zu MP4. Kein Originalbild, alles generiert."),
     7: Usecase(7, "Audio + animiertes Video-Cover", "audio", False, "audio_cover", "faster",
                "Audioschnitt wie Usecase 1 + ein animiertes Cover (Standbild/Loop) via "
-               "frontend-design -> Hyperframes, das ueber die Tonspur gelegt wird."),
+               "frontend-design -> Hyperframes, das über die Tonspur gelegt wird."),
     8: Usecase(8, "Werbeclip / Ad (kurz, 15-60s)", "audio", False, "ad_clip", "faster",
                "Kurzer Brief/VO -> Transkript -> Ad-Storyboard (Hook->Nutzen->CTA). Generierung "
                "via OpenMontage clip-factory (<OPENMONTAGE_DIR>) ODER frontend-design+Hyperframes "
                "mit Brand-Tokens; Musikbett + CTA-Endcard. ACHTUNG kommerziell: Asset-/Modell-Lizenzen "
-               "pruefen (manche lokale Video-Modelle/Stock sind non-commercial)."),
+               "prüfen (manche lokale Video-Modelle/Stock sind non-commercial)."),
 }
 
 
@@ -222,10 +222,10 @@ def prepare(media: Path, mode: int, project: str | None, num_speakers: int | Non
         print(f"  cached: {cached_path.name}")
         json_path = cached_path
 
-    # 1) Compute-Routing: Mac primaer
+    # 1) Compute-Routing: Mac primär
     if json_path is None and prefer == "mac":
         model = preferred_model
-        print(f"  Engine={engine}  Modell={model}  Compute=Mac Studio (primaer)")
+        print(f"  Engine={engine}  Modell={model}  Compute=Mac Studio (primär)")
         json_path = mac_remote.run_remote(
             local_media, edit_dir, cfg["mac"], engine=engine, model=model,
             language=cfg["language"], num_speakers=num_speakers, hf_token=hf_token,
@@ -283,7 +283,7 @@ def prepare(media: Path, mode: int, project: str | None, num_speakers: int | Non
         print("      1) Lies den Prompt + <stem>.phrases.json")
         print("      2) Schreibe <stem>.labels.json ({\"i\":idx,\"speaker\":int})")
         print("      3) python stt/diarize_llm.py apply --edit-dir <dir> --stem <stem> --labels <labels>")
-    print("  Naechste Schritte (Claude Code faehrt sie):")
+    print("  Nächste Schritte (Claude Code fährt sie):")
     for line in _wrap(uc.next_steps):
         print("   " + line)
     print("=" * 70)
@@ -412,7 +412,7 @@ def doctor() -> int:
         major = int(r.stdout.strip().lstrip("v").split(".")[0])
         check(f"Node.js >= 22 (hyperframes)  [{r.stdout.strip()}]", major >= 22)
     except Exception:
-        check("Node.js", False, "Node 22+ fuer Hyperframes")
+        check("Node.js", False, "Node 22+ für Hyperframes")
 
     # HF-Token (nur Info)
     whisperx_enabled = cfg["engines"].get("multi_speaker") == "whisperx"
@@ -428,7 +428,7 @@ def main() -> None:
     ap = argparse.ArgumentParser(description="Podcast/Video-Editor Orchestrator")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
-    p = sub.add_parser("prepare", help="Transkribieren + packen fuer einen Usecase")
+    p = sub.add_parser("prepare", help="Transkribieren + packen für einen Usecase")
     p.add_argument("media", type=Path)
     p.add_argument("--mode", type=int, required=True, choices=list(USECASES))
     p.add_argument("--project", type=str, default=None)

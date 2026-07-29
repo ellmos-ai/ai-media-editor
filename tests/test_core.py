@@ -165,6 +165,10 @@ class TranscriptCacheTests(unittest.TestCase):
 
 
 class EditorTests(unittest.TestCase):
+    def test_usecase_labels_use_real_german_umlauts(self) -> None:
+        self.assertEqual(editor.USECASES[2].label, "Audio, mehrere Sprecher (Gespräch)")
+        self.assertEqual(editor.USECASES[6].label, "Erklärvideo aus Audio")
+
     def test_project_names_cannot_escape_projects(self) -> None:
         for name in ("..", "../outside", "C:\\outside", "bad/name"):
             with self.subTest(name=name), self.assertRaises(ValueError):
