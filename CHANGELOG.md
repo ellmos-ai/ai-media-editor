@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Changed
+- Updated `llms.txt` maintenance timestamp to `2026-07-30` and verified full pytest suite (39/39 passed).
+
 ### Fixed
 - Use real German umlauts in the user-facing use-case labels and next-step CLI output.
 
