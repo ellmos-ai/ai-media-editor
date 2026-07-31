@@ -8,7 +8,7 @@
 
 | Ordner | Fähigkeit | Externe Tools (optional) |
 |---|---|---|
-| `musik/` | KI-Musik generieren, Stems trennen, Mastering | Suno, Udio, Lalal.ai, Auphonic |
+| `musik/` | KI-Musik generieren, Stems trennen, Mastering; lokal: videosynchroner Score (`tools/compose_music.py`) | Suno, Udio, Lalal.ai, Auphonic |
 | `podcast-tts/` | Podcast aus Skript (TTS) oder Dokument (NotebookLM) | ElevenLabs, NotebookLM, Auphonic |
 | `video-generativ/` | Text-to-Video, Image-to-Video, Video-Upscaling | Runway, Luma, Pika, Kling, Magnific |
 | `text/` | Textproduktion — Pointer auf Skill `textproduction` (Teilskill `text/`) | Claude, DeepL |

@@ -1,7 +1,7 @@
 <p align="center"><img src="assets/banner.png" alt="ai-media-editor — Video · Audio · Podcast, local" width="100%"></p>
 
 <p align="center">
-  <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/tests-38%20passed-brightgreen" alt="Tests Passed"></a>
+  <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/tests-43%20passed-brightgreen" alt="Tests Passed"></a>
   <a href="https://github.com/ellmos-ai/ai-media-editor/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License: MIT"></a>
   <a href="https://python.org"><img src="https://img.shields.io/badge/python-3.10%2B-blue" alt="Python 3.10+"></a>
   <a href="https://github.com/ellmos-ai/ai-media-editor#discovery-context"><img src="https://img.shields.io/badge/LLM--Ready-Local--First-orange" alt="LLM Ready"></a>
@@ -129,7 +129,8 @@ ai-media-editor/                  (code/docs/projects)
 ├── tools/
 │   ├── cut_view.py               ← pauses as explicit cut candidates
 │   ├── frame_view.py             ← video → timestamped frames ("video-scatterer", UC3/4/8)
-│   └── compose_cover.py          ← UC7: loop a cover over the audio
+│   ├── compose_cover.py          ← UC7: loop a cover over the audio
+│   └── compose_music.py          ← storyline JSON → video-synced score (numpy waveform synthesis)
 ├── stt/
 │   ├── scribe_schema.py          ← Scribe-JSON format (contract with video-use)
 │   ├── transcribe_local.py       ← faster-whisper + WhisperX → Scribe-JSON
@@ -165,6 +166,27 @@ speech, video, text, narrative, or PR material. These workflows are separate fro
 core and may use third-party cloud services. Before every upload, confirm that you have the
 necessary rights, consent, confidentiality clearance, and an acceptable provider retention
 policy. Never upload secrets or client material by default.
+
+### Video-synced score (music-composer)
+
+`tools/compose_music.py` composes a background score that follows a video's storyline —
+fully local, no cloud service. Input is a **storyline JSON**: sections with exact time
+windows plus emotion/intensity, and optional timeline events (`damp` = Gaussian duck on a
+dramatic beat, `climax` window, `outro`). Intensity drives tempo feel, layer count and
+volume ramp; emotion drives chord progressions and waveforms. Styles: `chiptune`,
+`ambient`, `electronic`. Deterministic via `seed`. Deps: numpy (+ ffmpeg for MP3).
+
+```bash
+python tools/compose_music.py docs/examples/storyline-roshambo.json -o projects/<name>/assets/score
+python tools/compose_music.py --init       # storyline template
+python tools/compose_music.py --selftest   # 3 s render + verification
+```
+
+Output: stereo WAV + MP3 + `<name>.notes.json` (arrangement/note log — what plays when).
+Limits: waveform synthesis covers chiptune/ambient/electronic background beds — not
+pop/rock/classical or orchestral film music (no samples, no realistic instruments).
+See [`production/musik/WORKFLOW.md`](production/musik/WORKFLOW.md) for cloud-based
+alternatives (Suno/Udio) when realistic instrumentation is required.
 
 ## Privacy, rights, and operational limits
 

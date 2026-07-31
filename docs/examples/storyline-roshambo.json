@@ -1,0 +1,30 @@
+{
+  "title": "roshambo-score-v2-reconstruction",
+  "duration": 179.5,
+  "bpm": 100,
+  "key": "C",
+  "mode": "minor",
+  "style": "chiptune",
+  "seed": 20260731,
+  "comment": "Reconstructed storyline of the reference score: 7 story acts mapped to 5 music sections. Acts 1-3 (setup/problem/idea) share the calm opening; act 4 (failures) is tense with a damp on 'Two databases. Same cluster.' (~1:24); act 5 (the big test) comes alive; act 6 (the game) drives underneath the voiceover; act 7 (timelapse, 2D->3D morph, closing card) peaks 2:34-2:50 and bows out on bells.",
+  "sections": [
+    {"start": 0.0, "end": 62.0, "emotion": "calm", "intensity": 0.18, "bpm": 60,
+     "comment": "Acts 1-3: quiet, sparse, almost nothing, slow build"},
+    {"start": 62.0, "end": 88.0, "emotion": "tense", "intensity": 0.4, "bpm": 72,
+     "comment": "Act 4: muffled, light tension, damp at ~1:24"},
+    {"start": 88.0, "end": 110.0, "emotion": "alive", "intensity": 0.55, "bpm": 100,
+     "comment": "Act 5: pulse, forward motion"},
+    {"start": 110.0, "end": 144.0, "emotion": "driving", "intensity": 0.7, "bpm": 120,
+     "comment": "Act 6: energy, drive, stays behind the voiceover"},
+    {"start": 144.0, "end": 179.5, "emotion": "epic", "intensity": 0.75, "bpm": 110,
+     "comment": "Act 7: epic peak 2:34-2:50, then dignified decay"}
+  ],
+  "events": [
+    {"type": "damp", "time": 84.0, "depth": 0.5, "width": 1.0,
+     "comment": "Gaussian duck on 'Two databases. Same cluster.' (~1:24)"},
+    {"type": "climax", "start": 154.0, "end": 170.0,
+     "comment": "2D->3D morph (2:34-2:50): full layering, octave doubling"},
+    {"type": "outro", "start": 170.0,
+     "comment": "Closing card: drums/bass/lead drop, bells fade out"}
+  ]
+}

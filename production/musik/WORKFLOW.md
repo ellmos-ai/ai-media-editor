@@ -8,6 +8,29 @@
 
 ---
 
+## 0. Videosynchroner Score (lokal, keine Cloud)
+
+Hintergrundmusik, die exakt der Dramaturgie eines Videos folgt, ohne externe
+Dienste: `tools/compose_music.py` (numpy-Wellenform-Synthese + ffmpeg).
+
+```
+1. Storyline-JSON schreiben: Sektionen mit Zeitfenstern (start/end in Sekunden),
+   emotion (calm|tense|alive|driving|epic|outro) und intensity (0..1);
+   optional Events: "damp" (Gauß-Dämpfer auf einen dramatischen Beat),
+   "climax" (Zeitfenster mit vollem Layering), "outro" (Glocken-Ausklang).
+2. Rendern:
+   python tools/compose_music.py storyline.json -o out/score
+3. Ergebnis: score.wav + score.mp3 + score.notes.json (Arrangement-Log)
+```
+
+- Stile: `chiptune`, `ambient`, `electronic`; deterministisch via `seed`.
+- Template: `python tools/compose_music.py --init`; Beispiel:
+  `docs/examples/storyline-roshambo.json`.
+- Grenzen: keine realistischen Instrumente (kein Pop/Rock/Klassik/
+  Filmorchester) — dafür die Cloud-Optionen unten.
+
+---
+
 ## 1. Song generieren
 
 ### 1a. Mit Suno ☁️ (suno.com)
