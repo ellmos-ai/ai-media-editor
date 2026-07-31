@@ -25,7 +25,16 @@ mapped from 7 story acts). The method, as it was actually implemented:
 Synthesis is pure waveform synthesis with numpy (sine/triangle/square/saw/
 noise oscillators, ADSR envelopes, harmonic layering). No samples, no MIDI
 hardware, no cloud service. Output: stereo WAV + MP3 (via ffmpeg) + an
-arrangement/note log (JSON, the "MIDI equivalent" of what plays when).
+arrangement/note log (JSON) + a Standard MIDI File (.mid, type 1 with tempo
+map and GM program hints per style).
+
+The genre ceiling (chiptune/ambient/electronic only — no pop/rock/classical/
+orchestral film music) is the *sound backend*, not the composition. The
+arrangement is backend-neutral: render the .mid through a SoundFont engine
+(e.g. FluidSynth + a GM SF2) or a DAW for realistic instruments.
+
+TODO(humanize): optional per-note velocity/timing jitter (option "humanize")
+so sample-based rendering does not sound mechanical. Not implemented yet.
 
 Dependencies: numpy (required) + ffmpeg on PATH (optional, for MP3 only).
 
@@ -33,6 +42,7 @@ Usage:
     python compose_music.py storyline.json [-o out/score] [--seed N] [--no-mp3]
     python compose_music.py --init            # print a storyline template
     python compose_music.py --selftest        # render 3 s and verify output
+    # outputs: <out>.wav  <out>.mp3  <out>.notes.json  <out>.mid
 """
 
 from __future__ import annotations
@@ -343,6 +353,119 @@ def gen_melody(rng, scale, tonic, n=16):
         pos = int(np.clip(pos + rng.integers(-2, 3), 0, 9))
         mel.append(tonic + 12 + scale[pos % 7] + 12 * (pos // 7))
     return mel
+
+
+# ---------------------------------------------------------------------------
+# MIDI export (Standard MIDI File written directly — no dependencies)
+# ---------------------------------------------------------------------------
+
+# General MIDI program map per style preset (0-based program numbers).
+# Rough genre hints for SoundFont/DAW rendering; edit the .mid to taste.
+# GM reference (1-based): 15 Tubular Bells, 39/40 Synth Bass 1/2,
+# 81/82 Lead 1 (square)/Lead 2 (sawtooth), 89 Pad 2 (warm), 92 Pad 4 (choir).
+GM_PROGRAMS = {
+    "chiptune": {"pad": 88, "bass": 38, "arp": 80, "lead": 80, "bell": 14},
+    "ambient": {"pad": 91, "bass": 38, "arp": 88, "lead": 88, "bell": 14},
+    "electronic": {"pad": 88, "bass": 39, "arp": 81, "lead": 81, "bell": 14},
+}
+
+LAYER_CHANNELS = {"pad": 0, "bass": 1, "arp": 2, "lead": 3, "bell": 4}
+DRUM_CHANNEL = 9  # GM percussion channel (10, 1-based)
+DRUM_NOTES = {"kick": 36, "snare": 38, "hihat": 42}
+TICKS_PER_QUARTER = 480
+
+
+def _varlen(value: int) -> bytes:
+    """SMF variable-length quantity."""
+    out = [value & 0x7F]
+    value >>= 7
+    while value:
+        out.append(0x80 | (value & 0x7F))
+        value >>= 7
+    return bytes(reversed(out))
+
+
+def _tempo_segments(sections, default_bpm):
+    segs = sorted((s["start"], s["bpm"]) for s in sections)
+    if not segs or segs[0][0] > 0:
+        segs.insert(0, (0.0, default_bpm))
+    return segs
+
+
+def _sec_to_tick(t, segs):
+    tick = 0.0
+    for i, (start, bpm) in enumerate(segs):
+        end = segs[i + 1][0] if i + 1 < len(segs) else float("inf")
+        tick += (min(t, end) - start) * bpm / 60.0 * TICKS_PER_QUARTER
+        if t < end:
+            break
+    return int(round(tick))
+
+
+def _velocity(vel):
+    """Map internal amplitude (~0.02..0.6) to a MIDI velocity (1..127)."""
+    return max(1, min(127, int(round(vel * 320))))
+
+
+def write_midi(path, notes, sections, style, default_bpm):
+    """Write the arrangement as a Standard MIDI File (type 1).
+
+    Track 0: tempo map (one tempo event per section start, so the .mid lines
+    up with the rendered audio both in seconds and on the musical grid).
+    Track 1: program change per layer channel + note on/off from the note log;
+    drum layers go to the GM percussion channel.
+    """
+    segs = _tempo_segments(sections, default_bpm)
+    programs = GM_PROGRAMS.get(style, GM_PROGRAMS["chiptune"])
+
+    tempo_track = bytearray()
+    last = 0
+    for start, bpm in segs:
+        tick = _sec_to_tick(start, segs)
+        mpq = int(round(60_000_000 / bpm))
+        tempo_track += _varlen(tick - last)
+        tempo_track += b"\xff\x51\x03" + mpq.to_bytes(3, "big")
+        last = tick
+    tempo_track += _varlen(0) + b"\xff\x2f\x00"
+
+    events = []  # (tick, order, payload); order sorts offs before ons
+    for layer, channel in LAYER_CHANNELS.items():
+        events.append((0, -1, bytes([0xC0 | channel, programs[layer]])))
+    note_count = 0
+    for n in notes:
+        layer = n["layer"]
+        if layer in DRUM_NOTES:
+            channel, pitch = DRUM_CHANNEL, DRUM_NOTES[layer]
+        elif layer in LAYER_CHANNELS and n["midi"] is not None:
+            channel, pitch = LAYER_CHANNELS[layer], int(n["midi"])
+        else:
+            continue
+        on = _sec_to_tick(n["t"], segs)
+        off = _sec_to_tick(n["t"] + n.get("dur", 0.25), segs)
+        if off <= on:
+            off = on + 1
+        v = _velocity(n.get("vel", 0.3))
+        events.append((on, 1, bytes([0x90 | channel, pitch & 0x7F, v])))
+        events.append((off, 0, bytes([0x80 | channel, pitch & 0x7F, 0])))
+        note_count += 1
+
+    events.sort(key=lambda e: (e[0], e[1]))
+    track = bytearray()
+    last = 0
+    for tick, _order, payload in events:
+        track += _varlen(tick - last)
+        track += payload
+        last = tick
+    track += _varlen(0) + b"\xff\x2f\x00"
+
+    with open(path, "wb") as f:
+        f.write(b"MThd" + (6).to_bytes(4, "big"))
+        f.write((1).to_bytes(2, "big"))  # format 1
+        f.write((2).to_bytes(2, "big"))  # 2 tracks
+        f.write(TICKS_PER_QUARTER.to_bytes(2, "big"))
+        f.write(b"MTrk" + len(tempo_track).to_bytes(4, "big") + tempo_track)
+        f.write(b"MTrk" + len(track).to_bytes(4, "big") + track)
+    return {"note_events": note_count, "tempo_events": len(segs)}
 
 
 # ---------------------------------------------------------------------------
@@ -720,6 +843,13 @@ def compose(storyline: dict, out_prefix, write_mp3: bool = True,
     if verbose:
         print(f"  Arrangement/Noten-Log: {notes_path} ({len(notes)} Ereignisse)")
 
+    midi_path = out_prefix.with_suffix(".mid")
+    midi_stats = write_midi(midi_path, notes, cfg["sections"], cfg["style"],
+                            cfg["bpm"])
+    if verbose:
+        print(f"  MIDI: {midi_path} ({midi_stats['note_events']} Noten, "
+              f"{midi_stats['tempo_events']} Tempo-Events)")
+
     mp3_written = None
     if write_mp3:
         ffmpeg = shutil.which("ffmpeg")
@@ -741,7 +871,7 @@ def compose(storyline: dict, out_prefix, write_mp3: bool = True,
                           f"({mp3_path.stat().st_size / 1e6:.1f} MB)")
 
     return {"wav": wav_path, "mp3": mp3_written, "notes": notes_path,
-            "config": cfg, "note_count": len(notes)}
+            "midi": midi_path, "config": cfg, "note_count": len(notes)}
 
 
 # ---------------------------------------------------------------------------
@@ -806,8 +936,12 @@ def selftest() -> int:
         payload = json.loads(result["notes"].read_text(encoding="utf-8"))
         assert payload["notes"], "Noten-Log ist leer"
         assert len(payload["sections"]) == 2, "Sektionen fehlen im Log"
+        midi_bytes = result["midi"].read_bytes()
+        assert midi_bytes.startswith(b"MThd"), "kein SMF-Header"
+        assert midi_bytes.count(b"MTrk") == 2, "SMF braucht 2 Tracks"
+        assert b"\xff\x51\x03" in midi_bytes, "Tempo-Event fehlt im SMF"
     print(f"  OK: stereo 16-bit {SAMPLE_RATE} Hz, 3.0 s, "
-          f"{result['note_count']} Noten-Ereignisse, Peak vorhanden")
+          f"{result['note_count']} Noten-Ereignisse, Peak vorhanden, SMF valide")
     print("selftest bestanden")
     return 0
 
@@ -845,6 +979,7 @@ def main(argv=None) -> int:
     if result["mp3"]:
         print(f"  MP3:   {result['mp3']}")
     print(f"  Noten: {result['notes']}")
+    print(f"  MIDI:  {result['midi']}")
     return 0
 
 

@@ -72,6 +72,25 @@ class ComposeMusicTests(unittest.TestCase):
                                            write_mp3=False, verbose=False)
             self.assertEqual(first["wav"].read_bytes(), second["wav"].read_bytes())
 
+    def test_midi_export_is_valid_smf(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            result = self._render(Path(tmp))
+            data = result["midi"].read_bytes()
+            self.assertTrue(data.startswith(b"MThd"))
+            self.assertEqual(data.count(b"MTrk"), 2)  # tempo track + note track
+            self.assertIn(b"\xff\x51\x03", data)  # tempo meta event
+            stats = compose_music.write_midi(
+                Path(tmp) / "x.mid",
+                json.loads(result["notes"].read_text(encoding="utf-8"))["notes"],
+                result["config"]["sections"], "chiptune", 120)
+            self.assertGreater(stats["note_events"], 0)
+            self.assertEqual(stats["tempo_events"], 2)
+
+    def test_midi_program_map_covers_all_styles(self) -> None:
+        for style in compose_music.STYLES:
+            self.assertEqual(set(compose_music.GM_PROGRAMS[style]),
+                             set(compose_music.LAYER_CHANNELS))
+
     def test_invalid_storyline_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             bad = dict(self.STORYLINE, sections=[

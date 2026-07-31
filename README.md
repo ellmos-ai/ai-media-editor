@@ -182,11 +182,31 @@ python tools/compose_music.py --init       # storyline template
 python tools/compose_music.py --selftest   # 3 s render + verification
 ```
 
-Output: stereo WAV + MP3 + `<name>.notes.json` (arrangement/note log — what plays when).
+Output: stereo WAV + MP3 + `<name>.notes.json` (arrangement/note log — what plays when)
++ `<name>.mid` (Standard MIDI File, type 1, tempo map + GM program hints).
 Limits: waveform synthesis covers chiptune/ambient/electronic background beds — not
 pop/rock/classical or orchestral film music (no samples, no realistic instruments).
 See [`production/musik/WORKFLOW.md`](production/musik/WORKFLOW.md) for cloud-based
 alternatives (Suno/Udio) when realistic instrumentation is required.
+
+**Better sounds via the MIDI export.** The genre ceiling is the *sound backend*, not the
+composition — the arrangement is backend-neutral. Render `<name>.mid` through:
+
+- **Path A — SoundFont (recommended, local, free):** install FluidSynth
+  (fluidsynth.org or `winget install FluidSynth`) plus a free GM SF2
+  (e.g. GeneralUser GS by S. Christian Collins, or MuseScore_General.sf2), then
+  `fluidsynth -ni soundfont.sf2 out.mid -F out.wav -r 44100` and encode with ffmpeg.
+  Covers pop/rock band sounds, piano, basic strings.
+- **Path B — orchestral/film:** free orchestral libraries (VSCO 2 Community Edition,
+  Soni Musicae, Salamander Grand Piano) for better strings/brass. Honestly:
+  articulation and humanization (velocity variation, legato, dynamics curves) matter
+  more than the sample set; true film-score epicness also needs arrangement maturity,
+  a backend alone is not enough.
+- **Path C — external AI generation (Suno etc.):** possible, but check privacy/rights
+  first and only after explicit user approval — never the default.
+
+A `humanize` option (per-note velocity/timing jitter so samples don't sound mechanical)
+is planned as a TODO in the engine docstring, not implemented yet.
 
 ## Privacy, rights, and operational limits
 
