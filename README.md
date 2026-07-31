@@ -1,4 +1,4 @@
-<p align="center"><img src="assets/banner.svg" alt="ai-media-editor — Video · Audio · Podcast, local" width="100%"></p>
+<p align="center"><img src="assets/banner.png" alt="ai-media-editor — Video · Audio · Podcast, local" width="100%"></p>
 
 <p align="center">
   <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/tests-38%20passed-brightgreen" alt="Tests Passed"></a>
