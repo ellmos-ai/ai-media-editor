@@ -1,7 +1,5 @@
 <<<<<<< HEAD
-<p align="center"><img src="assets/banner.png" alt="ai-media-editor — Video · Audio · Podcast, local" width="100%"></p>
 =======
-<img src="assets/banner.png" width="100%" alt="AI Media Editor banner">
 
 <p align="center"><img src="assets/banner.svg" alt="ai-media-editor — Video · Audio · Podcast, local" width="100%"></p>
 >>>>>>> 8cb2668 (feat(banner): add repository header banner and update README)
