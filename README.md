@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-=======
-
 <p align="center"><img src="assets/banner.svg" alt="ai-media-editor — Video · Audio · Podcast, local" width="100%"></p>
->>>>>>> 8cb2668 (feat(banner): add repository header banner and update README)
 
 <p align="center">
   <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/tests-43%20passed-brightgreen" alt="Tests Passed"></a>
