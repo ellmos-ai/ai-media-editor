@@ -62,3 +62,22 @@ kein Abriss.
 Dieser Lauf hat **nichts verschoben, extrahiert oder registriert**. Die
 physische Extraktion (Schritte 2–5) ist ein eigener, freigabewürdiger
 Arbeitsblock im Modul-/Katalog-Eigentümerkontext.
+
+---
+
+## Nachtrag: Schritt 1 umgesetzt [C 2026-08-12, ~06:55]
+
+Das `planned`-Manifest liegt im Katalog: `.MODULES/.DOMAINS/media-editor-core/`
+(`ellmos-module.v2.json`, `status: planned`, `kind: service` — die Kategorie
+`domains` erlaubt kein `library`, zulässig sind service/stack-candidate/
+workflow), Katalog auf **52 Module** neu gebaut, Katalogtests 25/25 grün,
+Regression über alle 9 registrierten Stacks grün. **Die offene
+Validator-Prüffrage ist beantwortet:** `validate_composition.py` akzeptiert
+`planned`-Komponenten — ein Test-Stack mit `media-editor-core` validiert OK,
+sobald Sichtbarkeit (`internal`) und `max_data_sensitivity` (`sensitive`)
+passen; der Status selbst ist kein Blocker. Damit reduziert sich G5 auf:
+ellmos-media-stack-Entwurf ohne die nicht-existente Rolle
+`media.editing.core` und mit passenden Policies materialisieren (Rollen-
+einführung bleibt beim Eigentümer von `composition.rules.json`).
+`provides` des Manifests bleibt bewusst leer. Schritte 2–5 (Extraktion)
+weiterhin offen.
