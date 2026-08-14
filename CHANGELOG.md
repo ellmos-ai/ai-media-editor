@@ -3,6 +3,9 @@
 ## Unreleased
 
 ### Changed
+- Added German README (`README_de.md`, full 1:1 translation) and a language switcher in both
+  files; `llms.txt` lists the new file. Language stage: **Core (DE+EN)** reached.
+  First execution of the idle-language-pass policy P-006 (`.SYNC/_policies/library/`).
 - Updated `llms.txt` maintenance timestamp to `2026-07-30` and verified full pytest suite (39/39 passed).
 
 ### Fixed

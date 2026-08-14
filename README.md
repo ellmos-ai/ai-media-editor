@@ -7,6 +7,8 @@
   <a href="https://github.com/ellmos-ai/ai-media-editor#discovery-context"><img src="https://img.shields.io/badge/LLM--Ready-Local--First-orange" alt="LLM Ready"></a>
 </p>
 
+<p align="center"><strong>English</strong> · <a href="README_de.md">Deutsch</a></p>
+
 # ai-media-editor — local AI media editor (Video · Audio · Podcast)
 
 > [!NOTE]

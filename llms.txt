@@ -23,7 +23,8 @@ and Hyperframes composition to an AI coding agent.
 
 ## Important files
 
-- `README.md` — public overview, setup, quickstart, and discovery context.
+- `README.md` — public overview, setup, quickstart, and discovery context (English, primary).
+- `README_de.md` — German translation of the overview (language stage: Core/DE+EN, added 2026-08-14).
 - `CLAUDE.md` — German agent-facing workflow guide and hard editing rules.
 - `docs/USECASES.md` — step-by-step instructions for the 8 supported media workflows.
 - `editor.py` — orchestrator for `doctor`, `modes`, `prepare`, and `frames`.
