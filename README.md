@@ -235,6 +235,23 @@ python editor.py modes
 Real transcription, ffmpeg rendering, SSH, and provider workflows remain environment-dependent;
 run `python editor.py doctor` before using them.
 
+### Windows: no console-window bursts from HyperFrames
+
+Node tools spawn many short child processes (`npx` shims, Chromium, `ffmpeg`), and Node does not
+set `windowsHide` by default, so each one can flash a console window. On Windows start
+HyperFrames through the wrapper, which preloads `tools/hide-windows.cjs` (forces
+`windowsHide: true` for every `child_process` call) without patching HyperFrames:
+
+```bat
+tools\hf.cmd render -q high -o renders\video.mp4
+tools\hf.cmd snapshot --at 5
+wscript //B //Nologo tools\hf-hidden.vbs render ...   REM no terminal at all (scheduled tasks)
+```
+
+`tools/count_console_windows.ps1 -All -Log <file>` records every new visible window (class,
+process, title) during a run — the acceptance test is visual evidence, not process counts.
+Background and findings: `docs/WINDOWS-KONSOLENFENSTER.md`.
+
 ## Development status
 
 Version 0.2.0 is a **development hardening state**, not a stable release — there is no tag yet.

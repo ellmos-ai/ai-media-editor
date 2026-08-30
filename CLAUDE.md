@@ -135,8 +135,19 @@ unterscheidbar); Einzelframes bleiben pixelrein, Einbrennen nur mit `--label`
   nach dem Lauf best-effort gelöscht und bei SSH-Fehlern lokal verarbeitet. Nur für Medien
   verwenden, die auf diesen Host übertragen werden dürfen.
 
+## Windows: HyperFrames ohne Konsolenfenster-Bursts [C 2026-08-30]
+
+HyperFrames auf Windows **immer über `tools\hf.cmd`** starten (`hf.cmd render …`, `hf.cmd
+snapshot …`), nie nackt über `npx hyperframes`. Der Wrapper lädt `tools/hide-windows.cjs`
+per `NODE_OPTIONS=--require` und erzwingt `windowsHide: true` für alle Kindprozesse; ohne
+Terminal (Scheduled Task, Starter) `wscript //B //Nologo tools\hf-hidden.vbs …`. Pfad im
+`NODE_OPTIONS` mit Forward-Slashes (Backslash = Escape). Nachweis nur visuell:
+`tools/count_console_windows.ps1 -All -Log <datei>` mitlaufen lassen. Hintergrund, Befund und
+offener Reproduktionspunkt: `docs/WINDOWS-KONSOLENFENSTER.md` (Ticket T-20260829-486029203).
+
 ## Verweise
 
+- Konsolenfenster-Bursts (Windows): `docs/WINDOWS-KONSOLENFENSTER.md`
 - Usecase-Details: `docs/USECASES.md`
 - video-use-Editor-Workflow + Render-Helpers: `<TOOLS_ROOT>\video-use\SKILL.md`
 - Branding/Design-Tokens: `brand/design-tokens.css`

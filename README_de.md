@@ -240,6 +240,23 @@ python editor.py modes
 Echte Transkription, ffmpeg-Rendering, SSH und Anbieter-Workflows bleiben umgebungsabhängig;
 vor deren Nutzung `python editor.py doctor` ausführen.
 
+### Windows: keine Konsolenfenster-Bursts durch HyperFrames
+
+Node-Werkzeuge starten viele kurze Kindprozesse (`npx`-Shims, Chromium, `ffmpeg`), und Node
+setzt `windowsHide` standardmäßig nicht — jeder davon kann ein Konsolenfenster aufblitzen lassen.
+HyperFrames unter Windows deshalb über den Wrapper starten, der `tools/hide-windows.cjs` vorlädt
+(erzwingt `windowsHide: true` für jeden `child_process`-Aufruf), ohne HyperFrames zu patchen:
+
+```bat
+tools\hf.cmd render -q high -o renders\video.mp4
+tools\hf.cmd snapshot --at 5
+wscript //B //Nologo tools\hf-hidden.vbs render ...   REM ganz ohne Terminal (Scheduled Tasks)
+```
+
+`tools/count_console_windows.ps1 -All -Log <datei>` protokolliert jedes neue sichtbare Fenster
+(Klasse, Prozess, Titel) während eines Laufs — die Abnahme ist der Sichtnachweis, nicht die
+Prozesszahl. Hintergrund und Befund: `docs/WINDOWS-KONSOLENFENSTER.md`.
+
 ## Entwicklungsstand
 
 Version 0.2.0 ist ein **Härtungsstand in Entwicklung**, kein stabiles Release — es gibt noch keinen

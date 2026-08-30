@@ -32,6 +32,7 @@ and Hyperframes composition to an AI coding agent.
 - `stt/diarize_llm.py` — token-free LLM-based speaker assignment.
 - `tools/frame_view.py` — video frame sampling and contact-sheet context.
 - `tools/cut_view.py` — pause-aware transcript cut candidates.
+- `tools/hf.cmd`, `tools/hf-hidden.vbs`, `tools/hide-windows.cjs` — Windows wrapper + Node preload that forces `windowsHide` for every child process (no console-window bursts from HyperFrames); `tools/count_console_windows.ps1` measures visible windows. Details: `docs/WINDOWS-KONSOLENFENSTER.md`.
 - `production/OVERVIEW.md` — optional generative workflows and mandatory cloud/rights gates.
 - `tests/test_core.py` — dependency-free regression contract for cache, remote, frames, and diarization.
 - `SECURITY.md` — vulnerability reporting and sensitive-media security scope.
