@@ -135,15 +135,18 @@ unterscheidbar); Einzelframes bleiben pixelrein, Einbrennen nur mit `--label`
   nach dem Lauf best-effort gelöscht und bei SSH-Fehlern lokal verarbeitet. Nur für Medien
   verwenden, die auf diesen Host übertragen werden dürfen.
 
-## Windows: HyperFrames ohne Konsolenfenster-Bursts [C 2026-08-30]
+## Windows: HyperFrames ohne Konsolenfenster-Bursts [C 2026-09-02]
 
 HyperFrames auf Windows **immer über `tools\hf.cmd`** starten (`hf.cmd render …`, `hf.cmd
 snapshot …`), nie nackt über `npx hyperframes`. Der Wrapper lädt `tools/hide-windows.cjs`
-per `NODE_OPTIONS=--require` und erzwingt `windowsHide: true` für alle Kindprozesse; ohne
-Terminal (Scheduled Task, Starter) `wscript //B //Nologo tools\hf-hidden.vbs …`. Pfad im
-`NODE_OPTIONS` mit Forward-Slashes (Backslash = Escape). Nachweis nur visuell:
+per `NODE_OPTIONS=--require`, erzwingt `windowsHide: true` für alle Kindprozesse und bevorzugt
+ein vorhandenes reguläres Google Chrome über HyperFrames' nativen
+`HYPERFRAMES_BROWSER_PATH`-Override. Explizite Browserpfade werden nicht überschrieben; mit
+`set HF_PREFER_FULL_CHROME=0` bleibt der gepinnte `chrome-headless-shell` wählbar. Ohne Terminal
+(Scheduled Task, Starter) `wscript //B //Nologo tools\hf-hidden.vbs …`. Nachweis nur visuell:
 `tools/count_console_windows.ps1 -All -Log <datei>` mitlaufen lassen. Hintergrund, Befund und
-offener Reproduktionspunkt: `docs/WINDOWS-KONSOLENFENSTER.md` (Ticket T-20260829-486029203).
+verbleibendes WORKSTATION-LG-Gate: `docs/WINDOWS-KONSOLENFENSTER.md` (Ticket
+T-20260829-486029203).
 
 ## Verweise
 

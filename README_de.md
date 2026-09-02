@@ -244,8 +244,11 @@ vor deren Nutzung `python editor.py doctor` ausführen.
 
 Node-Werkzeuge starten viele kurze Kindprozesse (`npx`-Shims, Chromium, `ffmpeg`), und Node
 setzt `windowsHide` standardmäßig nicht — jeder davon kann ein Konsolenfenster aufblitzen lassen.
-HyperFrames unter Windows deshalb über den Wrapper starten, der `tools/hide-windows.cjs` vorlädt
-(erzwingt `windowsHide: true` für jeden `child_process`-Aufruf), ohne HyperFrames zu patchen:
+HyperFrames unter Windows deshalb über den Wrapper starten. Er lädt `tools/hide-windows.cjs` vor
+(erzwingt `windowsHide: true` für jeden `child_process`-Aufruf) und wählt, sofern installiert,
+reguläres Google Chrome über HyperFrames' nativen `HYPERFRAMES_BROWSER_PATH`-Override. Ein
+expliziter Browserpfad bleibt erhalten. Mit `HF_PREFER_FULL_CHROME=0` bleibt der gepinnte
+`chrome-headless-shell` samt optimiertem, pixelreproduzierbarem Capture-Pfad wählbar:
 
 ```bat
 tools\hf.cmd render -q high -o renders\video.mp4
