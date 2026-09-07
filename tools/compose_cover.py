@@ -1,9 +1,8 @@
-"""UC7-Finalisierung: animiertes Cover (Loop) über die volle Tonspur legen.
+"""UC7 finalization: Overlay an animated cover loop over the full audio track.
 
-Hyperframes rendert ein kurzes, nahtlos loopendes Cover (z. B. 12 s). Dieses
-Tool loopt das Cover-Video per ffmpeg über die gesamte Audiolänge und
-kombiniert beides zu einem fertigen MP4 — wie ein YouTube-Musikvideo mit
-Standbild/Loop-Cover.
+Hyperframes renders a short, seamlessly looping cover video (e.g. 12 s). This
+tool loops the cover video via ffmpeg over the full audio length and
+combines both into a final MP4 — like a music video with a cover loop.
 
 Usage:
     python compose_cover.py --cover <cover_loop.mp4> --audio <podcast.m4a> \

@@ -35,7 +35,7 @@ corresponding Taskplan task.
   (`effort=special`, `scope=local`, `priority=high`; abhängig von 1240).
 - [ ] **Task 1243** — Reale ffmpeg-, STT-, SSH- und video-use-Integrationsgates ausführen und dokumentieren
   (`effort=special`, `scope=local`, `priority=high`; abhängig von 1240–1242).
-- [ ] **Task 1244** — Öffentliche Python-API- und Docstrings auf Englisch normalisieren
+- [x] **Task 1244** — Öffentliche Python-API- und Docstrings auf Englisch normalisieren
   (`effort=medium`, `scope=local`, `priority=medium`).
 - [ ] **Task 1245** — Versionsführung 0.2.0 versus Changelog 0.2.2 vor dem Stable-Release klären
   (`effort=special`, `scope=local`, `priority=high`; Nutzer-/Maintainerentscheidung erforderlich).

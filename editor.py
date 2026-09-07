@@ -1,25 +1,25 @@
-"""Podcast/Video-Editor — Usecase-Orchestrator.
+"""Podcast/Video Editor — Usecase Orchestrator.
 
-Automatisiert die deterministischen Vorbereitungsschritte des
-Claude-Code-Video-Editor-Workflows (nach dem Setup von Julian Ivanov,
-aber mit lokalem/Mac-STT statt ElevenLabs):
+Automates the deterministic preparation steps of the video editor workflow
+(based on the setup by Julian Ivanov, but using local/Mac STT instead of ElevenLabs):
 
-    Medien -> [richtige Engine + Compute-Routing] -> Scribe-JSON
-           -> pack_transcripts -> takes_packed.md
-           -> Hinweis, wie es je Usecase weitergeht.
+    Media -> [engine + compute routing] -> Scribe JSON
+          -> pack_transcripts -> takes_packed.md
+          -> next steps guidance per usecase.
 
-Die kreative Arbeit (Schnitt-Entscheidungen, Animationen, Render) fährt
-danach Claude Code interaktiv, geleitet durch CLAUDE.md / USECASES.md.
+Creative tasks (editing decisions, motion graphics, rendering) are subsequently
+handled interactively guided by CLAUDE.md / USECASES.md.
 
-Die 8 Usecases (vom User definiert):
+The 8 Usecases:
 
-  1  Audio,    1 Sprecher       -> Audio-Podcast geschnitten
-  2  Audio,    N Sprecher       -> Audio-Podcast geschnitten, Sprecher-getrennt
-  3  Video A+V, 1 Sprecher      -> Video geschnitten + Animationen (Original-Setup)
-  4  Video A+V, N Sprecher      -> Video geschnitten + Animationen, Sprecher-Tracking
-  5  Video, nur Tonspur nutzen  -> Audio-Podcast (Bild verworfen)
-  6  Erklärvideo aus Audio      -> voll generiertes Video (frontend-design + Hyperframes)
-  7  Audio + animiertes Cover   -> Audio + Hyperframes-Cover-Loop
+  1  Audio,    1 speaker        -> Audio podcast edited
+  2  Audio,    N speakers       -> Audio podcast edited, speaker-separated
+  3  Video A+V, 1 speaker       -> Video edited + animations (original setup)
+  4  Video A+V, N speakers      -> Video edited + animations, speaker tracking
+  5  Video, audio-only track    -> Audio podcast (video discarded)
+  6  Explainer video from audio -> Fully generated video (frontend-design + Hyperframes)
+  7  Audio + animated cover     -> Audio + Hyperframes cover loop
+  8  Ad clip (short, 15-60s)    -> Storyboard / ad clip generation
 
 Usage:
     python editor.py prepare <media> --mode 3 [--project <name>] [--num-speakers N]
@@ -308,7 +308,7 @@ def _wrap(text: str, width: int = 64) -> list[str]:
 # frames: Video → zeitgestempelte Frames (Video-Scatterer)
 # --------------------------------------------------------------------------- #
 def _resolve_video(target: str, project: str | None) -> tuple[Path, Path]:
-    """target = Videodatei ODER Projektname. Liefert (video, edit_dir)."""
+    """Resolve target to (video_path, edit_dir) where target is a video file or project name."""
     p = Path(target)
     if p.exists() and p.is_file():
         proj_name = project or p.stem
@@ -419,6 +419,13 @@ def doctor() -> int:
     token_state = "gesetzt" if cfg.get("hf_token") else "leer"
     suffix = " (für WhisperX-Diarisierung erforderlich)" if whisperx_enabled else " (LLM-Diarisierung benötigt keinen Token)"
     print(f"  [i ] HF-Token: {token_state}{suffix}")
+
+    # clip-storyboard-director (Pre-Production Partner)
+    cd_bin = shutil.which("clip-director")
+    if cd_bin:
+        print(f"  [OK] clip-storyboard-director: GEFUNDEN ({cd_bin}) — Pre-Production & AI Video Director")
+    else:
+        print("  [i ] clip-storyboard-director: optional (C:/_Local_DEV/repos/clip-storyboard-director)")
 
     print("\n  -> " + ("Alles bereit." if ok else "Es fehlen noch Komponenten (siehe XX)."))
     return 0 if ok else 1

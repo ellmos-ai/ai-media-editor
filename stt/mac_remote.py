@@ -1,20 +1,18 @@
-"""Compute-Routing fuer die Transkription: Mac Studio primaer, lokal Fallback.
+"""Compute routing for transcription: Mac Studio primary, local fallback.
 
-Die schwere STT-Last (faster-whisper / WhisperX + torch) laeuft bevorzugt auf
-dem 24/7-Mac Studio (mehr RAM/GPU, WhisperX dort sauber installierbar). Der
-Laptop schickt die Eingabedatei hin und holt das fertige Scribe-JSON zurueck.
-Faellt SSH aus, transkribiert der Aufrufer lokal weiter.
+Heavy STT workloads (faster-whisper / WhisperX + torch) run preferentially on
+the 24/7 Mac Studio. The local caller uploads input media and fetches the Scribe JSON.
+If SSH fails, the caller falls back to local transcription.
 
-Transportweg (alles ueber den vorhandenen SSH-Key, kein Passwort):
-  1. Erreichbarkeit pruefen (ssh echo, kurzer Timeout)
-  2. transcribe_local.py + scribe_schema.py auf den Mac spiegeln
-  3. Medien-Datei per scp hochladen
-  4. Remote transkribieren (im science-venv)
-  5. transcripts/<stem>.json zuruecksaugen
-  6. Remote-Arbeitsdateien aufraeumen
+Transport flow (over existing SSH key without password):
+  1. Check reachability (ssh echo, short timeout)
+  2. Mirror transcribe_local.py + scribe_schema.py to the Mac
+  3. Upload input media file via scp
+  4. Transcribe remotely (in remote venv)
+  5. Fetch back transcripts/<stem>.json
+  6. Clean up remote working directory
 
-run_remote() gibt den lokalen Ziel-JSON-Pfad zurueck — oder None, wenn der
-Mac nicht erreichbar/der Lauf fehlgeschlagen ist (Signal fuer Fallback).
+run_remote() returns the local target JSON path, or None on failure/unavailability.
 """
 from __future__ import annotations
 
@@ -106,7 +104,7 @@ def run_remote(
     hf_token: str | None = None,
     verbose: bool = True,
 ) -> Path | None:
-    """Transkribiert media auf dem Mac. Gibt lokalen JSON-Pfad zurueck oder None."""
+    """Transcribe media on the remote Mac. Returns local JSON path or None on fallback."""
     if not is_reachable(cfg):
         if verbose:
             print("  [mac] nicht erreichbar -> lokaler Fallback")

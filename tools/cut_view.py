@@ -1,21 +1,16 @@
-"""Schnitt-Ansicht: Pausen als explizite Schnittinformation.
+"""Cut view: Pauses as explicit cutting information.
 
-Kernidee (vom User): Beim Schneiden geht es um sinnvolle Abschnitte, und
-PAUSEN sind die wertvollste Schnittinformation. Diese Info steckt bereits
-exakt im Scribe-JSON (spacing-Einträge + Wort-zu-Wort-Gaps), wird aber sonst
-nur implizit genutzt. cut_view macht sie sichtbar und klassifiziert jede
-Pause als Schnittkandidat.
+Core concept: Editing is about meaningful segments, and PAUSES provide valuable
+cutting information. This information is present in Scribe JSON (spacing entries +
+word-to-word gaps). cut_view makes them visible and classifies each pause as a cut candidate.
 
-Klassifikation (an video-use SKILL.md angelehnt):
-  >= 0.80s   ✂✂  starker Schnitt  (sauberste Cuts)
-  0.40-0.80  ✂   guter Schnitt
-  0.15-0.40  ·   möglich (visuell/akustisch prüfen)
-  < 0.15s        unsicher (mitten im Sprechfluss) — wird nicht als Cut gelistet
+Classification (aligned with video-use SKILL.md):
+  >= 0.80s   ✂✂  strong cut (cleanest cuts)
+  0.40-0.80  ✂   good cut
+  0.15-0.40  ·   possible cut (verify visually/acoustically)
+  < 0.15s        uncertain (mid-speech flow) — not listed as a cut candidate
 
-Zusätzlich markiert: lange Stille am ANFANG (Trim-Kandidat, z.B. Soundcheck)
-und die längsten Pausen innerhalb des Transkripts.
-
-Ausgabe: <edit>/cut_view.md  (lesbare Schnitt-Landkarte je Quelle)
+Output: <edit>/cut_view.md
 
 Usage:
     python cut_view.py --edit-dir <dir> [--strong 0.8] [--good 0.4] [--weak 0.15]
@@ -34,7 +29,7 @@ def fmt(t: float) -> str:
 
 
 def find_pauses(words: list[dict]) -> tuple[list[dict], list[dict]]:
-    """Alle Pausen zwischen aufeinanderfolgenden 'word'-Tokens (Sekunden)."""
+    """Return all pause gaps between consecutive 'word' tokens (in seconds)."""
     kept = [w for w in words if w.get("type") == "word" and w.get("start") is not None]
     pauses = []
     for a, b in zip(kept, kept[1:]):

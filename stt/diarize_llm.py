@@ -1,23 +1,22 @@
-"""Tokenfreie Sprecher-Diarisierung per LLM-Zuordnung (MetaMedia-Weg).
+"""Token-free speaker diarization via LLM assignment.
 
-Statt akustischer Diarisierung (pyannote → gated HF-Token) ordnet ein LLM die
-Sprecher aus dem TRANSKRIPT-INHALT zu: Anrede, Rollen, Frage/Antwort-Dynamik,
-Themenübergaben, Pausenmuster. Das ist der Ansatz aus MetaMedia-Regelwerk v1.1
-("Sprecher aus dem Text", kein Token nötig).
+Instead of acoustic diarization (pyannote requiring gated HF tokens), an LLM
+assigns speakers based on transcript content: address forms, roles, Q&A dynamics,
+topic handoffs, and pause patterns.
 
-Ablauf (zwei Schritte):
-  1. build_prompt(edit_dir) — liest die Scribe-Transkripte (alle speaker_0),
-     gruppiert in Phrasen (Pausen-basiert) und schreibt:
-       <edit>/diarization/<stem>.phrases.json   (nummerierte Phrasen + Zeiten)
-       <edit>/diarization/<stem>.prompt.md       (Anweisung für das LLM)
-  2. apply_labels(edit_dir, stem, labels) — schreibt die zugeordneten Sprecher
-     ZEITBASIERT zurück ins Scribe-JSON (jedes Wort im Phrasen-Zeitfenster
-     bekommt die Sprecher-ID) und re-packt via pack_transcripts.
+Process (two steps):
+  1. build_prompt(edit_dir) — reads Scribe transcripts (all speaker_0),
+     groups into phrases (pause-based) and writes:
+       <edit>/diarization/<stem>.phrases.json   (numbered phrases + timings)
+       <edit>/diarization/<stem>.prompt.md       (instructions for the LLM)
+  2. apply_labels(edit_dir, stem, labels) — writes assigned speakers
+     time-based back into Scribe JSON (each word in the phrase window
+     receives the speaker ID) and re-packs via pack_transcripts.
 
-Das LLM kann sein:
-  - Claude Code selbst (der Editor-Agent liest prompt.md + phrases.json,
-    erzeugt labels.json, ruft apply). Kein Key, kein Token. Default.
-  - Eine lokale LLM (Mac Ollama / Buddha-API) für automatische Zuordnung.
+The LLM can be:
+  - Claude Code itself (the editor agent reads prompt.md + phrases.json,
+    generates labels.json, calls apply). No API key or token required.
+  - A local LLM (Mac Ollama) for automated assignment.
 
 Usage:
     python diarize_llm.py prepare --edit-dir <dir> [--max-speakers N] [--silence 0.4]
@@ -90,10 +89,9 @@ def _write_text_atomic(path: Path, content: str) -> None:
 
 
 def segment_sentences(words: list[dict], silence: float = 0.4) -> list[dict]:
-    """Segmentiert die Wortliste SATZ-fein: Schnitt an Satzende-Zeichen ODER
-    Pause >= silence. Feiner als Pausen-Phrasen — nötig, weil Sprecherwechsel
-    in flüssigen Dialogen oft an Satzgrenzen OHNE große Pause liegen
-    (z. B. "...langes Dokument." | "Oh ja." | "Über 100 Seiten.").
+    """Segment the word list at sentence level: break on sentence-ending punctuation
+    OR pause >= silence. Finer than pause-only phrases — required because speaker
+    transitions in fluent dialogue often occur at sentence boundaries without large pauses.
     """
     segs: list[dict] = []
     cur: list[str] = []
@@ -130,7 +128,7 @@ def segment_sentences(words: list[dict], silence: float = 0.4) -> list[dict]:
 
 
 def build_prompt(edit_dir: Path, max_speakers: int | None = None, silence: float = 0.4) -> list[Path]:
-    """Erzeugt pro Transkript einen Diarisierungs-Prompt + Phrasenliste."""
+    """Generate a diarization prompt and phrase list for each transcript."""
     if max_speakers is not None and max_speakers < 1:
         raise ValueError("max_speakers muss mindestens 1 sein.")
     if silence <= 0:
@@ -240,7 +238,7 @@ def parse_label_map(
 
 
 def apply_labels(edit_dir: Path, stem: str, labels_path: Path) -> Path:
-    """Schreibt Sprecher zeitbasiert ins Scribe-JSON zurück und re-packt."""
+    """Write assigned speakers time-based into Scribe JSON and re-pack."""
     stem = _safe_stem(stem)
     out_dir = edit_dir / "diarization"
     phrases = json.loads((out_dir / f"{stem}.phrases.json").read_text(encoding="utf-8"))

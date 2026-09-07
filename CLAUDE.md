@@ -148,8 +148,22 @@ ein vorhandenes reguläres Google Chrome über HyperFrames' nativen
 verbleibendes WORKSTATION-LG-Gate: `docs/WINDOWS-KONSOLENFENSTER.md` (Ticket
 T-20260829-486029203).
 
+## Zusammenspiel mit clip-storyboard-director (Regisseur & Pre-Production)
+
+`ai-media-editor` arbeitet direkt mit dem Schwesterprojekt **`clip-storyboard-director`** (`C:\_Local_DEV\repos\clip-storyboard-director` / CLI: `clip-director`) zusammen:
+
+1. **Pre-Production (clip-storyboard-director):**
+   - Zerlegt die Story in diskrete Shots, hält visuelle Konsistenz (4D-Puffer, Clue-Frames), steuert KI-Generatoren (Veo, Runway, Kling) via Edge CDP und mastert den Roh-Clip (`<project>_master.mp4`).
+2. **Post-Production (ai-media-editor):**
+   - Übernimmt das generierte Master-Video zur feinen Nachbearbeitung (insb. UC3 und UC8):
+     ```bash
+     python editor.py prepare "C:/_Local_DEV/repos/clip-storyboard-director/projects/<name>/<name>_master.mp4" --mode 8 --project <name>
+     ```
+   - Führt lokale Whisper-Wort-Transkription durch, markiert Schnittpausen (`cut_view.md`), erzeugt Frame-Kontaktabzüge (`frame_view.py`) und überlagert HyperFrames Motion Graphics.
+
 ## Verweise
 
+- Pre-Production Director: `C:\_Local_DEV\repos\clip-storyboard-director` (CLI: `clip-director`)
 - Konsolenfenster-Bursts (Windows): `docs/WINDOWS-KONSOLENFENSTER.md`
 - Usecase-Details: `docs/USECASES.md`
 - video-use-Editor-Workflow + Render-Helpers: `<TOOLS_ROOT>\video-use\SKILL.md`

@@ -1,19 +1,15 @@
-"""Lokaler STT-Adapter — ElevenLabs-Scribe-Ersatz fuer video-use.
+"""Local STT adapter replacing ElevenLabs Scribe for video-use.
 
-Transkribiert Audio/Video mit wort-genauen Zeitstempeln und schreibt das
-Ergebnis kompatibel mit den verwendeten ElevenLabs-Scribe-Feldern nach
-<edit_dir>/transcripts/<stem>.json. Danach laeuft die gesamte
-video-use-Pipeline (pack_transcripts -> render) unveraendert.
+Transcribes audio/video with word-level timestamps and writes output compatible with
+<edit_dir>/transcripts/<stem>.json. Downstream video-use pipeline (pack_transcripts -> render)
+subsequently runs unchanged.
 
-Zwei Engines:
-  * faster-whisper  — 1 Sprecher, schnell, saubere Windows-Installation.
-                      Wort-Zeitstempel via word_timestamps=True.
-  * whisperx        — N Sprecher (Gespraechsmodus), forced alignment +
-                      pyannote-Diarisierung. Braucht HuggingFace-Token.
+Two engines:
+  * faster-whisper  — 1 speaker, fast, clean installation. Word timestamps via word_timestamps=True.
+  * whisperx        — N speakers (conversation mode), forced alignment + pyannote diarization.
+                      Requires HuggingFace token.
 
-Dieses Script ist plattform-agnostisch: identisch lokal (Windows) und auf
-dem Mac Studio (per SSH) lauffaehig. Das Compute-Routing (Mac primaer,
-lokal Fallback) macht stt/mac_remote.py.
+This script is platform-agnostic: runs identically locally (Windows) and on Mac Studio (via SSH).
 
 Usage:
     python transcribe_local.py <media> --edit-dir <dir> \
@@ -133,7 +129,7 @@ def extract_audio(media_path: Path, dest: Path) -> None:
 
 
 def resolve_device(device: str) -> tuple[str, str]:
-    """(device, compute_type). 'auto' -> cuda wenn verfuegbar, sonst cpu/int8."""
+    """Return (device, compute_type). 'auto' resolves to CUDA if available, otherwise CPU/int8."""
     if device == "auto":
         try:
             import torch
@@ -248,7 +244,7 @@ def transcribe_one(
     force: bool = False,
     verbose: bool = True,
 ) -> Path:
-    """Transkribiert eine Datei -> Scribe-JSON. Gecached wie das Original."""
+    """Transcribe a single media file into Scribe JSON, using cached results when valid."""
     if engine not in {"faster", "whisperx"}:
         raise ValueError(f"Unbekannte STT-Engine: {engine!r}")
     if not media.is_file():

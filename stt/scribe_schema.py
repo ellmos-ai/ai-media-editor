@@ -1,19 +1,16 @@
-"""Scribe-Schema-Bausteine — der Vertrag zwischen unserem lokalen STT und video-use.
+"""Scribe schema components — contract between local STT and video-use.
 
-video-use erwartet die ElevenLabs-Scribe-Response-Struktur in
-<edit_dir>/transcripts/<name>.json. Zwei Downstream-Konsumenten lesen sie:
+video-use expects ElevenLabs Scribe response structure in
+<edit_dir>/transcripts/<name>.json. Two downstream consumers read it:
 
-  * helpers/pack_transcripts.py  -> data["words"], jeder Eintrag hat
-        type ∈ {"word", "spacing", "audio_event"} und Felder
-        text / start / end / speaker_id. Phrasen brechen bei spacing-Gap
-        >= 0.5s ODER Sprecherwechsel ODER Wort-zu-Wort-Gap >= 0.5s.
-  * helpers/render.py::_words_in_range -> filtert auf type == "word" und
-        nutzt start / end / text fuer die Master-SRT.
+  * helpers/pack_transcripts.py  -> data["words"], each entry has
+        type ∈ {"word", "spacing", "audio_event"} and fields
+        text / start / end / speaker_id.
+  * helpers/render.py::_words_in_range -> filters on type == "word" and
+        uses start / end / text for the master SRT.
 
-Dieses Modul baut aus generischen Wort-Tripeln (text, start, end, speaker)
-ein für diese Konsumenten kompatibles Scribe-JSON. So muss an video-use selbst NICHTS
-gepatcht werden — wir schreiben nur dieselbe Datei, die sonst ElevenLabs
-schreiben wuerde. Quelle der Wahrheit fuer das Format: die beiden Helfer oben.
+This module constructs a compatible Scribe JSON structure from generic Word triplets
+(text, start, end, speaker).
 """
 from __future__ import annotations
 
@@ -23,7 +20,7 @@ from dataclasses import dataclass
 
 @dataclass
 class Word:
-    """Ein erkanntes Wort mit Wort-Zeitstempeln (Sekunden)."""
+    """A recognized word with word-level timestamps (in seconds)."""
     text: str
     start: float
     end: float
@@ -35,21 +32,19 @@ def build_scribe_payload(
     language_code: str = "de",
     spacing_eps: float = 1e-3,
 ) -> dict:
-    """Wandelt eine Wortliste in eine Scribe-kompatible Response um.
+    """Convert a list of words into a Scribe-compatible response payload.
 
-    Zwischen zwei aufeinanderfolgenden Woertern wird ein 'spacing'-Eintrag
-    eingefuegt, der genau den zeitlichen Abstand (Stille) abbildet — das ist
-    das Signal, an dem pack_transcripts.py Phrasen schneidet. render.py
-    ignoriert spacing-Eintraege (filtert auf type == "word"), daher bleibt
-    die SRT-Erzeugung unberuehrt.
+    Inserts spacing entries between consecutive words to represent silence gaps,
+    which serve as phrase boundary markers for pack_transcripts.py. render.py
+    ignores spacing entries (filtering on type == "word").
 
     Args:
-        words: chronologisch sortierte Woerter.
-        language_code: ISO-Sprachcode (Scribe-Feld).
-        spacing_eps: Mindestabstand, ab dem ein spacing-Eintrag erzeugt wird.
+        words: Chronologically sorted words.
+        language_code: ISO language code (Scribe field).
+        spacing_eps: Minimum gap duration to generate a spacing entry.
 
     Returns:
-        dict im Scribe-Format: {"language_code", "text", "words": [...]}.
+        Dict in Scribe format: {"language_code", "text", "words": [...]}.
     """
     if not math.isfinite(spacing_eps) or spacing_eps < 0:
         raise ValueError("spacing_eps muss eine endliche Zahl >= 0 sein.")
@@ -105,5 +100,5 @@ def build_scribe_payload(
 
 
 def speaker_label(index: int) -> str:
-    """Scribe-Stil-Sprecher-ID: 0 -> 'speaker_0'. pack_transcripts kuerzt zu 'S0'."""
+    """Scribe-style speaker ID: 0 -> 'speaker_0'."""
     return f"speaker_{index}"

@@ -1,32 +1,23 @@
-"""Frame-Ansicht: Video in zeitgestempelte Einzelbilder zerlegen ("Video-Scatterer").
+"""Frame view: Decompose video into timestamped single frames (video scatterer).
 
-Kernidee (vom User): Der Editor-Agent schneidet bisher BLIND nach Transkript/
-Pausen — er "sieht" das Bild nicht. Dieses Tool gibt ihm die zweite Modalität:
-es zerlegt ein Video in Frames und gibt nur alle paar Sekunden ein Bild aus,
-jeweils mit EINGEBRANNTEM Zeitstempel. So kann ein multimodales LLM den
-Bildverlauf beurteilen und eine visuelle Beobachtung direkt in einen Schnitt-/
-Overlay-Timestamp zurückübersetzen.
+Core concept: Decomposes a video into frames at periodic intervals with burned-in
+or filename-encoded timestamps. Allows a multimodal LLM to evaluate visual progress and
+map observations directly to transcript editing timestamps.
 
-Zwei Pässe (coarse-to-fine, token-effizient):
-  1. ÜBERSICHT  — grobe Rate (z. B. alle 10 s) über das ganze Video.
-     Optional als Contact-Sheet (gekachelte Thumbnails, sehr sparsam).
-  2. ZOOM       — bei interessantem Bereich feiner nachsampeln:
-     --from x --to y --step z  (Sekunden, z. B. --step 0.25)  oder  --step-ms l.
+Two passes (coarse-to-fine, token-efficient):
+  1. OVERVIEW — coarse rate (e.g. every 10s) across the entire video.
+     Optionally as a contact sheet (tiled thumbnails).
+  2. ZOOM — sample finer for a region of interest:
+     --from x --to y --step z  (seconds)  or  --step-ms l.
 
-Der Zeitstempel kann bei Einzelframes per ffmpeg `drawtext` eingebrannt werden
-(Fallback: Zeit in Dateiname + `frame_view.md`). Contact-Sheets benötigen einen
-funktionierenden `drawtext`-Filter, weil einzelne Kacheln sonst nicht eindeutig
-zugeordnet werden können. Zeitbasis = Sekunden ab Videostart → identisch mit der
-Scribe-JSON-Zeitbasis, damit Bildbeobachtungen auf Schnittkanten mappen.
-
-Ausgabe:
-  <edit>/frames/        ← die Einzelbilder/Contact-Sheets (gitignored)
-  <edit>/frame_view.md  ← Index: welches Bild = welche Zeit (der Agent liest das)
+Output:
+  <edit>/frames/        ← single frames or contact sheets
+  <edit>/frame_view.md  ← index mapping frame to timestamp
 
 Usage (standalone):
-    python frame_view.py --video <datei> --edit-dir <dir> [--every 10] [--width 640]
-    python frame_view.py --video <datei> --edit-dir <dir> --from 30 --to 45 --step 0.25
-    python frame_view.py --video <datei> --edit-dir <dir> --contact-sheet --cols 4 --rows 4
+    python frame_view.py --video <file> --edit-dir <dir> [--every 10] [--width 640]
+    python frame_view.py --video <file> --edit-dir <dir> --from 30 --to 45 --step 0.25
+    python frame_view.py --video <file> --edit-dir <dir> --contact-sheet --cols 4 --rows 4
 """
 from __future__ import annotations
 
@@ -69,19 +60,19 @@ def ffprobe_duration(path: Path) -> float:
 
 
 def fmt_clock(t: float) -> str:
-    """Sekunden -> MM:SS.s (lesbarer Zeitstempel)."""
+    """Format seconds as MM:SS.s readable timestamp."""
     m = int(t // 60)
     s = t - m * 60
     return f"{m:02d}:{s:04.1f}"
 
 
 def label_text(t: float) -> str:
-    """Im Bild eingebrannter Text: Uhrzeit + Sekunden (kein '=' wegen drawtext)."""
+    """Burned-in text string: clock time + seconds."""
     return f"{fmt_clock(t)}  {t:.1f}s"
 
 
 def frame_name(t: float) -> str:
-    """Sortierbarer, exakter Dateiname aus Millisekunden."""
+    """Sortable, exact filename derived from milliseconds."""
     return f"f_{int(round(t * 1000)):09d}ms.jpg"
 
 
@@ -95,11 +86,7 @@ def find_font(user_font: str | None) -> str | None:
 
 
 def _q_text(s: str) -> str:
-    """Literalen Textwert für drawtext bauen: in Single-Quotes wrappen und
-    Sonderzeichen escapen. Empirisch nötig auf Windows-ffmpeg: Doppelpunkt
-    muss AUCH innerhalb der Quotes als \\: escaped werden, sonst bricht der
-    Filtergraph-Parser am Doppelpunkt ab.
-    """
+    """Build literal text value for drawtext: wrap in single quotes and escape special characters."""
     s = s.replace("\\", "\\\\")
     s = s.replace("'", "\\'")
     s = s.replace(":", "\\:")
@@ -108,17 +95,13 @@ def _q_text(s: str) -> str:
 
 
 def _q_fontfile(p: str) -> str:
-    """Font-Pfad: Forward-Slashes, Laufwerks-Doppelpunkt escapen, in Quotes."""
+    """Quote font path for drawtext filter."""
     p = str(p).replace("\\", "/").replace(":", "\\:")
     return f"fontfile='{p}'"
 
 
 def _drawtext(text_field: str, font: str | None, width: int) -> str:
-    """drawtext-Filterglied mit lesbarem Box-Hintergrund.
-
-    text_field ist ein fertiges `text='...'`-Segment (literal via _q_text
-    oder roh mit pts-Expansion für das Contact-Sheet).
-    """
+    """drawtext filter segment with background box."""
     fontsize = max(16, width // 26)
     parts = []
     if font:
@@ -139,13 +122,7 @@ def _drawtext(text_field: str, font: str | None, width: int) -> str:
 # --------------------------------------------------------------------------- #
 def extract_frame(video: Path, t: float, out: Path, width: int, font: str | None,
                   label: bool) -> bool:
-    """Einen Frame bei Sekunde t extrahieren.
-
-    label=False (Default): saubere Pixel, Zeit nur über Dateiname + Markdown.
-    label=True: Zeitstempel oben links einbrennen (Fallback ohne Text bei
-    drawtext-Fehler). Rückgabe: True wenn der gewünschte Modus klappte,
-    False wenn auf den textlosen Fallback ausgewichen wurde.
-    """
+    """Extract a single frame at second t."""
     scale = f"scale={width}:-2"
 
     def _shot(vf: str) -> bool:
@@ -213,10 +190,7 @@ def sample_frames(video: Path, frames_dir: Path, timestamps: list[float],
 # --------------------------------------------------------------------------- #
 def contact_sheet(video: Path, frames_dir: Path, every: float, cols: int, rows: int,
                   width: int, font: str | None) -> list[str]:
-    """Gekachelte Thumbnails mit eingebranntem pts-Zeitstempel je Frame.
-
-    Sehr token-sparsamer Übersichts-Pass: viele Mini-Frames in einem Bild.
-    """
+    """Generate tiled thumbnail contact sheet with burned-in pts timestamps."""
     frames_dir.mkdir(parents=True, exist_ok=True)
     for old in frames_dir.glob("sheet_*.jpg"):
         old.unlink()

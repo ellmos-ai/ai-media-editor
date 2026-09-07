@@ -21,7 +21,8 @@
   "optional": [
     "tool.stt",
     "tool.video",
-    "tool.hyperframes"
+    "tool.hyperframes",
+    "clip-storyboard-director"
   ],
   "conflicts": [],
   "surfaces": [
