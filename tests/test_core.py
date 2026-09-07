@@ -219,6 +219,20 @@ class EditorTests(unittest.TestCase):
             self.assertEqual(editor.doctor(), 1)
             remote_probe.assert_not_called()
 
+    def test_doctor_standalone_without_clip_director(self) -> None:
+        with (
+            mock.patch.object(editor.shutil, "which", return_value=None),
+            mock.patch.object(editor, "load_config", return_value={
+                "compute": {"prefer": "local"},
+                "mac": {},
+                "engines": {"multi_speaker": "faster"},
+                "paths": {"venv_python": sys.executable, "video_use": "Z:/missing"},
+                "hf_token": "",
+            }),
+            mock.patch.object(editor.subprocess, "run", return_value=completed(0, stdout="v24.0.0")),
+        ):
+            self.assertIn(editor.doctor(), (0, 1))
+
     def test_helper_failure_is_non_success(self) -> None:
         with mock.patch.object(editor.subprocess, "run", return_value=completed(3, stderr="boom")):
             self.assertIsNone(editor._run_helper(["helper"], "test helper"))
