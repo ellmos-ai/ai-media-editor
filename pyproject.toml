@@ -30,10 +30,15 @@ classifiers = [
     "Intended Audience :: Developers",
     "Topic :: Multimedia :: Video :: Non-Linear Editor",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Operating System :: OS Independent",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12"
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13"
 ]
 
 [project.urls]
@@ -41,8 +46,20 @@ Homepage = "https://github.com/ellmos-ai/ai-media-editor"
 Repository = "https://github.com/ellmos-ai/ai-media-editor.git"
 Issues = "https://github.com/ellmos-ai/ai-media-editor/issues"
 Documentation = "https://github.com/ellmos-ai/ai-media-editor#readme"
+Changelog = "https://github.com/ellmos-ai/ai-media-editor/blob/main/CHANGELOG.md"
+Security = "https://github.com/ellmos-ai/ai-media-editor/blob/main/SECURITY.md"
+"Parent Organization" = "https://github.com/ellmos-ai"
+"Umbrella Ecosystem" = "https://github.com/open-bricks"
 
 [tool.pytest.ini_options]
 pythonpath = "."
 testpaths = ["tests"]
 addopts = "-v"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]
+ignore = ["E501"]

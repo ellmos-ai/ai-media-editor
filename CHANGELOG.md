@@ -2,14 +2,23 @@
 
 ## Unreleased
 
+## [0.2.0] - 2026-09-09
+
+### Added
+- Multi-OS GitHub Actions CI matrix workflow (`.github/workflows/ci.yml`) across Ubuntu, Windows, and macOS on Python 3.10, 3.11, 3.12, and 3.13 with concurrency group (`cancel-in-progress: true`), `actions/checkout@v4`, `actions/setup-python@v5`, pip caching, and bytecode compilation gate (`python -m compileall -q .`).
+- Automated repository contract test suite in `tests/test_metadata.py` with 10 contract tests verifying version consistency (`0.2.0`), manifest integrity, documentation links without local file URI schemes, `llms.txt` freshness, CI workflow parity, bilingual `SECURITY.md` SLAs, `.gitignore` patterns, and CLI modes smoke.
+- Parent organization (`https://github.com/ellmos-ai`) and umbrella ecosystem (`https://github.com/open-bricks`) URLs, OS classifiers, and standardized tool configurations in `pyproject.toml`.
+- Bilingual security policy in `SECURITY.md` (English & Deutsch) with formal 48h initial response SLA, 5-business-day triage commitment, supported versions table (`0.2.x`), maintainer contacts (`security@open-bricks.org`, `security@ellmos.ai`, `support@lukasgeiger.com`, `lukas@open-bricks.org`), and GitHub private vulnerability reporting.
+- Shields.io CI status, Security SLA, and Ecosystem badges in `README.md` and `README_de.md`.
+
 ### Changed
-- Added German README (`README_de.md`, full 1:1 translation) and a language switcher in both
-  files; `llms.txt` lists the new file. Language stage: **Core (DE+EN)** reached.
-  First execution of the idle-language-pass policy P-006 (`.SYNC/_policies/library/`).
-- Updated `llms.txt` maintenance timestamp to `2026-07-30` and verified full pytest suite (39/39 passed).
+- Hardened `.gitignore` against multi-host synchronization conflicts (`*.sync-conflict-*`, `*-CONFLIT-*`, `*-conflict-*`), multi-agent locks (`LOCK.*`, `*.lock`, `LOCK*.txt`), wheel smoke artifacts (`wheelhouse/`, `.wheel-smoke/`), and temporary files (`*.tmp`, `*.bak`, `*.swp`, `*~`, `*.log`).
+- Updated `llms.txt` verification timestamp to `2026-09-09` with test count parity and ecosystem references.
+- Synchronized Shields.io test status badges in `README.md` and `README_de.md` to verified pytest count (56 passed).
+- Added German README (`README_de.md`, full 1:1 translation) and a language switcher in both files; `llms.txt` lists the new file. Language stage: **Core (DE+EN)** reached. First execution of the idle-language-pass policy P-006 (`.SYNC/_policies/library/`).
 
 ### Fixed
-- Use real German umlauts in the user-facing use-case labels and next-step CLI output.
+- Use real German umlauts in user-facing use-case labels and next-step CLI output.
 
 ## [0.2.2] - 2026-07-27
 

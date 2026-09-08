@@ -26,10 +26,32 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 .coverage
+htmlcov/
 .venv/
 venv/
 .env
 *.db
+build/
+dist/
+*.egg-info/
+wheelhouse/
+.wheel-smoke/
+
+# --- Multi-Host Sync Conflicts & Multi-Agent Locks ---
+*.sync-conflict-*
+*.conflict
+*-CONFLIT-*
+*-conflict-*
+LOCK.*
+*.lock
+LOCK*.txt
+
+# --- Temporary & Backup Files ---
+*.tmp
+*.bak
+*.swp
+*~
+*.log
 
 # --- Data ---
 data/

@@ -2,32 +2,44 @@ name: CI
 
 on:
   push:
+    branches: [main]
   pull_request:
+    branches: [main]
 
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   fast-checks:
-    runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
-        python-version: ["3.11", "3.12"]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
           cache-dependency-path: requirements-dev.txt
       - name: Install test tooling
-        run: python -m pip install -r requirements-dev.txt
-      - name: Lint
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+          python -m pip install pytest
+      - name: Lint with ruff
         run: ruff check .
+      - name: Validate bytecode compilation
+        run: python -m compileall -q .
       - name: Parse Python and JSON
-        run: python -c "import ast,json,pathlib; [ast.parse(p.read_text(encoding='utf-8'), filename=str(p)) for p in pathlib.Path('.').rglob('*.py')]; json.loads(pathlib.Path('ellmos-module.v2.json').read_text(encoding='utf-8')); json.loads(pathlib.Path('config/settings.example.json').read_text(encoding='utf-8'))"
-      - name: Unit tests
-        run: python -m unittest discover -s tests -v
+        run: python -c "import ast,json,pathlib; [ast.parse(p.read_text(encoding='utf-8'), filename=str(p)) for p in pathlib.Path('.').rglob('*.py') if '.venv' not in str(p) and 'venv' not in str(p)]; json.loads(pathlib.Path('ellmos-module.v2.json').read_text(encoding='utf-8')); json.loads(pathlib.Path('config/settings.example.json').read_text(encoding='utf-8'))"
+      - name: Run test suite
+        run: python -X utf8 -m pytest -v
       - name: CLI smoke
         run: python editor.py modes

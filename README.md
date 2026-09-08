@@ -1,9 +1,13 @@
 <p align="center"><img src="assets/banner.svg" alt="ai-media-editor — Video · Audio · Podcast, local" width="100%"></p>
 
 <p align="center">
-  <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/tests-43%20passed-brightgreen" alt="Tests Passed"></a>
+  <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/tests-56%20passed-brightgreen" alt="Tests Passed"></a>
+  <a href="https://github.com/ellmos-ai/ai-media-editor/actions/workflows/ci.yml"><img src="https://img.shields.io/badge/CI-multi--OS%20passing-brightgreen" alt="CI Status"></a>
   <a href="https://github.com/ellmos-ai/ai-media-editor/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License: MIT"></a>
-  <a href="https://python.org"><img src="https://img.shields.io/badge/python-3.10%2B-blue" alt="Python 3.10+"></a>
+  <a href="https://python.org"><img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue" alt="Python 3.10+"></a>
+  <a href="https://github.com/ellmos-ai/ai-media-editor/blob/main/SECURITY.md"><img src="https://img.shields.io/badge/security-48h%20SLA-blue" alt="Security SLA"></a>
+  <a href="https://github.com/ellmos-ai"><img src="https://img.shields.io/badge/ecosystem-ellmos--ai-informational" alt="Ecosystem: ellmos-ai"></a>
+  <a href="https://github.com/open-bricks"><img src="https://img.shields.io/badge/umbrella-open--bricks-blueviolet" alt="Umbrella: open-bricks"></a>
   <a href="https://github.com/ellmos-ai/ai-media-editor#discovery-context"><img src="https://img.shields.io/badge/LLM--Ready-Local--First-orange" alt="LLM Ready"></a>
 </p>
 

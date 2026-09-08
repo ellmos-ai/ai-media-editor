@@ -1,8 +1,8 @@
-## Last-checked: 2026-07-30
+## Last-checked: 2026-09-09
 
 # ellmos-ai/ai-media-editor
 
-Local-first AI media editor for video, audio, and podcast workflows.
+Local-first AI media editor for video, audio, and podcast workflows. Part of the `open-bricks` ecosystem.
 
 Canonical repository:
 https://github.com/ellmos-ai/ai-media-editor
@@ -24,7 +24,7 @@ and Hyperframes composition to an AI coding agent.
 ## Important files
 
 - `README.md` — public overview, setup, quickstart, and discovery context (English, primary).
-- `README_de.md` — German translation of the overview (language stage: Core/DE+EN, added 2026-08-14).
+- `README_de.md` — German translation of the overview (language stage: Core/DE+EN).
 - `CLAUDE.md` — German agent-facing workflow guide and hard editing rules.
 - `docs/USECASES.md` — step-by-step instructions for the 8 supported media workflows.
 - `editor.py` — orchestrator for `doctor`, `modes`, `prepare`, and `frames`.
@@ -35,7 +35,8 @@ and Hyperframes composition to an AI coding agent.
 - `tools/hf.cmd`, `tools/hf-hidden.vbs`, `tools/hide-windows.cjs` — Windows wrapper + Node preload that forces `windowsHide` for every child process (no console-window bursts from HyperFrames); `tools/count_console_windows.ps1` measures visible windows. Details: `docs/WINDOWS-KONSOLENFENSTER.md`.
 - `production/OVERVIEW.md` — optional generative workflows and mandatory cloud/rights gates.
 - `tests/test_core.py` — dependency-free regression contract for cache, remote, frames, and diarization.
-- `SECURITY.md` — vulnerability reporting and sensitive-media security scope.
+- `tests/test_metadata.py` — automated contract tests for manifests, CI parity, security SLAs, and discoverability.
+- `SECURITY.md` — bilingual vulnerability reporting and sensitive-media security scope (48h initial response SLA).
 - `brand/design-tokens.css` — design tokens for generated motion graphics.
 
 ## Search Phrases
@@ -59,7 +60,6 @@ for local transcript, frame, and edit context.
 
 ## External Discovery Notes
 
-As of 2026-07-25, GitHub search and broad web search still surface mostly GitHub or topic
-context for this repo. Additional external listing or editorial launch work should target
-local-first creator tools, AI-video-editing workflows, transcript-based editing, Hyperframes,
-and agent-driven media production.
+As of 2026-09-09, GitHub search and broad web search surface GitHub repository and topic
+context. The project is maintained under the `ellmos-ai` organization and governed under
+the `open-bricks` umbrella ecosystem.
