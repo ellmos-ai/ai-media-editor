@@ -48,13 +48,15 @@ Issues = "https://github.com/ellmos-ai/ai-media-editor/issues"
 Documentation = "https://github.com/ellmos-ai/ai-media-editor#readme"
 Changelog = "https://github.com/ellmos-ai/ai-media-editor/blob/main/CHANGELOG.md"
 Security = "https://github.com/ellmos-ai/ai-media-editor/blob/main/SECURITY.md"
+"Third-Party Licenses" = "https://github.com/ellmos-ai/ai-media-editor/blob/main/THIRD_PARTY_LICENSES.md"
+"Marketing Log" = "https://github.com/ellmos-ai/ai-media-editor/blob/main/MARKETING-LOG.txt"
 "Parent Organization" = "https://github.com/ellmos-ai"
 "Umbrella Ecosystem" = "https://github.com/open-bricks"
 
 [tool.pytest.ini_options]
 pythonpath = "."
 testpaths = ["tests"]
-addopts = "-v"
+addopts = "-ra -v"
 
 [tool.ruff]
 line-length = 100

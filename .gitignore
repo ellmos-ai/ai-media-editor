@@ -42,9 +42,13 @@ wheelhouse/
 *.conflict
 *-CONFLIT-*
 *-conflict-*
+*.sync-temp-*
+*-ASUS-GEI.*
+LOCK
 LOCK.*
 *.lock
 LOCK*.txt
+LOCK.permissions.json
 
 # --- Temporary & Backup Files ---
 *.tmp

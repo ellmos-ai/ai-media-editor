@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+### Added - Discoverability, Dual-Mermaid Visual Architecture & Governance Invariants (Pfad B) - 2026-09-10
+- Enhanced bilingual documentation landing pages (`README.md` and `README_de.md`) with 14-point quick navigation, 100% anchor parity, bidirectional language switchers, and full Shields.io badge suite (Version, CI, Tests, Python 3.10-3.13, Platforms, Local-First Privacy, RunAsInvoker Security, 48h Response / 5d Triage SLA, Ruff, Ecosystem, Umbrella, LLM-Ready, Audit, and MIT License).
+- Dual-Mermaid visual architecture diagrams in both English and German:
+  - 5-Tier System Architecture Flowchart (`flowchart TB`) spanning media intake, orchestrator preflight, processing engines, agentic interaction layer, and deterministic export.
+  - End-to-End Execution Lifecycle Sequence Diagram (`sequenceDiagram` with `autonumber`) illustrating preflight inspection, local STT routing, Scribe JSON generation, contact-sheet rendering, pause cut detection, and zero-egress output assembly.
+- Formalized 10 Governance & Runtime Invariants table (`INV-LOCAL-01` through `INV-SLA-10`) guaranteeing local-first execution, unprivileged operation, preview safety, deterministic synthesis, and traversal protection.
+- Sibling Ecosystem & Partner Matrix cross-linking 16 partner repositories across `ellmos-ai`, `entertain-and-more`, `dev-bricks`, `file-bricks`, `doc-bricks`, and `open-bricks`.
+- Third-party open-source licenses inventory in `THIRD_PARTY_LICENSES.md` detailing upstream packages, licenses, and repositories.
+- Local discoverability, marketing personas, and architecture audit log in `MARKETING-LOG.txt`.
+- Expanded automated contract test suite in `tests/test_metadata.py` validating 14-point navigation, anchor parity, dual-mermaid diagrams, governance invariants, sibling matrix, third-party licenses, and marketing log.
+
+### Changed
+- Standardized `pyproject.toml` with `addopts = "-ra -v"` and URLs for `Third-Party Licenses` and `Marketing Log`.
+- Hardened `.gitignore` against multi-host conflict copies (`*.sync-temp-*`, `*-ASUS-GEI.*`) and lock patterns (`LOCK`, `LOCK.permissions.json`).
+- Updated `llms.txt` verification timestamp to `2026-09-10` with verified 100% green test suite status, governance invariants, and architecture documentation links.
+
 ## [0.2.0] - 2026-09-09
 
 ### Added

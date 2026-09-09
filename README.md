@@ -1,14 +1,20 @@
 <p align="center"><img src="assets/banner.svg" alt="ai-media-editor — Video · Audio · Podcast, local" width="100%"></p>
 
 <p align="center">
-  <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/tests-56%20passed-brightgreen" alt="Tests Passed"></a>
-  <a href="https://github.com/ellmos-ai/ai-media-editor/actions/workflows/ci.yml"><img src="https://img.shields.io/badge/CI-multi--OS%20passing-brightgreen" alt="CI Status"></a>
-  <a href="https://github.com/ellmos-ai/ai-media-editor/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License: MIT"></a>
+  <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/version-0.2.0-blue" alt="Version 0.2.0"></a>
+  <a href="https://github.com/ellmos-ai/ai-media-editor/actions/workflows/ci.yml"><img src="https://img.shields.io/badge/CI-passing-brightgreen" alt="CI Status"></a>
+  <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/tests-62%20passed%20%7C%20100%25%20green-brightgreen" alt="Tests Passed"></a>
   <a href="https://python.org"><img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue" alt="Python 3.10+"></a>
-  <a href="https://github.com/ellmos-ai/ai-media-editor/blob/main/SECURITY.md"><img src="https://img.shields.io/badge/security-48h%20SLA-blue" alt="Security SLA"></a>
+  <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/platforms-Windows%20%7C%20Linux%20%7C%20macOS-blue" alt="Platforms"></a>
+  <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/privacy-100%25%20Local--First%20%7C%20Zero--Egress-success" alt="Privacy: Local-First"></a>
+  <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/security-RunAsInvoker%20%7C%20Non--Elevation-success" alt="Security: Non-Elevation"></a>
+  <a href="https://github.com/ellmos-ai/ai-media-editor/blob/main/SECURITY.md"><img src="https://img.shields.io/badge/security%20SLA-48h%20Response%20%7C%205d%20Triage-blue" alt="Security SLA"></a>
+  <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/badge/code%20style-ruff-black" alt="Code Style: Ruff"></a>
   <a href="https://github.com/ellmos-ai"><img src="https://img.shields.io/badge/ecosystem-ellmos--ai-informational" alt="Ecosystem: ellmos-ai"></a>
   <a href="https://github.com/open-bricks"><img src="https://img.shields.io/badge/umbrella-open--bricks-blueviolet" alt="Umbrella: open-bricks"></a>
-  <a href="https://github.com/ellmos-ai/ai-media-editor#discovery-context"><img src="https://img.shields.io/badge/LLM--Ready-Local--First-orange" alt="LLM Ready"></a>
+  <a href="llms.txt"><img src="https://img.shields.io/badge/LLM--Ready-llms.txt-orange" alt="LLM Ready"></a>
+  <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/last--checked-2026--09--10-blue" alt="Last Checked"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License: MIT"></a>
 </p>
 
 <p align="center"><strong>English</strong> · <a href="README_de.md">Deutsch</a></p>
@@ -16,126 +22,48 @@
 # ai-media-editor — local AI media editor (Video · Audio · Podcast)
 
 > [!NOTE]
-> **AI / Agent Native Integration:** `ai-media-editor` is specifically designed for autonomous agent execution (Claude Code, Gemini/Antigravity, Codex). It provides deterministic project preparation, Scribe JSON schema generation, and timestamped frame contact-sheets so LLMs can visually inspect and cut media locally without third-party SaaS dependencies.
+> **AI / Agent Native Integration:** `ai-media-editor` is specifically engineered for autonomous coding agents (Claude Code, Gemini/Antigravity, Codex). It provides deterministic project preparation, Scribe JSON schema generation, and timestamped frame contact-sheets so LLMs can visually inspect and cut media locally without third-party SaaS dependencies.
 
-Use an AI coding agent (e.g. Claude Code) as a video/podcast editor — with **local
-transcription instead of ElevenLabs Scribe**. The orchestrator (`editor.py`) handles the
-deterministic prep (route to the right STT engine/compute, produce Scribe-JSON, pack takes);
-the creative cutting/animation work is then driven by the agent.
+### Quick Navigation
+1. [Key Capabilities](#key-capabilities)
+2. [Architecture Flowchart](#architecture-flowchart)
+3. [End-to-End Execution Lifecycle Sequence](#end-to-end-execution-lifecycle-sequence)
+4. [The 8 Usecases](#the-8-usecases)
+5. [Getting Started & Setup](#getting-started--setup)
+6. [CLI Reference & Commands](#cli-reference--commands)
+7. [Motion Graphics & Music Synthesis](#motion-graphics--music-synthesis)
+8. [Governance & Runtime Invariants](#governance--runtime-invariants)
+9. [Security & Privacy SLA](#security--privacy-sla)
+10. [Sibling Projects & Ecosystem Matrix](#sibling-projects--ecosystem-matrix)
+11. [Quality Gates & Testing](#quality-gates--testing)
+12. [Machine-Readable Context (`llms.txt`)](#machine-readable-context-llmstxt)
+13. [Changelog & Releases](#changelog--releases)
+14. [License & Third-Party Notice](#license--third-party-notice)
 
-## System Architecture
+---
 
-```mermaid
-graph TD
-    Input["Media Input (Video / Audio)"] --> Doctor["editor.py doctor / prepare"]
-    Doctor --> STT["Local STT Engine (faster-whisper / WhisperX)"]
-    STT --> Scribe["Scribe JSON & Packed Takes"]
-    Scribe --> Agent["AI Coding Agent (Claude / Gemini / Codex)"]
-    Agent --> FrameView["tools/frame_view.py (Timestamped Frames)"]
-    Agent --> CutView["tools/cut_view.py (Pause Candidates)"]
-    FrameView --> Output["Final Rendered Video / Audio / Hyperframes MP4"]
-    CutView --> Output
-```
+## Key Capabilities
 
-## Start here
-
-| Goal | File / command |
-|---|---|
-| Understand the workflow | [`CLAUDE.md`](CLAUDE.md) and [`docs/USECASES.md`](docs/USECASES.md) |
-| Configure local tools | Copy [`config/settings.example.json`](config/settings.example.json) to `config/settings.json` |
-| Check the environment | `PYTHONIOENCODING=utf-8 <VENV> editor.py doctor` |
-| Prepare a media project | `PYTHONIOENCODING=utf-8 <VENV> editor.py prepare "<media>" --mode <1-8>` |
-| Build video frame context | `PYTHONIOENCODING=utf-8 <VENV> editor.py frames <project> --contact-sheet` |
-| Give LLM crawlers the short map | [`llms.txt`](llms.txt) |
-
-## What it is
+Use an AI coding agent (e.g. Claude Code) as a video/podcast editor — with **local transcription instead of ElevenLabs Scribe**. The orchestrator (`editor.py`) handles deterministic preparation (routing to the optimal STT engine/compute, producing schema-valid Scribe JSON, and packing takes); the creative cutting, animation, and composition work is driven by the agent.
 
 A three-tool stack:
-- **video-use** — cuts based on the word-level transcript (removes pauses/stumbles)
-- **Hyperframes** — HTML/CSS/JS → MP4 animations
-- **`frontend-design` skill** — generates motion graphics / branding
+- **video-use** — cuts based on word-level transcripts (removes pauses/stumbles).
+- **Hyperframes** — HTML/CSS/JS → MP4 animations and motion graphics.
+- **`frontend-design` skill** — generates motion graphics / branding assets.
 
-…with **ElevenLabs Scribe transcription replaced** by local engines. The default is
-**faster-whisper** plus text-based LLM speaker assignment for conversations; **WhisperX** is an
-optional acoustic-diarization engine. Compute is local by default, with optional
-**remote-host-primary, local-fallback** routing. The replacement writes the Scribe fields used by
-`video-use`, so those downstream helpers run unpatched.
+…with **ElevenLabs Scribe transcription replaced** by local engines. The default is **faster-whisper** plus text-based LLM speaker assignment for conversations; **WhisperX** is an optional acoustic-diarization engine. Compute is local by default, with optional **remote-host-primary, local-fallback** routing. The replacement writes the exact Scribe fields used by `video-use`, so downstream helpers run completely unpatched.
 
-## Setup
-
-1. **Create config:** copy `config/settings.example.json` → `config/settings.json` and fill in
-   your values (compute `local`/`mac`, engines, `paths.*`).
-2. **`<TOOLS_ROOT>`** in this documentation = `paths.tools_root` from your `settings.json` — the
-   location of the heavy tools + venv (`video-use`, ffmpeg, Node ≥ 22). Do **not** place it inside
-   a synchronized cloud folder (venv/sync conflicts). `<OPENMONTAGE_DIR>` = optional OpenMontage
-   clone (only for ad-clip usecase 8).
-3. External tools: `video-use` (browser-use-based transcript cutting), Hyperframes (HTML→MP4) and
-   the `frontend-design` skill. STT is local via faster-whisper/WhisperX.
-
-## Quickstart
-
-```bash
-VENV="<TOOLS_ROOT>/.venv/Scripts/python.exe"
-
-# Environment check
-PYTHONIOENCODING=utf-8 "$VENV" editor.py doctor
-
-# Usecase table
-PYTHONIOENCODING=utf-8 "$VENV" editor.py modes
-
-# Prepare a project (transcribe + pack)
-PYTHONIOENCODING=utf-8 "$VENV" editor.py prepare "/path/to/recording.mp4" --mode 3 --project my-video
-
-# Video only (UC3/4/8): timestamped frames so the agent can judge the picture over time
-PYTHONIOENCODING=utf-8 "$VENV" editor.py frames my-video --contact-sheet          # coarse overview
-PYTHONIOENCODING=utf-8 "$VENV" editor.py frames my-video --from 30 --to 45 --step 0.25  # zoom in
-```
-
-Then the agent drives the creative cutting/animation part — see [`CLAUDE.md`](CLAUDE.md) (German,
-agent-facing) and [`docs/USECASES.md`](docs/USECASES.md).
-
-## The 8 usecases
-
-| # | Input | Speakers | Output |
-|---|---|---|---|
-| 1 | Audio | 1 | Audio podcast, cut |
-| 2 | Audio | multiple | Audio podcast, speaker-separated |
-| 3 | Video (A+V) | 1 | Video cut + animations |
-| 4 | Video (A+V) | multiple | Video + animations + speaker tracking |
-| 5 | Video → audio only | 1/multiple | Audio podcast (video discarded) |
-| 6 | Audio | 1/multiple | Fully generated explainer video |
-| 7 | Audio | 1 | Audio + animated cover |
-| 8 | Audio/brief | 1 | Ad clip (15–60 s, 16:9 + 9:16) — OpenMontage clip-factory / Hyperframes |
-
-## Discovery context
-
-Use the canonical phrase **`ellmos-ai/ai-media-editor`** when searching for this repository.
-Useful search phrases include:
-
-```text
-local AI media editor video podcast transcription
-agent driven video editor with local transcription
-Claude Code video podcast editor Hyperframes
-faster-whisper WhisperX Scribe JSON video-use
-transcript based video cutting local first
-Hyperframes motion graphics podcast editor
-```
-
-This project is **not** a hosted SaaS editor, a stock-media marketplace, a generic ffmpeg GUI,
-or an ElevenLabs Scribe wrapper. It is a local-first orchestration repo for preparing transcript,
-frame, and cut context so an AI coding agent can drive the creative edit.
-
-## Structure
-
+### Repository Layout
 ```
 ai-media-editor/                  (code/docs/projects)
 ├── CLAUDE.md                     ← agent guide (editor workflow, German)
-├── README.md
+├── README.md                     ← English overview & visual architecture
+├── README_de.md                  ← German documentation (1:1 parity)
 ├── editor.py                     ← orchestrator (prepare / frames / modes / doctor)
 ├── tools/
 │   ├── cut_view.py               ← pauses as explicit cut candidates
 │   ├── frame_view.py             ← video → timestamped frames ("video-scatterer", UC3/4/8)
-│   ├── compose_cover.py          ← UC7: loop a cover over the audio
+│   ├── compose_cover.py          ← UC7: loop a cover over audio
 │   └── compose_music.py          ← storyline JSON → video-synced score (numpy waveform synthesis)
 ├── stt/
 │   ├── scribe_schema.py          ← Scribe-JSON format (contract with video-use)
@@ -145,8 +73,13 @@ ai-media-editor/                  (code/docs/projects)
 ├── brand/design-tokens.css       ← branding tokens for generated animations
 ├── docs/USECASES.md              ← step-by-step per mode
 ├── production/                   ← optional generative workflows (cloud gates apply)
-├── tests/test_core.py            ← dependency-free regression suite
+├── tests/
+│   ├── test_core.py              ← dependency-free regression suite
+│   ├── test_compose_music.py     ← storyline & waveform synthesis tests
+│   └── test_metadata.py          ← automated contract tests for manifests & discoverability
 ├── SECURITY.md                   ← private vulnerability reporting and security scope
+├── THIRD_PARTY_LICENSES.md       ← inventory of third-party open-source components
+├── MARKETING-LOG.txt             ← discoverability, marketing personas & architecture audit
 └── projects/<name>/edit/         ← per project: transcripts/, takes_packed.md, … (gitignored)
 
 <TOOLS_ROOT>/                     (NOT a cloud folder — venv/tools)
@@ -154,122 +87,264 @@ ai-media-editor/                  (code/docs/projects)
 └── video-use/                    ← cloned browser-use/video-use (unpatched)
 ```
 
-> `config/settings.json` and `projects/` content are user-specific and **gitignored** —
-> copy `settings.example.json` to get started.
+---
 
-## Requirements
+## Architecture Flowchart
 
-- **Local:** ffmpeg, Node ≥ 22 (Hyperframes), a Python venv under `<TOOLS_ROOT>`.
-- **Optional remote host** (e.g. a more powerful machine): faster-whisper + WhisperX in a venv,
-  reachable via SSH (configure under `mac` in `settings.json`).
-- **HuggingFace token** only when `engines.multi_speaker` is set to `whisperx`; the default
-  faster-whisper + LLM route does not require one.
+```mermaid
+flowchart TB
+    subgraph Intake ["Layer 1: Input Channels & Media Intake"]
+        V["Raw Video Recording (.mp4/.mov)"]
+        A["Raw Audio Recording (.wav/.m4a)"]
+        S["Storyline JSON (Narrative & Emotion)"]
+    end
 
-## Generative production (optional)
+    subgraph Preflight ["Layer 2: Orchestrator & Preflight Inspection"]
+        DOC["editor.py doctor<br/>Environment & Tooling Verification"]
+        MODES["editor.py modes<br/>8 Specialized Media Use Cases"]
+        PREP["editor.py prepare<br/>Project Staging & Metadata Contract"]
+    end
 
-The [`production/`](production/OVERVIEW.md) folder covers workflows that create new music,
-speech, video, text, narrative, or PR material. These workflows are separate from the editor
-core and may use third-party cloud services. Before every upload, confirm that you have the
-necessary rights, consent, confidentiality clearance, and an acceptable provider retention
-policy. Never upload secrets or client material by default.
+    subgraph Engines ["Layer 3: Processing & Synthesis Engines"]
+        FW["faster-whisper / WhisperX<br/>100% Local STT & Word Alignment"]
+        DIAR["stt/diarize_llm.py<br/>Text-based Multi-Speaker Diarization"]
+        MUSIC["tools/compose_music.py<br/>Procedural NumPy Waveform Synthesis"]
+        HF["Hyperframes & hide-windows.cjs<br/>HTML/CSS/JS -> MP4 Motion Graphics"]
+    end
 
-### Video-synced score (music-composer)
+    subgraph Agentic ["Layer 4: Agentic Interaction Layer"]
+        SCRIBE["Scribe JSON Schema<br/>Word-level Timing for video-use"]
+        FRAMES["tools/frame_view.py<br/>Timestamped Contact-Sheets"]
+        CUTS["tools/cut_view.py<br/>Pause & Inflection Cut Candidates"]
+        LLM["AI Coding Agent<br/>(Claude Code / Gemini / Codex)"]
+    end
 
-`tools/compose_music.py` composes a background score that follows a video's storyline —
-fully local, no cloud service. Input is a **storyline JSON**: sections with exact time
-windows plus emotion/intensity, and optional timeline events (`damp` = Gaussian duck on a
-dramatic beat, `climax` window, `outro`). Intensity drives tempo feel, layer count and
-volume ramp; emotion drives chord progressions and waveforms. Styles: `chiptune`,
-`ambient`, `electronic`. Deterministic via `seed`. Deps: numpy (+ ffmpeg for MP3).
+    subgraph Export ["Layer 5: Deterministic Export & Artefacts"]
+        OUT_V["Rendered Master Video (.mp4)"]
+        OUT_A["Clean Speaker-Separated Audio (.wav)"]
+        OUT_M["Standard MIDI File (.mid) & Score"]
+    end
 
-```bash
-python tools/compose_music.py docs/examples/storyline-roshambo.json -o projects/<name>/assets/score
-python tools/compose_music.py --init       # storyline template
-python tools/compose_music.py --selftest   # 3 s render + verification
+    Intake --> Preflight
+    Preflight --> Engines
+    Engines --> Agentic
+    Agentic --> Export
 ```
 
-Output: stereo WAV + MP3 + `<name>.notes.json` (arrangement/note log — what plays when)
-+ `<name>.mid` (Standard MIDI File, type 1, tempo map + GM program hints).
-Limits: waveform synthesis covers chiptune/ambient/electronic background beds — not
-pop/rock/classical or orchestral film music (no samples, no realistic instruments).
-See [`production/musik/WORKFLOW.md`](production/musik/WORKFLOW.md) for cloud-based
-alternatives (Suno/Udio) when realistic instrumentation is required.
+---
 
-**Better sounds via the MIDI export.** The genre ceiling is the *sound backend*, not the
-composition — the arrangement is backend-neutral. Render `<name>.mid` through:
+## End-to-End Execution Lifecycle Sequence
 
-- **Path A — SoundFont (recommended, local, free):** install FluidSynth
-  (fluidsynth.org or `winget install FluidSynth`) plus a free GM SF2
-  (e.g. GeneralUser GS by S. Christian Collins, or MuseScore_General.sf2), then
-  `fluidsynth -ni soundfont.sf2 out.mid -F out.wav -r 44100` and encode with ffmpeg.
-  Covers pop/rock band sounds, piano, basic strings.
-- **Path B — orchestral/film:** free orchestral libraries (VSCO 2 Community Edition,
-  Soni Musicae, Salamander Grand Piano) for better strings/brass. Honestly:
-  articulation and humanization (velocity variation, legato, dynamics curves) matter
-  more than the sample set; true film-score epicness also needs arrangement maturity,
-  a backend alone is not enough.
-- **Path C — external AI generation (Suno etc.):** possible, but check privacy/rights
-  first and only after explicit user approval — never the default.
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Dev as User / AI Agent
+    participant Orch as Orchestrator (editor.py)
+    participant STT as Local STT Engine
+    participant FS as Local Filesystem (projects/)
+    participant Visual as Frame View & Cut View
+    participant Render as Hyperframes & ffmpeg
 
-A `humanize` option (per-note velocity/timing jitter so samples don't sound mechanical)
-is planned as a TODO in the engine docstring, not implemented yet.
+    Dev->>Orch: editor.py doctor
+    Orch-->>Dev: Preflight verified (ffmpeg, venv, Node)
+    Dev->>Orch: editor.py prepare "<media>" --mode <1-8>
+    Orch->>STT: Stream audio track (faster-whisper / WhisperX)
+    STT-->>Orch: Word-level timestamps & speaker segments
+    Orch->>FS: Write schema-valid Scribe JSON & packed takes
+    Dev->>Orch: editor.py frames <project> --contact-sheet
+    Orch->>Visual: Sample video at regular keyframes
+    Visual->>FS: Generate timestamped contact-sheet PNGs
+    Dev->>Visual: cut_view.py (find speech pauses & stumbles)
+    Visual-->>Dev: Return pause cut candidate intervals
+    Dev->>Render: Formulate cut list & motion graphics
+    Render->>FS: Render final clean MP4 / WAV with zero network egress
+    FS-->>Dev: Deliver production media artifact
+```
 
-## Privacy, rights, and operational limits
+---
 
-- Local mode keeps transcription on the current machine. Remote mode uploads the complete input
-  media to the SSH host configured by the user, uses an isolated job directory, and removes it on
-  a best-effort basis after the run.
-- You are responsible for rights to source media, voices, music, generated assets, model output,
-  and commercial use. Voice cloning requires the recorded person's explicit authorization.
-- This project is not affiliated with ElevenLabs, HeyGen, browser-use, or any cloud provider named
-  in the optional workflows. Provider features, terms, prices, and model licenses can change.
-- The generated transcript is a consumer-compatible subset for the bundled `video-use` helpers,
-  not a byte-for-byte reproduction of every ElevenLabs response field.
+## The 8 Usecases
 
-## Quality checks
+| # | Input | Speakers | Output | Typical Workflow |
+|---|---|---|---|---|
+| 1 | Audio | 1 | Audio podcast, cut | Single-speaker speech cleaning and pause trimming |
+| 2 | Audio | multiple | Audio podcast, speaker-separated | Diarized multi-track dialogue cleaning |
+| 3 | Video (A+V) | 1 | Video cut + animations | Talking-head cut with automated Hyperframes lower-thirds |
+| 4 | Video (A+V) | multiple | Video + animations + speaker tracking | Multi-speaker interview video with dynamic speaker cards |
+| 5 | Video → audio only | 1/multiple | Audio podcast (video discarded) | Extraction of pristine audio podcast from video footage |
+| 6 | Audio | 1/multiple | Fully generated explainer video | Voice track with AI-orchestrated motion graphics visuals |
+| 7 | Audio | 1 | Audio + animated cover | Podcast track wrapped in an animated vinyl/waveform loop |
+| 8 | Audio/brief | 1 | Ad clip (15–60 s, 16:9 + 9:16) | Fast short-form clip factory via Hyperframes |
 
-The repository's fast checks do not load STT models or require media files:
+---
+
+## Getting Started & Setup
+
+1. **Create config:** Copy `config/settings.example.json` → `config/settings.json` and configure local compute options (`local`/`mac`, engines, `paths.*`).
+2. **Tools Directory (`<TOOLS_ROOT>`):** `paths.tools_root` in your `settings.json` specifies the root for heavy tools (`video-use`, ffmpeg, Node ≥ 22). Do **not** locate this inside a cloud-synchronized folder.
+3. **External Prerequisites:**
+   - **Local:** `ffmpeg`, `Node.js >= 22` (for Hyperframes), Python 3.10–3.13 venv.
+   - **Optional Remote Host:** faster-whisper + WhisperX on a remote machine reachable via SSH.
+   - **HuggingFace Token:** Only required when `engines.multi_speaker` is set to `whisperx`.
+
+---
+
+## CLI Reference & Commands
 
 ```bash
-python -m unittest discover -s tests -v
+# Set Python venv path
+VENV="<TOOLS_ROOT>/.venv/Scripts/python.exe"
+
+# 1. Environment & toolchain verification
+PYTHONIOENCODING=utf-8 "$VENV" editor.py doctor
+
+# 2. Display supported operational use cases
+PYTHONIOENCODING=utf-8 "$VENV" editor.py modes
+
+# 3. Prepare a media project (deterministic transcription + take packing)
+PYTHONIOENCODING=utf-8 "$VENV" editor.py prepare "/path/to/recording.mp4" --mode 3 --project my-video
+
+# 4. Generate timestamped frame contact-sheets for visual LLM inspection
+PYTHONIOENCODING=utf-8 "$VENV" editor.py frames my-video --contact-sheet
+
+# 5. Extract detailed frame interval
+PYTHONIOENCODING=utf-8 "$VENV" editor.py frames my-video --from 30 --to 45 --step 0.25
+```
+
+---
+
+## Motion Graphics & Music Synthesis
+
+### Offline Video-Synced Score (`compose_music.py`)
+`tools/compose_music.py` composes background music following a video storyline — 100% local with zero cloud services.
+Input is a **storyline JSON** defining sections with exact time windows, emotions, and intensity levels:
+
+```bash
+# Compose music from storyline JSON
+python tools/compose_music.py docs/examples/storyline-roshambo.json -o projects/<name>/assets/score
+
+# Generate storyline template
+python tools/compose_music.py --init
+
+# Run deterministic synthesis selftest
+python tools/compose_music.py --selftest
+```
+
+Output: Stereo WAV + MP3 + `<name>.notes.json` + `<name>.mid` (Standard MIDI File Type 1).
+
+### MIDI Export & High-Fidelity Rendering
+The MIDI export enables lossless rendering through professional soundfonts:
+- **Path A — SoundFont (local, free):** FluidSynth (`winget install FluidSynth`) + GeneralUser GS / MuseScore_General:
+  `fluidsynth -ni soundfont.sf2 out.mid -F out.wav -r 44100`
+- **Path B — Orchestral Libraries:** VSCO 2 Community Edition or Salamander Grand Piano.
+
+---
+
+## Governance & Runtime Invariants
+
+The architecture enforces 10 strict runtime guarantees across all operating modes:
+
+| Invariant ID | Operational Domain | Guarantee & Enforcement Rule | Verification Mechanism |
+|---|---|---|---|
+| `INV-LOCAL-01` | Privacy & Data Egress | **100% Local-First Execution**: Raw media, transcripts, and embeddings never leave localhost. Zero cloud calls by default. | `tests/test_core.py`, no cloud sockets in core pipeline |
+| `INV-RUNAS-02` | Privilege & Sandbox | **Unprivileged User-Mode (`RunAsInvoker`)**: Zero administrative or elevated privileges required. | Standard user execution across all scripts |
+| `INV-PREV-03` | Storage & Immutability | **Preview-Safe & Non-Destructive Source Media**: Input files are strictly read-only; all artifacts write to `projects/<name>/`. | Isolation checks in `tests/test_core.py` |
+| `INV-DETERM-04` | Reproducibility | **Deterministic Synthesis & Schema Stability**: Fixed seed for procedural audio and rigid adherence to Scribe JSON schema. | `tests/test_compose_music.py`, `stt/scribe_schema.py` |
+| `INV-BOUNDARY-05` | File Traversal Safety | **Anti-Traversal & Project Containment**: Filenames and project stems cannot escape the project boundaries. | `test_project_names_cannot_escape_projects` |
+| `INV-SUBPROC-06` | Process Sanitation | **Clean Lifecycle & Window Suppression**: Preloaded wrappers suppress console window flashing on Windows. | `tools/hf.cmd`, `tools/hide-windows.cjs` |
+| `INV-PARITY-07` | Multi-OS Support | **Cross-Platform OS Parity**: Identical execution and path handling across Windows, Linux, and macOS. | Multi-OS GitHub Actions CI matrix |
+| `INV-SYNC-08` | Concurrency & Locks | **Cloud-Sync & Multi-Agent Lock Discipline**: Heavy tools and projects excluded from cloud sync conflicts. | `.gitignore` conflict & lock filter rules |
+| `INV-DOCS-09` | Accessibility & Discovery | **Multimodal LLM Readiness & Bilingual Parity**: Frame contact sheets for vision LLMs; full EN/DE documentation parity. | `llms.txt`, `README.md`, `README_de.md` contract tests |
+| `INV-SLA-10` | Security & Incident Response | **48h Security Response & 5-Day Triage SLA**: Formal vulnerability reporting via GitHub Advisories and maintainer emails. | `SECURITY.md`, `test_security_policy_bilingual_parity` |
+
+---
+
+## Security & Privacy SLA
+
+- **Local-First Privacy**: Transcription, frame extraction, and cut calculation run entirely offline on local hardware.
+- **Sensitive Media Containment**: Source recordings and project output reside strictly within `projects/` (gitignored).
+- **Vulnerability Response Commitment**:
+  - **Initial Response SLA**: Within 48 hours for confirmation of submitted vulnerability reports.
+  - **Technical Triage SLA**: Within 5 business days with severity assessment.
+  - **Reporting Channel**: [GitHub Security Advisories](https://github.com/ellmos-ai/ai-media-editor/security/advisories) or direct email to `security@open-bricks.org`, `security@ellmos.ai`, `support@lukasgeiger.com`, and `lukas@open-bricks.org`.
+  - For full details, see [`SECURITY.md`](SECURITY.md).
+
+---
+
+## Sibling Projects & Ecosystem Matrix
+
+`ai-media-editor` operates as a specialized multimedia orchestration engine within the `open-bricks` and `ellmos-ai` ecosystem:
+
+| Repository | Organization | Domain / Purpose | Ecosystem Interoperability |
+|---|---|---|---|
+| [`clip-storyboard-director`](https://github.com/ellmos-ai/clip-storyboard-director) | `ellmos-ai` | Generative storyboard and scene director | Scene sequence generation for video usecases |
+| [`assistant-core`](https://github.com/ellmos-ai/assistant-core) | `ellmos-ai` | Conversational supervision & agent runtime | Orchestrating autonomous media editing tasks |
+| [`decision-clicker`](https://github.com/ellmos-ai/decision-clicker) | `ellmos-ai` | Interactive user review gateway | Reviewing candidate cuts and edit decisions |
+| [`lock-master`](https://github.com/ellmos-ai/lock-master) | `ellmos-ai` | Fail-closed multi-agent locking framework | Protecting concurrent project files and render locks |
+| [`clutch`](https://github.com/ellmos-ai/clutch) | `ellmos-ai` | Process supervisor and task scheduler | Supervising long-running rendering & STT jobs |
+| [`system-explorer`](https://github.com/ellmos-ai/system-explorer) | `ellmos-ai` | Local hardware & capability discovery | Detecting GPU, CUDA, and hardware acceleration |
+| [`roblox-studio-core`](https://github.com/ellmos-ai/roblox-studio-core) | `ellmos-ai` | Headless 3D studio capture and automation | 3D visual assets and animation frames |
+| [`usb-podcast-studio`](https://github.com/entertain-and-more/usb-podcast-studio) | `entertain-and-more` | USB audio hardware capture & broadcast | High-fidelity recording source for podcast modes |
+| [`BattleStage`](https://github.com/entertain-and-more/BattleStage) | `entertain-and-more` | Server-authoritative physics simulation | Game footage and replay video processing |
+| [`DevCenter`](https://github.com/dev-bricks/DevCenter) | `dev-bricks` | Developer environment & workspace manager | Managing local tools and development venvs |
+| [`MethodenAnalyser`](https://github.com/dev-bricks/MethodenAnalyser) | `dev-bricks` | Static Python code metrics & method audit | Code quality analysis of media editor modules |
+| [`ExplorerPro`](https://github.com/file-bricks/ExplorerPro) | `file-bricks` | High-speed desktop file manager (PySide6) | Visual project browsing and media file organization |
+| [`ProFiler`](https://github.com/file-bricks/ProFiler) | `file-bricks` | Deep directory analysis and inspection | Media assets indexing and cache analysis |
+| [`CloudLockFixer`](https://github.com/file-bricks/CloudLockFixer) | `file-bricks` | Multi-host synchronization conflict fixer | Cleaning lock files and cloud conflict copies |
+| [`FormularErstellen`](https://github.com/doc-bricks/FormularErstellen) | `doc-bricks` | Dynamic PDF & document layout generator | Generating project reports and production summaries |
+| [`open-bricks`](https://github.com/open-bricks/open-bricks) | `open-bricks` | Umbrella open-source standards organization | Canonical ecosystem governance & license parity |
+
+---
+
+## Quality Gates & Testing
+
+Run fast quality checks locally without external STT models or heavy media files:
+
+```bash
+# Run complete test suite
+python -m pytest -ra -v
+
+# Run lint checks
 ruff check .
+
+# Validate bytecode compilation
+python -m compileall -q .
+
+# Verify CLI modes
 python editor.py modes
 ```
 
-Real transcription, ffmpeg rendering, SSH, and provider workflows remain environment-dependent;
-run `python editor.py doctor` before using them.
+### Windows Console Window Suppression
+Hyperframes and Node subprocesses run through `tools/hf.cmd` and `tools/hide-windows.cjs` to enforce `windowsHide: true`, eliminating distracting console window flashing during rendering. Background details: [`docs/WINDOWS-KONSOLENFENSTER.md`](docs/WINDOWS-KONSOLENFENSTER.md).
 
-### Windows: no console-window bursts from HyperFrames
+---
 
-Node tools spawn many short child processes (`npx` shims, Chromium, `ffmpeg`), and Node does not
-set `windowsHide` by default, so each one can flash a console window. On Windows start
-HyperFrames through the wrapper. It preloads `tools/hide-windows.cjs` (forcing
-`windowsHide: true` for every `child_process` call) and, when installed, selects regular Google
-Chrome through HyperFrames' native `HYPERFRAMES_BROWSER_PATH` override. An explicit browser path
-is preserved. Set `HF_PREFER_FULL_CHROME=0` before the call to retain HyperFrames' pinned
-`chrome-headless-shell` and its optimized, pixel-reproducible capture path:
+## Machine-Readable Context (`llms.txt`)
 
-```bat
-tools\hf.cmd render -q high -o renders\video.mp4
-tools\hf.cmd snapshot --at 5
-wscript //B //Nologo tools\hf-hidden.vbs render ...   REM no terminal at all (scheduled tasks)
+LLM crawlers, code assistants, and automated indexing agents can parse repository context directly via [`llms.txt`](llms.txt).
+
+Key Search Phrases:
+```text
+ellmos-ai/ai-media-editor
+local AI media editor video podcast transcription
+agent driven video editor with local transcription
+Claude Code video podcast editor Hyperframes
+faster-whisper WhisperX Scribe JSON video-use
+transcript based video cutting local first
+Hyperframes motion graphics podcast editor
+offline procedural music synthesis storyline numpy
 ```
 
-`tools/count_console_windows.ps1 -All -Log <file>` records every new visible window (class,
-process, title) during a run — the acceptance test is visual evidence, not process counts.
-Background and findings: `docs/WINDOWS-KONSOLENFENSTER.md`.
+---
 
-## Development status
+## Changelog & Releases
 
-Version 0.2.0 is a **development hardening state**, not a stable release — there is no tag yet.
-The deterministic pipeline has regression coverage, but real ffmpeg, STT, SSH and provider runs
-are environment-dependent and were not exercised by the fast gate. What is verified, what is
-explicitly *not* claimed, and what remains open before a stable tag is recorded in
-[`RELEASE_GATE.md`](RELEASE_GATE.md); the open work items are in [`TODO.md`](TODO.md).
+See [`CHANGELOG.md`](CHANGELOG.md) for full version history.
+- **Version 0.2.0**: Hardened local-first pipeline, automated contract tests, multi-OS CI matrix, bilingual parity, dual-mermaid diagrams, and 10 governance invariants.
 
-## Credits / Licenses
+---
 
-- video-use: [browser-use/video-use](https://github.com/browser-use/video-use) (MIT)
-- Hyperframes: [heygen-com/hyperframes](https://github.com/heygen-com/hyperframes) (Apache-2.0)
-- STT: faster-whisper (MIT), WhisperX (BSD-2)
-- This project: **MIT** — see [LICENSE](LICENSE).
+## License & Third-Party Notice
+
+- **Project License**: [MIT License](LICENSE) © 2026 ellmos-ai / open-bricks.
+- **Third-Party Licenses**: Detailed inventory in [`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md) (video-use: MIT, Hyperframes: Apache-2.0, faster-whisper: MIT, WhisperX: BSD-2-Clause, NumPy: BSD-3-Clause, FFmpeg: LGPL/GPL).

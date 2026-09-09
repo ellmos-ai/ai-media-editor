@@ -1,0 +1,113 @@
+================================================================================
+ai-media-editor -- Marketing, Discoverability & Architecture Audit (Pfad B)
+================================================================================
+Datum: 2026-09-10
+Status: ACTIVE / HARDENED (Pfad B Discoverability & Architecture Verified)
+Repository: https://github.com/ellmos-ai/ai-media-editor
+Organization: ellmos-ai | Umbrella Ecosystem: open-bricks
+Canonical Clone: C:\_Local_DEV\repos\ai-media-editor
+Active Version: 0.2.0 | Language Stage: Core (DE + EN)
+
+--------------------------------------------------------------------------------
+1. EXECUTIVE SUMMARY & POSITIONING
+--------------------------------------------------------------------------------
+ai-media-editor is an unprivileged, local-first media preparation and editing
+orchestration platform tailored for autonomous AI coding agents (Claude Code,
+Gemini/Antigravity, Codex).
+
+Key Value Proposition:
+- Replaces proprietary cloud STT services (such as ElevenLabs Scribe) with 100%
+  offline speech-to-text engines (faster-whisper and WhisperX) producing schema-
+  compatible Scribe JSON outputs.
+- Empowers multimodal LLMs and coding agents to visually judge and edit video
+  recordings through deterministic timestamped frame contact-sheets and
+  pause-aware cut candidate lists.
+- Integrated offline procedural score synthesis via tools/compose_music.py using
+  numpy waveforms driven by storyline emotion and intensity parameters.
+- Suppresses disruptive console window bursts under Windows via preloaded child
+  process wrappers (tools/hide-windows.cjs, tools/hf.cmd).
+
+--------------------------------------------------------------------------------
+2. TARGET AUDIENCES & PERSONAS
+--------------------------------------------------------------------------------
+1. Autonomous Agent Developers:
+   Engineers orchestrating agentic video production pipelines that require
+   deterministic preflight, structured JSON transcript schemas, and visual
+   inspection frames without SaaS credential friction.
+2. Local-First Podcasters & Content Creators:
+   Creators demanding zero network egress for raw voice/video recordings,
+   eliminating data leaks and third-party subscription overhead.
+3. Open-Source AI Multimedia Pioneers:
+   Developers combining Hyperframes (HTML/CSS/JS -> MP4 animations), video-use,
+   and open STT models on consumer hardware.
+
+--------------------------------------------------------------------------------
+3. SEARCH PHRASES & DISCOVERABILITY KEYWORDS
+--------------------------------------------------------------------------------
+Primary Canonical ID:
+  ellmos-ai/ai-media-editor
+
+Key High-Intent Query Phrases:
+- local AI media editor video podcast transcription
+- agent driven video editor with local transcription
+- Claude Code video podcast editor Hyperframes
+- faster-whisper WhisperX Scribe JSON video-use
+- transcript based video cutting local first
+- Hyperframes motion graphics podcast editor
+- local first podcast editing AI agent workflow
+- offline procedural music synthesis storyline numpy
+
+--------------------------------------------------------------------------------
+4. SIBLING ECOSYSTEM & CROSS-LINKING MATRIX
+--------------------------------------------------------------------------------
+The project is deeply integrated into the open-bricks and ellmos-ai federated
+tool ecosystem:
+
+1.  ellmos-ai/clip-storyboard-director  -- Generative storyboard and scene director
+2.  ellmos-ai/assistant-core            -- Conversational supervision and loop control
+3.  ellmos-ai/decision-clicker          -- Interactive user decision intake gateway
+4.  ellmos-ai/lock-master               -- Fail-closed multi-agent locking framework
+5.  ellmos-ai/clutch                    -- Process supervisor and agent coordination
+6.  ellmos-ai/system-explorer           -- Local hardware and capability discovery
+7.  ellmos-ai/roblox-studio-core        -- Headless 3D studio capture and automation
+8.  entertain-and-more/usb-podcast-studio -- USB audio capture and podcast staging
+9.  entertain-and-more/BattleStage      -- Server-authoritative physics simulation
+10. dev-bricks/DevCenter                -- Developer tool suite and workspace manager
+11. dev-bricks/MethodenAnalyser         -- Static Python code metrics & method audit
+12. file-bricks/ExplorerPro             -- High-speed desktop file manager (PySide6)
+13. file-bricks/ProFiler                -- Deep directory analysis and inspection
+14. file-bricks/CloudLockFixer          -- Multi-host synchronization conflict fixer
+15. doc-bricks/FormularErstellen        -- Dynamic PDF and form layout generator
+16. open-bricks/open-bricks             -- Umbrella open-source standards organization
+
+--------------------------------------------------------------------------------
+5. GOVERNANCE & RUNTIME INVARIANTS (10 GUARANTEES)
+--------------------------------------------------------------------------------
+INV-LOCAL-01:  100% Local-First & Zero Network Egress
+INV-RUNAS-02:  Unprivileged Execution / RunAsInvoker Non-Elevation
+INV-PREV-03:   Preview-Safe & Non-Destructive Source Media Isolation
+INV-DETERM-04: Deterministic Waveform Synthesis & Scribe JSON Schemas
+INV-BOUNDARY-05: Anti-Traversal & Project Directory Containment
+INV-SUBPROC-06: Clean Subprocess Lifecycle & Windows Console Window Suppression
+INV-PARITY-07: Cross-Platform Operating System Parity (Windows, Linux, macOS)
+INV-SYNC-08:   Cloud-Sync & Multi-Agent Lock Concurrency Discipline
+INV-DOCS-09:   Transparent Multimodal Accessibility & Bilingual Documentation
+INV-SLA-10:    48h Security Response & 5-Day Triage SLA
+
+--------------------------------------------------------------------------------
+6. VERIFICATION & METADATA AUDIT CHECKLIST
+--------------------------------------------------------------------------------
+[x] Bilingual Landing Pages (README.md and README_de.md) with language switcher
+[x] Standardized 14-point Quick Navigation with 100% anchor parity
+[x] Shields.io Badges (Version, CI, Tests, Python, Platforms, Privacy, Security,
+    SLA, Code Style, Ecosystem, Umbrella, LLM-Ready, Audit, License)
+[x] Dual-Mermaid Diagrams (System Architecture Flowchart & Execution Sequence)
+[x] 10 Governance Invariants Table in English and German
+[x] 16 Partner Repositories in Sibling Ecosystem Matrix
+[x] Bilingual Security Policy (SECURITY.md) with 48h Response / 5d Triage SLA
+[x] Multi-OS CI Workflow (.github/workflows/ci.yml) with compileall & ruff
+[x] Standard PEP 621 pyproject.toml with OS classifiers, Ecosystem URLs, and
+    [tool.pytest.ini_options] addopts = "-ra -v"
+[x] THIRD_PARTY_LICENSES.md documenting open-source tooling and libraries
+[x] llms.txt updated with current audit timestamp (2026-09-10) and verified tests
+[x] Automated contract test suite (tests/test_metadata.py) verifying all policies

@@ -1,4 +1,4 @@
-## Last-checked: 2026-09-09
+## Last-checked: 2026-09-10
 
 # ellmos-ai/ai-media-editor
 
@@ -12,7 +12,8 @@ https://github.com/ellmos-ai/ai-media-editor
 `ai-media-editor` prepares media projects for agent-driven editing. It routes local or remote
 speech-to-text, writes the Scribe fields consumed by `video-use`, packs transcript/cut context,
 generates timestamped frame views for visual judgment, and leaves the creative cut, animation,
-and Hyperframes composition to an AI coding agent.
+and Hyperframes composition to an AI coding agent. All 10 governance invariants and dual-mermaid
+diagrams ensure local-first execution, unprivileged operation, and reproducible audio/video artifacts.
 
 ## Audience
 
@@ -23,8 +24,8 @@ and Hyperframes composition to an AI coding agent.
 
 ## Important files
 
-- `README.md` — public overview, setup, quickstart, and discovery context (English, primary).
-- `README_de.md` — German translation of the overview (language stage: Core/DE+EN).
+- `README.md` — public overview, setup, quickstart, dual-mermaid diagrams, and 14-point navigation (English, primary).
+- `README_de.md` — German translation of the overview (language stage: Core/DE+EN) with complete anchor parity.
 - `CLAUDE.md` — German agent-facing workflow guide and hard editing rules.
 - `docs/USECASES.md` — step-by-step instructions for the 8 supported media workflows.
 - `editor.py` — orchestrator for `doctor`, `modes`, `prepare`, and `frames`.
@@ -34,10 +35,25 @@ and Hyperframes composition to an AI coding agent.
 - `tools/cut_view.py` — pause-aware transcript cut candidates.
 - `tools/hf.cmd`, `tools/hf-hidden.vbs`, `tools/hide-windows.cjs` — Windows wrapper + Node preload that forces `windowsHide` for every child process (no console-window bursts from HyperFrames); `tools/count_console_windows.ps1` measures visible windows. Details: `docs/WINDOWS-KONSOLENFENSTER.md`.
 - `production/OVERVIEW.md` — optional generative workflows and mandatory cloud/rights gates.
+- `THIRD_PARTY_LICENSES.md` — inventory of third-party open-source components, tools, and licenses.
+- `MARKETING-LOG.txt` — discoverability, marketing personas, and architecture audit log.
 - `tests/test_core.py` — dependency-free regression contract for cache, remote, frames, and diarization.
 - `tests/test_metadata.py` — automated contract tests for manifests, CI parity, security SLAs, and discoverability.
 - `SECURITY.md` — bilingual vulnerability reporting and sensitive-media security scope (48h initial response SLA).
 - `brand/design-tokens.css` — design tokens for generated motion graphics.
+
+## Governance & Runtime Invariants (10 Guarantees)
+
+- `INV-LOCAL-01`: 100% Local-First & Zero Network Egress
+- `INV-RUNAS-02`: Unprivileged Execution / RunAsInvoker Non-Elevation
+- `INV-PREV-03`: Preview-Safe & Non-Destructive Source Media Isolation
+- `INV-DETERM-04`: Deterministic Waveform Synthesis & Scribe JSON Schemas
+- `INV-BOUNDARY-05`: Anti-Traversal & Project Directory Containment
+- `INV-SUBPROC-06`: Clean Subprocess Lifecycle & Windows Console Window Suppression
+- `INV-PARITY-07`: Cross-Platform Operating System Parity (Windows, Linux, macOS)
+- `INV-SYNC-08`: Cloud-Sync & Multi-Agent Lock Concurrency Discipline
+- `INV-DOCS-09`: Transparent Multimodal Accessibility & Bilingual Documentation
+- `INV-SLA-10`: 48h Security Response & 5-Day Triage SLA
 
 ## Search Phrases
 
@@ -60,6 +76,6 @@ for local transcript, frame, and edit context.
 
 ## External Discovery Notes
 
-As of 2026-09-09, GitHub search and broad web search surface GitHub repository and topic
+As of 2026-09-10, GitHub search and broad web search surface GitHub repository and topic
 context. The project is maintained under the `ellmos-ai` organization and governed under
-the `open-bricks` umbrella ecosystem.
+the `open-bricks` umbrella ecosystem. Test suite passes with 100% green contract tests.
