@@ -2,7 +2,7 @@
   "schema": "ellmos.module.v2",
   "id": "ai-media-editor",
   "display_name": "ai-media-editor",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Local-first AI-assisted audio/video preparation with optional remote STT and generative workflows.",
   "package": null,
   "entrypoints": {

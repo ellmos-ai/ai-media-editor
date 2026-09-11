@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ai-media-editor"
-version = "0.2.0"
+version = "0.2.1"
 description = "Local-first AI media editor for video, audio, and podcast workflows driven by AI coding agents"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -50,6 +50,7 @@ Changelog = "https://github.com/ellmos-ai/ai-media-editor/blob/main/CHANGELOG.md
 Security = "https://github.com/ellmos-ai/ai-media-editor/blob/main/SECURITY.md"
 "Third-Party Licenses" = "https://github.com/ellmos-ai/ai-media-editor/blob/main/THIRD_PARTY_LICENSES.md"
 "Marketing Log" = "https://github.com/ellmos-ai/ai-media-editor/blob/main/MARKETING-LOG.txt"
+"LLM Ready" = "https://github.com/ellmos-ai/ai-media-editor/blob/main/llms.txt"
 "Parent Organization" = "https://github.com/ellmos-ai"
 "Umbrella Ecosystem" = "https://github.com/open-bricks"
 

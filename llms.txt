@@ -1,4 +1,4 @@
-## Last-checked: 2026-09-10
+## Last-checked: 2026-09-11
 
 # ellmos-ai/ai-media-editor
 
@@ -24,7 +24,7 @@ diagrams ensure local-first execution, unprivileged operation, and reproducible 
 
 ## Important files
 
-- `README.md` — public overview, setup, quickstart, dual-mermaid diagrams, and 14-point navigation (English, primary).
+- `README.md` — public overview, setup, quickstart, dual-mermaid diagrams, and 15-point navigation (English, primary).
 - `README_de.md` — German translation of the overview (language stage: Core/DE+EN) with complete anchor parity.
 - `CLAUDE.md` — German agent-facing workflow guide and hard editing rules.
 - `docs/USECASES.md` — step-by-step instructions for the 8 supported media workflows.
@@ -76,6 +76,6 @@ for local transcript, frame, and edit context.
 
 ## External Discovery Notes
 
-As of 2026-09-10, GitHub search and broad web search surface GitHub repository and topic
+As of 2026-09-11, GitHub search and broad web search surface GitHub repository and topic
 context. The project is maintained under the `ellmos-ai` organization and governed under
 the `open-bricks` umbrella ecosystem. Test suite passes with 100% green contract tests.

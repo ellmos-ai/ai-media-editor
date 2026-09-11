@@ -1,9 +1,9 @@
 <p align="center"><img src="assets/banner.svg" alt="ai-media-editor — Video · Audio · Podcast, lokal" width="100%"></p>
 
 <p align="center">
-  <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/version-0.2.0-blue" alt="Version 0.2.0"></a>
+  <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/version-0.2.1-blue" alt="Version 0.2.1"></a>
   <a href="https://github.com/ellmos-ai/ai-media-editor/actions/workflows/ci.yml"><img src="https://img.shields.io/badge/CI-passing-brightgreen" alt="CI-Status"></a>
-  <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/tests-62%20passed%20%7C%20100%25%20green-brightgreen" alt="Tests bestanden"></a>
+  <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/tests-65%20passed%20%7C%20100%25%20green-brightgreen" alt="Tests bestanden"></a>
   <a href="https://python.org"><img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue" alt="Python 3.10+"></a>
   <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/plattformen-Windows%20%7C%20Linux%20%7C%20macOS-blue" alt="Plattformen"></a>
   <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/datenschutz-100%25%20Local--First%20%7C%20Zero--Egress-success" alt="Datenschutz: Local-First"></a>
@@ -13,7 +13,7 @@
   <a href="https://github.com/ellmos-ai"><img src="https://img.shields.io/badge/ecosystem-ellmos--ai-informational" alt="Ökosystem: ellmos-ai"></a>
   <a href="https://github.com/open-bricks"><img src="https://img.shields.io/badge/umbrella-open--bricks-blueviolet" alt="Dachorganisation: open-bricks"></a>
   <a href="llms.txt"><img src="https://img.shields.io/badge/LLM--Ready-llms.txt-orange" alt="LLM Bereit"></a>
-  <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/last--checked-2026--09--10-blue" alt="Zuletzt geprüft"></a>
+  <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/last--checked-2026--09--11-blue" alt="Zuletzt geprüft"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/lizenz-MIT-blue" alt="Lizenz: MIT"></a>
 </p>
 
@@ -38,7 +38,8 @@
 11. [Qualitätsprüfung & Tests](#qualitätsprüfung--tests)
 12. [Maschinenlesbarer Kontext (`llms.txt`)](#maschinenlesbarer-kontext-llmstxt)
 13. [Changelog & Veröffentlichungen](#changelog--veröffentlichungen)
-14. [Lizenz & Drittanbieter-Hinweise](#lizenz--drittanbieter-hinweise)
+14. [Drittanbieter-Lizenzen & Transparenz](#drittanbieter-lizenzen--transparenz)
+15. [Marketing & Zielgruppen](#marketing--zielgruppen)
 
 ---
 
@@ -340,11 +341,43 @@ offline procedural music synthesis storyline numpy
 ## Changelog & Veröffentlichungen
 
 Siehe [`CHANGELOG.md`](CHANGELOG.md) für die vollständige Versionshistorie.
+- **Version 0.2.1**: Pfad B Discoverability, 15-Punkte-Schnellnavigation, dediziertes Drittanbieter-Lizenzinventar, 4 Zielgruppen-Personas, 4-Wege-Wettbewerbsmatrix, PEP 621 URLs und erweiterte Vertragstests.
 - **Version 0.2.0**: Gehärtete Local-First-Pipeline, automatisierte Vertragstests, Multi-OS CI-Matrix, zweisprachige Parität, Dual-Mermaid-Diagramme und 10 Governance-Invarianten.
 
 ---
 
-## Lizenz & Drittanbieter-Hinweise
+<a id="drittanbieter-lizenzen--transparenz"></a>
+## Drittanbieter-Lizenzen & Transparenz
 
+`ai-media-editor` setzt auf vollständige Open-Source-Transparenz, unprivilegierte Ausführung und Offline-Reproduzierbarkeit:
+
+- **100% Permissive Open-Source**: Sämtliche integrierten Bibliotheken, Runtimes und Engines stehen unter permissiven Open-Source-Lizenzen (MIT, Apache-2.0, BSD, PSFL) oder dynamisch verlinkten Werkzeugen (FFmpeg LGPL). Es existieren keinerlei proprietäre Sperren oder Telemetrie-Module.
+- **Keine Laufzeit-Cloud-Abhängigkeiten (`INV-LOCAL-01`)**: Transkription, Frame-Extraktion, Pausenanalyse und prozedurale Musiksynthese laufen vollständig offline auf Ihrer Hardware.
+- **Unprivilegierte Ausführung (`INV-RUNAS-02`)**: Alle Komponenten laufen im regulären Benutzer-Modus (`RunAsInvoker`) ohne Anforderung von Administrator- oder Root-Rechten.
+- **Detailliertes Komponenten-Inventar**: Ein vollständiges, auditiertes Verzeichnis mit Upstream-Quellen, Maintainern und Lizenztexten ist in [`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md) dokumentiert.
 - **Projekt-Lizenz**: [MIT-Lizenz](LICENSE) © 2026 ellmos-ai / open-bricks.
-- **Drittanbieter-Lizenzen**: Detailliertes Inventar in [`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md) (video-use: MIT, Hyperframes: Apache-2.0, faster-whisper: MIT, WhisperX: BSD-2-Clause, NumPy: BSD-3-Clause, FFmpeg: LGPL/GPL).
+
+---
+
+<a id="marketing--zielgruppen"></a>
+## Marketing & Zielgruppen
+
+`ai-media-editor` löst zentrale Engpässe in modernen KI-Medien-Workflows:
+
+### Zielgruppen & Personas
+1. **Autonome KI-Coding-Agent-Entwickler & Schwarm-Architekten**: Orchestrierung agentischer Videopipelines mit deterministischer Vorbereitung, strukturierten Scribe-JSON-Schemas und visuellen Kontaktbögen ohne SaaS-Schlüssel-Hürden.
+2. **Local-First Podcaster & Content-Ersteller**: Urheber, die null Datenabfluss (Zero-Egress) für Rohaufnahmen verlangen und teure Abo-Gebühren sowie Cloud-Lock-in vermeiden wollen.
+3. **KI-Video- & Motion-Design-Ingenieure**: Entwickler, die Hyperframes (HTML/CSS/JS -> MP4), video-use und lokale Spracherkennungsmodelle auf Standardhardware kombinieren.
+4. **Sicherheits-, Datenschutz- & Compliance-Beauftragte**: Unternehmens- und Medizin-Teams mit strengen Vertraulichkeitsauflagen (DSGVO / Berufsgeheimnis), unterstützt durch verbindliche 48h-Sicherheits-SLAs.
+
+### 4-Wege-Wettbewerbsmatrix
+| Funktionsdimension | ai-media-editor | Cloud-SaaS (Descript / ElevenLabs) | Schwere NLEs (Premiere / DaVinci) | Reine CLI-Skripte (FFmpeg / Shell) |
+|:---|:---:|:---:|:---:|:---:|
+| **Local-First & Zero-Egress** | :white_check_mark: 100% Lokal | :x: Cloud-Upload Pflicht | :warning: Lokal (mit Telemetrie) | :white_check_mark: 100% Lokal |
+| **Agenten-native Architektur** | :white_check_mark: Scribe JSON & CLI | :x: Geschlossene Web-Oberfläche | :x: Komplexe GUI-Skripte | :warning: Low-Level Skripte |
+| **Visuelles LLM-Feedback** | :white_check_mark: Frame-Kontaktbögen | :x: Nur Web-Player | :x: Nur Timeline | :x: Manuelle Extraktion |
+| **Motion-Graphics-Engine** | :white_check_mark: Hyperframes (HTML/CSS) | :x: Proprietäre Templates | :warning: After Effects / Fusion | :warning: Komplexe Filterketten |
+| **Prozedurales Audio** | :white_check_mark: Integrierte NumPy-Synthese | :x: Kostenpflichtige Bibliotheken | :x: Manueller Musik-Import | :x: Keine |
+| **Lizenz & Freiheit** | :white_check_mark: 100% Frei (MIT) | :x: Monatliches Bezahl-Abo | :x: Kommerzielle Lizenz | :white_check_mark: Open Source |
+
+Detailliertes Marketing-Audit, Suchbegriffe und Audit-Protokoll: [`MARKETING-LOG.txt`](MARKETING-LOG.txt).

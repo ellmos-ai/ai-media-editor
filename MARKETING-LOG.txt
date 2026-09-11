@@ -1,53 +1,63 @@
 ================================================================================
 ai-media-editor -- Marketing, Discoverability & Architecture Audit (Pfad B)
 ================================================================================
-Datum: 2026-09-10
+Datum: 2026-09-11
 Status: ACTIVE / HARDENED (Pfad B Discoverability & Architecture Verified)
 Repository: https://github.com/ellmos-ai/ai-media-editor
 Organization: ellmos-ai | Umbrella Ecosystem: open-bricks
 Canonical Clone: C:\_Local_DEV\repos\ai-media-editor
-Active Version: 0.2.0 | Language Stage: Core (DE + EN)
+Active Version: 0.2.1 | Language Stage: Core (DE + EN)
 
 --------------------------------------------------------------------------------
-1. EXECUTIVE SUMMARY & POSITIONING
+1. EXECUTIVE SUMMARY & CORE POSITIONING
 --------------------------------------------------------------------------------
-ai-media-editor is an unprivileged, local-first media preparation and editing
-orchestration platform tailored for autonomous AI coding agents (Claude Code,
-Gemini/Antigravity, Codex).
+ai-media-editor is an unprivileged, local-first media preparation, transcription,
+and editing orchestration platform engineered specifically for autonomous AI
+coding agents (Claude Code, Gemini/Antigravity, Codex CLI, Kimi Code).
 
 Key Value Proposition:
 - Replaces proprietary cloud STT services (such as ElevenLabs Scribe) with 100%
-  offline speech-to-text engines (faster-whisper and WhisperX) producing schema-
-  compatible Scribe JSON outputs.
+  offline, zero-egress speech-to-text engines (faster-whisper and WhisperX) that
+  produce schema-valid Scribe JSON outputs.
 - Empowers multimodal LLMs and coding agents to visually judge and edit video
   recordings through deterministic timestamped frame contact-sheets and
-  pause-aware cut candidate lists.
-- Integrated offline procedural score synthesis via tools/compose_music.py using
-  numpy waveforms driven by storyline emotion and intensity parameters.
+  pause-aware cut candidate lists without SaaS credential friction.
+- Built-in offline procedural music synthesis (tools/compose_music.py) using pure
+  NumPy waveforms driven by storyline emotion, intensity, and timing parameters.
 - Suppresses disruptive console window bursts under Windows via preloaded child
   process wrappers (tools/hide-windows.cjs, tools/hf.cmd).
+- Fully decoupled, zero-cloud architecture with 10 strict runtime invariants.
 
 --------------------------------------------------------------------------------
 2. TARGET AUDIENCES & PERSONAS
 --------------------------------------------------------------------------------
-1. Autonomous Agent Developers:
-   Engineers orchestrating agentic video production pipelines that require
-   deterministic preflight, structured JSON transcript schemas, and visual
-   inspection frames without SaaS credential friction.
+1. Autonomous AI Coding Agent Developers & Swarm Architects:
+   Engineers orchestrating agentic video and podcast production pipelines that
+   require deterministic preflight, structured JSON transcript schemas, and visual
+   inspection frames without SaaS credential friction, token waste, or API limits.
+
 2. Local-First Podcasters & Content Creators:
-   Creators demanding zero network egress for raw voice/video recordings,
-   eliminating data leaks and third-party subscription overhead.
-3. Open-Source AI Multimedia Pioneers:
+   Creators demanding zero network egress for raw voice and video recordings,
+   eliminating data leaks, cloud subscription fees, and forced cloud dependencies
+   while maintaining high-quality transcript-based cutting.
+
+3. AI Video & Motion Graphics Engineers:
    Developers combining Hyperframes (HTML/CSS/JS -> MP4 animations), video-use,
-   and open STT models on consumer hardware.
+   and open STT models on consumer hardware for automated intros, lower-thirds,
+   and branded motion design assets.
+
+4. Enterprise Media Security, Privacy & Compliance Officers:
+   Corporate and healthcare teams handling confidential interviews and internal
+   broadcasts that legally prohibit cloud upload under GDPR / HIPAA and require
+   formal 48h security response SLAs and unprivileged execution guarantees.
 
 --------------------------------------------------------------------------------
-3. SEARCH PHRASES & DISCOVERABILITY KEYWORDS
+3. HIGH-INTENT SEARCH PHRASES & DISCOVERABILITY KEYWORDS
 --------------------------------------------------------------------------------
-Primary Canonical ID:
+Primary Canonical Identifier:
   ellmos-ai/ai-media-editor
 
-Key High-Intent Query Phrases:
+English High-Intent Query Phrases:
 - local AI media editor video podcast transcription
 - agent driven video editor with local transcription
 - Claude Code video podcast editor Hyperframes
@@ -56,9 +66,34 @@ Key High-Intent Query Phrases:
 - Hyperframes motion graphics podcast editor
 - local first podcast editing AI agent workflow
 - offline procedural music synthesis storyline numpy
+- open source AI video editor for coding agents
+- zero egress video transcription and cutting
+
+German High-Intent Query Phrases:
+- lokaler KI Medieneditor Videoschnitt Podcast Transkription
+- agentengesteuerter Videoschnitt mit lokaler Transkription
+- Claude Code Podcast Videoschnitt Hyperframes
+- faster-whisper WhisperX Scribe JSON video-use deutsch
+- transkriptbasierter Videoschnitt offline lokal
+- Hyperframes Bewegungsgrafiken automatisieren
+- DSGVO-konformer lokaler Videoschnitt fuer KI-Agenten
+- prozedurale Musiksynthese Storyline offline
 
 --------------------------------------------------------------------------------
-4. SIBLING ECOSYSTEM & CROSS-LINKING MATRIX
+4. 4-WAY COMPETITIVE MATRIX
+--------------------------------------------------------------------------------
+| Dimension | ai-media-editor | Cloud SaaS (Descript/ElevenLabs) | Heavy NLEs (Premiere/DaVinci) | Raw CLI (FFmpeg/Shell) |
+|:---|:---|:---|:---|:---|
+| **Egress / Privacy** | 100% Local-First / Zero Egress | Mandatory Cloud Upload | Local, but proprietary telemetry | 100% Local / Offline |
+| **Agent Autonomy** | Agent-Native (JSON, frames, CLI) | Closed Web GUI / Fragile APIs | Manual GUI / Scripting complex | Manual Scripting only |
+| **Transcription** | Offline faster-whisper/WhisperX | SaaS STT (Pay-per-minute) | Cloud or bulky offline model | Requires external setup |
+| **Visual LLM Feedback** | Timestamped Contact-Sheets | Web player only | GUI timeline only | Manual frame extraction |
+| **Motion Graphics** | Hyperframes (HTML/CSS/JS -> MP4) | Template-locked SaaS | After Effects / Fusion plugins | Complex FFmpeg filters |
+| **Procedural Audio** | Built-in NumPy Storyline Score | Stock library / AI credits | Manual music track import | None / External audio |
+| **License & Portability** | 100% Permissive Open Source (MIT) | Closed SaaS Subscription | Commercial license / Dongle | Free Open Source |
+
+--------------------------------------------------------------------------------
+5. SIBLING ECOSYSTEM & CROSS-LINKING MATRIX
 --------------------------------------------------------------------------------
 The project is deeply integrated into the open-bricks and ellmos-ai federated
 tool ecosystem:
@@ -81,7 +116,7 @@ tool ecosystem:
 16. open-bricks/open-bricks             -- Umbrella open-source standards organization
 
 --------------------------------------------------------------------------------
-5. GOVERNANCE & RUNTIME INVARIANTS (10 GUARANTEES)
+6. GOVERNANCE & RUNTIME INVARIANTS (10 GUARANTEES)
 --------------------------------------------------------------------------------
 INV-LOCAL-01:  100% Local-First & Zero Network Egress
 INV-RUNAS-02:  Unprivileged Execution / RunAsInvoker Non-Elevation
@@ -95,8 +130,9 @@ INV-DOCS-09:   Transparent Multimodal Accessibility & Bilingual Documentation
 INV-SLA-10:    48h Security Response & 5-Day Triage SLA
 
 --------------------------------------------------------------------------------
-6. VERIFICATION & METADATA AUDIT CHECKLIST
+7. VERIFICATION & METADATA AUDIT CHECKLIST & HISTORY
 --------------------------------------------------------------------------------
+Audit 2026-09-10 (Pfad B Initial Baseline):
 [x] Bilingual Landing Pages (README.md and README_de.md) with language switcher
 [x] Standardized 14-point Quick Navigation with 100% anchor parity
 [x] Shields.io Badges (Version, CI, Tests, Python, Platforms, Privacy, Security,
@@ -109,5 +145,16 @@ INV-SLA-10:    48h Security Response & 5-Day Triage SLA
 [x] Standard PEP 621 pyproject.toml with OS classifiers, Ecosystem URLs, and
     [tool.pytest.ini_options] addopts = "-ra -v"
 [x] THIRD_PARTY_LICENSES.md documenting open-source tooling and libraries
-[x] llms.txt updated with current audit timestamp (2026-09-10) and verified tests
+[x] llms.txt updated with current audit timestamp and verified tests
 [x] Automated contract test suite (tests/test_metadata.py) verifying all policies
+
+Audit 2026-09-11 (Pfad B Discoverability, 15-Point Navigation & Parity Upgrade):
+[x] 15-Point Quick Navigation with dedicated Third-Party Licenses and Marketing Personas
+[x] 100% Anchor Parity (#third-party-licenses--transparency / #drittanbieter-lizenzen--transparenz)
+[x] 100% Anchor Parity (#marketing--target-personas / #marketing--zielgruppen)
+[x] 4 Target Personas and 4-way competitive matrix documented in MARKETING-LOG.txt & READMEs
+[x] pyproject.toml updated with PEP 621 "LLM Ready" and ecosystem links
+[x] Version bumped to 0.2.1 across VERSION, pyproject.toml, ellmos-module.v2.json, docs
+[x] THIRD_PARTY_LICENSES.md enriched with RunAsInvoker and zero-egress statements
+[x] Contract tests in tests/test_metadata.py expanded to verify all new Pfad B requirements
+================================================================================

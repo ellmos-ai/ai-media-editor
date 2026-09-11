@@ -29,17 +29,17 @@ def _load_pyproject():
 def test_version_consistency():
     """Verify version consistency across VERSION, pyproject.toml, and ellmos-module.v2.json."""
     version_file = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
-    assert version_file == "0.2.0"
+    assert version_file == "0.2.1"
 
     pyproject = _load_pyproject()
     if "project" in pyproject:
-        assert pyproject["project"]["version"] == "0.2.0"
+        assert pyproject["project"]["version"] == "0.2.1"
     else:
-        assert 'version = "0.2.0"' in pyproject["raw"]
+        assert 'version = "0.2.1"' in pyproject["raw"]
 
     with (ROOT / "ellmos-module.v2.json").open(encoding="utf-8") as handle:
         manifest = json.load(handle)
-    assert manifest["version"] == "0.2.0"
+    assert manifest["version"] == "0.2.1"
 
 
 def test_manifest_parity():
@@ -80,7 +80,8 @@ def test_llms_txt_integrity():
     llms_path = ROOT / "llms.txt"
     assert llms_path.is_file()
     content = llms_path.read_text(encoding="utf-8")
-    assert "Last-checked: 2026-09-10" in content
+    assert "Last-checked: 2026-09-11" in content
+    assert "15-point navigation" in content
     assert "ellmos-ai/ai-media-editor" in content
     assert "open-bricks" in content
     assert "INV-LOCAL-01" in content
@@ -90,7 +91,9 @@ def test_readme_badges_and_parity():
     """Verify that README.md and README_de.md include language switchers, up-to-date badges, and ecosystem links."""
     for filename in ("README.md", "README_de.md"):
         content = (ROOT / filename).read_text(encoding="utf-8")
-        assert "tests-62" in content or "tests-56" in content or "tests-passed" in content or "passing" in content
+        assert "version-0.2.1" in content
+        assert "last--checked-2026--09--11" in content
+        assert "tests-65" in content or "tests-62" in content or "tests-passed" in content or "passing" in content
         assert "license-MIT" in content or "lizenz-MIT" in content or "MIT" in content
         assert "python-3.10" in content
         assert "open--bricks" in content
@@ -119,6 +122,7 @@ def test_pyproject_tooling_integrity():
         assert "Security" in urls
         assert "Third-Party Licenses" in urls
         assert "Marketing Log" in urls
+        assert "LLM Ready" in urls
         assert urls.get("Parent Organization") == "https://github.com/ellmos-ai"
         assert urls.get("Umbrella Ecosystem") == "https://github.com/open-bricks"
         tool = pyproject.get("tool", {})
@@ -131,6 +135,7 @@ def test_pyproject_tooling_integrity():
         assert "Programming Language :: Python :: 3.13" in raw
         assert "Umbrella Ecosystem" in raw
         assert "Parent Organization" in raw
+        assert "LLM Ready" in raw
         assert "addopts = \"-ra -v\"" in raw
 
 
@@ -194,7 +199,7 @@ def test_cli_modes_smoke():
 
 
 def test_readme_quick_navigation_and_anchor_parity():
-    """Verify that README.md and README_de.md implement full 14-point quick navigation and anchor parity."""
+    """Verify that README.md and README_de.md implement full 15-point quick navigation and anchor parity."""
     en_readme = (ROOT / "README.md").read_text(encoding="utf-8")
     de_readme = (ROOT / "README_de.md").read_text(encoding="utf-8")
 
@@ -212,7 +217,8 @@ def test_readme_quick_navigation_and_anchor_parity():
         "#quality-gates--testing",
         "#machine-readable-context-llmstxt",
         "#changelog--releases",
-        "#license--third-party-notice",
+        "#third-party-licenses--transparency",
+        "#marketing--target-personas",
     ]
     for anchor in en_anchors:
         assert anchor in en_readme, f"Anchor {anchor} missing from README.md"
@@ -231,7 +237,8 @@ def test_readme_quick_navigation_and_anchor_parity():
         "#qualitätsprüfung--tests",
         "#maschinenlesbarer-kontext-llmstxt",
         "#changelog--veröffentlichungen",
-        "#lizenz--drittanbieter-hinweise",
+        "#drittanbieter-lizenzen--transparenz",
+        "#marketing--zielgruppen",
     ]
     for anchor in de_anchors:
         assert anchor in de_readme, f"Anchor {anchor} missing from README_de.md"
@@ -293,20 +300,81 @@ def test_sibling_ecosystem_matrix():
 
 
 def test_third_party_licenses_inventory():
-    """Verify that THIRD_PARTY_LICENSES.md exists and inventories all core third-party dependencies."""
+    """Verify that THIRD_PARTY_LICENSES.md exists, is up-to-date, and inventories all core dependencies."""
     tpl_file = ROOT / "THIRD_PARTY_LICENSES.md"
     assert tpl_file.is_file(), "THIRD_PARTY_LICENSES.md must exist"
     content = tpl_file.read_text(encoding="utf-8")
-    for dep in ("video-use", "Hyperframes", "faster-whisper", "WhisperX", "NumPy", "FFmpeg"):
+    assert "Stand: 2026-09-11" in content
+    assert "INV-LOCAL-01" in content
+    assert "INV-RUNAS-02" in content or "RunAsInvoker" in content
+    for dep in ("video-use", "Hyperframes", "faster-whisper", "WhisperX", "NumPy", "FFmpeg", "Node.js", "pytest", "Ruff", "setuptools"):
         assert dep in content, f"Dependency {dep} missing from THIRD_PARTY_LICENSES.md"
 
 
 def test_marketing_log_present():
-    """Verify that MARKETING-LOG.txt exists and contains audit metadata, keywords, and invariants."""
+    """Verify that MARKETING-LOG.txt exists and contains audit metadata, personas, matrix, and invariants."""
     ml_file = ROOT / "MARKETING-LOG.txt"
     assert ml_file.is_file(), "MARKETING-LOG.txt must exist"
     content = ml_file.read_text(encoding="utf-8")
     assert "ai-media-editor" in content
     assert "Pfad B" in content
+    assert "4-WAY COMPETITIVE MATRIX" in content
+    assert "Autonomous AI Coding Agent" in content
+    assert "Local-First Podcasters" in content
+    assert "AI Video & Motion Graphics" in content
+    assert "Enterprise Media Security" in content
     assert "INV-LOCAL-01" in content
     assert "INV-SLA-10" in content
+    assert "Audit 2026-09-11" in content
+
+
+def test_changelog_release_entry():
+    """Verify that CHANGELOG.md contains the 0.2.1 Pfad B release entry."""
+    cl_file = ROOT / "CHANGELOG.md"
+    assert cl_file.is_file(), "CHANGELOG.md must exist"
+    content = cl_file.read_text(encoding="utf-8")
+    assert "## [0.2.1] - 2026-09-11" in content
+    assert "third-party-licenses--transparency" in content
+    assert "marketing--target-personas" in content
+    assert "4-way competitive matrix" in content
+
+
+def test_pep621_extended_urls():
+    """Verify that pyproject.toml defines all extended metadata URLs required for Pfad B discoverability."""
+    pyproject = _load_pyproject()
+    if "project" in pyproject:
+        urls = pyproject["project"].get("urls", {})
+        required_urls = [
+            "Homepage",
+            "Repository",
+            "Issues",
+            "Documentation",
+            "Changelog",
+            "Security",
+            "Third-Party Licenses",
+            "Marketing Log",
+            "LLM Ready",
+            "Parent Organization",
+            "Umbrella Ecosystem",
+        ]
+        for key in required_urls:
+            assert key in urls, f"Required project.urls key {key} missing from pyproject.toml"
+    else:
+        raw = pyproject["raw"]
+        for key in ("Third-Party Licenses", "Marketing Log", "LLM Ready", "Parent Organization", "Umbrella Ecosystem"):
+            assert key in raw, f"Required URL {key} missing in raw pyproject.toml"
+
+
+def test_bilingual_marketing_matrix_parity():
+    """Verify that both README.md and README_de.md include the 4-way competitive matrix and 4 target personas."""
+    for filename in ("README.md", "README_de.md"):
+        content = (ROOT / filename).read_text(encoding="utf-8")
+        assert "Autonomous AI Coding Agent" in content or "Autonome KI-Coding-Agent" in content
+        assert "Local-First Podcaster" in content
+        assert "Motion Graphics" in content or "Motion-Design" in content
+        assert "Security & Compliance" in content or "Sicherheits-, Datenschutz-" in content
+        assert "Descript" in content
+        assert "ElevenLabs" in content
+        assert "Premiere" in content
+        assert "FFmpeg" in content
+
