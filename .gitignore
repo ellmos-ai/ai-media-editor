@@ -43,12 +43,20 @@ wheelhouse/
 *-CONFLIT-*
 *-conflict-*
 *.sync-temp-*
-*-ASUS-GEI.*
+*-ASUS-GEI*
+*-WORKSTATION*
+* (kopie)*
+* (Kopie)*
+* (copy)*
+* (Copy)*
+*conflicted copy*
 LOCK
 LOCK.*
 *.lock
 LOCK*.txt
 LOCK.permissions.json
+uv.lock
+!package-lock.json
 
 # --- Temporary & Backup Files ---
 *.tmp
@@ -56,6 +64,13 @@ LOCK.permissions.json
 *.swp
 *~
 *.log
+*.orig
+*.rej
+
+# --- Caches & Test Artifacts ---
+.mypy_cache/
+.tox/
+.turbo/
 
 # --- Data ---
 data/

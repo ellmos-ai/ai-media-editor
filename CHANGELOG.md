@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.2.2] - 2026-09-12
+
+### Added
+- Standardized stale issues and pull requests lifecycle workflow in `.github/workflows/stale.yml` (`actions/stale@v9`) with 30-day inactivity detection, 7-day grace period, and priority label exemptions.
+- Standardized `[project.optional-dependencies]` in `pyproject.toml` with `test` and `dev` tooling groups (`pytest>=8.0.0`, `pytest-asyncio>=0.23.0`, `ruff>=0.5.0`).
+- Expanded automated contract test suite in `tests/test_metadata.py` with 4 new contract tests:
+  - `test_ci_timeout_and_stale_workflow_guardrails`: verifies CI matrix runner timeout protection and stale issue/PR lifecycle configuration.
+  - `test_gitignore_multihost_and_lock_hardening`: validates multi-host sync conflict protection (`*-WORKSTATION*`, `*conflicted copy*`), canonical lock patterns, and cache directory exclusions.
+  - `test_pyproject_optional_dependencies`: checks PEP 621 optional dependency specifications for test and dev environments.
+  - `test_changelog_release_0_2_2`: verifies release notes integrity for 0.2.2 technical hygiene and maintenance pass.
+
+### Changed
+- Hardened CI matrix workflow in `.github/workflows/ci.yml` with `timeout-minutes: 15` job guardrails to prevent runaway runner processes across all matrix operating systems (Ubuntu, Windows, macOS).
+- Hardened `.gitignore` with comprehensive multi-host sync conflict rules (`*-WORKSTATION*`, `*-ASUS-GEI*`, `* (kopie)*`, `* (copy)*`, `*conflicted copy*`), lock patterns (`uv.lock`, with explicit `!package-lock.json` exemption), and cache directories (`.mypy_cache/`, `.tox/`, `.turbo/`, `*.orig`, `*.rej`).
+- Enriched `[tool.ruff.lint]` configuration in `pyproject.toml` with `RUF022` for standard export list formatting.
+- Synchronized version to `0.2.2` across `VERSION`, `pyproject.toml`, `ellmos-module.v2.json`, `README.md`, `README_de.md`, and `llms.txt`.
+- Synchronized Shields.io badges in `README.md` and `README_de.md` for version 0.2.2, verification timestamp `2026--09--12`, and updated passing test suite status.
+- Updated `llms.txt` verification timestamp to `2026-09-12` with 100% green contract test status.
+
 ## [0.2.1] - 2026-09-11
 
 ### Added

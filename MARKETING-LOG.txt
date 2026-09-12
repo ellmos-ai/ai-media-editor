@@ -6,7 +6,7 @@ Status: ACTIVE / HARDENED (Pfad B Discoverability & Architecture Verified)
 Repository: https://github.com/ellmos-ai/ai-media-editor
 Organization: ellmos-ai | Umbrella Ecosystem: open-bricks
 Canonical Clone: C:\_Local_DEV\repos\ai-media-editor
-Active Version: 0.2.1 | Language Stage: Core (DE + EN)
+Active Version: 0.2.2 | Language Stage: Core (DE + EN)
 
 --------------------------------------------------------------------------------
 1. EXECUTIVE SUMMARY & CORE POSITIONING
@@ -157,4 +157,13 @@ Audit 2026-09-11 (Pfad B Discoverability, 15-Point Navigation & Parity Upgrade):
 [x] Version bumped to 0.2.1 across VERSION, pyproject.toml, ellmos-module.v2.json, docs
 [x] THIRD_PARTY_LICENSES.md enriched with RunAsInvoker and zero-egress statements
 [x] Contract tests in tests/test_metadata.py expanded to verify all new Pfad B requirements
+
+Audit 2026-09-12 (Pfad A Repository Hygiene, CI Hardening & Contract Test Expansion):
+[x] CI matrix workflow (.github/workflows/ci.yml) hardened with timeout-minutes: 15 job guardrails
+[x] Stale issues and PRs lifecycle workflow deployed (.github/workflows/stale.yml, actions/stale@v9)
+[x] .gitignore hardened against multi-host conflicts (*-WORKSTATION*, *conflicted copy*, *(kopie)*, *(copy)*), locks (uv.lock), and caches (.mypy_cache/, .tox/, .turbo/)
+[x] Standardized [project.optional-dependencies] with test and dev groups in pyproject.toml
+[x] [tool.ruff.lint] select extended with RUF022
+[x] Version bumped to 0.2.2 across VERSION, pyproject.toml, ellmos-module.v2.json, README.md, README_de.md, llms.txt, and CHANGELOG.md
+[x] Contract test suite in tests/test_metadata.py expanded with 4 new contract tests
 ================================================================================

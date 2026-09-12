@@ -29,17 +29,17 @@ def _load_pyproject():
 def test_version_consistency():
     """Verify version consistency across VERSION, pyproject.toml, and ellmos-module.v2.json."""
     version_file = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
-    assert version_file == "0.2.1"
+    assert version_file == "0.2.2"
 
     pyproject = _load_pyproject()
     if "project" in pyproject:
-        assert pyproject["project"]["version"] == "0.2.1"
+        assert pyproject["project"]["version"] == "0.2.2"
     else:
-        assert 'version = "0.2.1"' in pyproject["raw"]
+        assert 'version = "0.2.2"' in pyproject["raw"]
 
     with (ROOT / "ellmos-module.v2.json").open(encoding="utf-8") as handle:
         manifest = json.load(handle)
-    assert manifest["version"] == "0.2.1"
+    assert manifest["version"] == "0.2.2"
 
 
 def test_manifest_parity():
@@ -80,7 +80,7 @@ def test_llms_txt_integrity():
     llms_path = ROOT / "llms.txt"
     assert llms_path.is_file()
     content = llms_path.read_text(encoding="utf-8")
-    assert "Last-checked: 2026-09-11" in content
+    assert "Last-checked: 2026-09-12" in content
     assert "15-point navigation" in content
     assert "ellmos-ai/ai-media-editor" in content
     assert "open-bricks" in content
@@ -91,9 +91,9 @@ def test_readme_badges_and_parity():
     """Verify that README.md and README_de.md include language switchers, up-to-date badges, and ecosystem links."""
     for filename in ("README.md", "README_de.md"):
         content = (ROOT / filename).read_text(encoding="utf-8")
-        assert "version-0.2.1" in content
-        assert "last--checked-2026--09--11" in content
-        assert "tests-65" in content or "tests-62" in content or "tests-passed" in content or "passing" in content
+        assert "version-0.2.2" in content
+        assert "last--checked-2026--09--12" in content
+        assert "tests-69" in content or "tests-65" in content or "tests-62" in content or "tests-passed" in content or "passing" in content
         assert "license-MIT" in content or "lizenz-MIT" in content or "MIT" in content
         assert "python-3.10" in content
         assert "open--bricks" in content
@@ -154,6 +154,7 @@ def test_ci_workflow_parity():
     assert "ruff check ." in content
     assert "concurrency:" in content
     assert "cancel-in-progress: true" in content
+    assert "timeout-minutes: 15" in content
     assert "python -m compileall -q ." in content
 
 
@@ -378,3 +379,66 @@ def test_bilingual_marketing_matrix_parity():
         assert "Premiere" in content
         assert "FFmpeg" in content
 
+
+def test_ci_timeout_and_stale_workflow_guardrails():
+    """Verify that CI workflow enforces 15-minute job timeout and stale workflow is present."""
+    ci_file = ROOT / ".github" / "workflows" / "ci.yml"
+    assert ci_file.is_file()
+    ci_content = ci_file.read_text(encoding="utf-8")
+    assert "timeout-minutes: 15" in ci_content
+
+    stale_file = ROOT / ".github" / "workflows" / "stale.yml"
+    assert stale_file.is_file(), "stale.yml must exist"
+    stale_content = stale_file.read_text(encoding="utf-8")
+    assert "actions/stale@v9" in stale_content
+    assert "schedule:" in stale_content
+    assert "exempt-issue-labels:" in stale_content
+
+
+def test_gitignore_multihost_and_lock_hardening():
+    """Verify that .gitignore contains multi-host sync conflict, lock, and cache patterns."""
+    gi_path = ROOT / ".gitignore"
+    assert gi_path.is_file()
+    content = gi_path.read_text(encoding="utf-8")
+    required = [
+        "*-WORKSTATION*",
+        "*-ASUS-GEI*",
+        "*conflicted copy*",
+        "* (kopie)*",
+        "* (copy)*",
+        "uv.lock",
+        "!package-lock.json",
+        ".mypy_cache/",
+        ".tox/",
+        ".turbo/",
+        "*.orig",
+        "*.rej",
+    ]
+    for pattern in required:
+        assert pattern in content, f"Pattern {pattern} missing from .gitignore"
+
+
+def test_pyproject_optional_dependencies():
+    """Verify that pyproject.toml specifies test and dev optional-dependencies."""
+    pyproject = _load_pyproject()
+    if "project" in pyproject:
+        opt = pyproject["project"].get("optional-dependencies", {})
+        assert "test" in opt, "test group missing from optional-dependencies"
+        assert "dev" in opt, "dev group missing from optional-dependencies"
+        assert any("pytest" in dep for dep in opt["test"])
+        assert any("ruff" in dep for dep in opt["test"])
+    else:
+        raw = pyproject["raw"]
+        assert "[project.optional-dependencies]" in raw
+        assert "pytest" in raw
+
+
+def test_changelog_release_0_2_2():
+    """Verify that CHANGELOG.md contains the 0.2.2 Pfad A release entry."""
+    cl_file = ROOT / "CHANGELOG.md"
+    assert cl_file.is_file(), "CHANGELOG.md must exist"
+    content = cl_file.read_text(encoding="utf-8")
+    assert "## [0.2.2] - 2026-09-12" in content
+    assert "timeout-minutes: 15" in content
+    assert "stale.yml" in content
+    assert "optional-dependencies" in content

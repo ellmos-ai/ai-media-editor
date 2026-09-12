@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ai-media-editor"
-version = "0.2.1"
+version = "0.2.2"
 description = "Local-first AI media editor for video, audio, and podcast workflows driven by AI coding agents"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -41,6 +41,18 @@ classifiers = [
     "Programming Language :: Python :: 3.13"
 ]
 
+[project.optional-dependencies]
+test = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "ruff>=0.5.0",
+]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "ruff>=0.5.0",
+]
+
 [project.urls]
 Homepage = "https://github.com/ellmos-ai/ai-media-editor"
 Repository = "https://github.com/ellmos-ai/ai-media-editor.git"
@@ -64,5 +76,5 @@ line-length = 100
 target-version = "py310"
 
 [tool.ruff.lint]
-select = ["E", "F", "W"]
+select = ["E", "F", "W", "RUF022"]
 ignore = ["E501"]

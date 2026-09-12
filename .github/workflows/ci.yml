@@ -15,6 +15,7 @@ concurrency:
 
 jobs:
   fast-checks:
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
