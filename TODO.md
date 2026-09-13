@@ -8,17 +8,8 @@
 
 ## Completed safety and correctness gates
 
-- [x] No secrets, real settings, project media, model caches, or local tool trees tracked.
-- [x] Project and transcript stem inputs cannot escape their intended directories.
-- [x] Remote shell arguments are quoted; jobs use isolated directories and best-effort cleanup.
-- [x] Remote HF tokens are transferred by temporary file instead of process arguments.
-- [x] Transcript caches bind to source SHA-256 and transcription configuration and are written atomically.
-- [x] Failed pack/cut/re-pack helpers return failure instead of reporting incomplete success.
-- [x] Frame parameters are bounded and failed ffmpeg runs cannot reuse stale frames/sheets.
-- [x] LLM diarization preserves timestamp precision and requires exact, valid label coverage.
-- [x] `doctor` reports a missing venv without crashing and treats remote compute as optional in local mode.
-- [x] `SECURITY.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, CI, and a dependency-free regression suite exist.
-- [x] Public production pointers use portable paths and explicit rights/consent/privacy upload gates.
+The eleven completed entries previously listed here were transferred verbatim to
+[`DONE.md`](DONE.md) on 2026-09-05. Open release work remains below.
 
 ## Remaining before a stable release
 
