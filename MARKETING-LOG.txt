@@ -1,12 +1,13 @@
 ================================================================================
-ai-media-editor -- Marketing, Discoverability & Architecture Audit (Pfad B)
+ai-media-editor -- Marketing, Discoverability & Architecture Audit (Pfad B v0.2.3)
 ================================================================================
-Datum: 2026-09-11
+Datum: 2026-09-20
 Status: ACTIVE / HARDENED (Pfad B Discoverability & Architecture Verified)
 Repository: https://github.com/ellmos-ai/ai-media-editor
 Organization: ellmos-ai | Umbrella Ecosystem: open-bricks
 Canonical Clone: C:\_Local_DEV\repos\ai-media-editor
-Active Version: 0.2.2 | Language Stage: Core (DE + EN)
+Active Version: 0.2.3 | Language Stage: Core (DE + EN)
+Audit Standard: 18-Point Dual-Navigation Parity, Dual Mermaid Diagrams, 10-Dimension Comparative Matrix, Level 1 SBOM, Statutory § 521 BGB Disclaimer
 
 --------------------------------------------------------------------------------
 1. EXECUTIVE SUMMARY & CORE POSITIONING
@@ -31,25 +32,37 @@ Key Value Proposition:
 --------------------------------------------------------------------------------
 2. TARGET AUDIENCES & PERSONAS
 --------------------------------------------------------------------------------
-1. Autonomous AI Coding Agent Developers & Swarm Architects:
-   Engineers orchestrating agentic video and podcast production pipelines that
-   require deterministic preflight, structured JSON transcript schemas, and visual
-   inspection frames without SaaS credential friction, token waste, or API limits.
+[PERSONA-01] Autonomous AI Coding Agent Developers & Swarm Architects:
+   Role: Engineers orchestrating agentic video and podcast production pipelines.
+   Pain Point: Cloud SaaS requires API keys, leaks confidential pre-release content,
+   suffers rate limits, and lacks agent-native structured JSON cut interfaces.
+   Solution: Deterministic CLI orchestration, Scribe JSON schema generation, and
+   frame contact-sheets designed specifically for LLM vision models.
+   High-Intent Query: "agent driven video editor with local transcription"
 
-2. Local-First Podcasters & Content Creators:
-   Creators demanding zero network egress for raw voice and video recordings,
-   eliminating data leaks, cloud subscription fees, and forced cloud dependencies
-   while maintaining high-quality transcript-based cutting.
+[PERSONA-02] Local-First Podcasters & Content Creators:
+   Role: Independent podcasters, interviewers, and media producers.
+   Pain Point: Monthly recurring SaaS subscriptions, vendor lock-in, and forced
+   cloud uploading of multi-gigabyte raw audio/video files.
+   Solution: 100% offline faster-whisper STT, pause detection, speaker diarization,
+   and automated vinyl/waveform animated cover generation.
+   High-Intent Query: "local first podcast editing AI agent workflow"
 
-3. AI Video & Motion Graphics Engineers:
-   Developers combining Hyperframes (HTML/CSS/JS -> MP4 animations), video-use,
-   and open STT models on consumer hardware for automated intros, lower-thirds,
-   and branded motion design assets.
+[PERSONA-03] AI Video & Motion Graphics Engineers:
+   Role: Motion designers and technical animators building programmatic video.
+   Pain Point: Complex GUI timeline editors (Premiere, After Effects) cannot be
+   automated via code or LLM prompts without fragile desktop macros.
+   Solution: Hyperframes integration translating HTML/CSS/JavaScript directly
+   into 60fps MP4 lower-thirds, title cards, and animated callouts.
+   High-Intent Query: "Hyperframes motion graphics podcast editor"
 
-4. Enterprise Media Security, Privacy & Compliance Officers:
-   Corporate and healthcare teams handling confidential interviews and internal
-   broadcasts that legally prohibit cloud upload under GDPR / HIPAA and require
-   formal 48h security response SLAs and unprivileged execution guarantees.
+[PERSONA-04] Enterprise Media Security, Privacy & Compliance Officers:
+   Role: Legal, security, and compliance officers in healthcare, finance, and enterprise.
+   Pain Point: Strict regulatory mandates (GDPR, HIPAA, SOC-2) prohibiting cloud
+   transmission of internal all-hands, earnings briefings, and patient recordings.
+   Solution: Verifiable zero-egress guarantee, unprivileged RunAsInvoker non-elevation,
+   Level 1 SBOM, and a formal 48h vulnerability response SLA.
+   High-Intent Query: "zero egress video transcription and cutting"
 
 --------------------------------------------------------------------------------
 3. HIGH-INTENT SEARCH PHRASES & DISCOVERABILITY KEYWORDS
@@ -80,17 +93,20 @@ German High-Intent Query Phrases:
 - prozedurale Musiksynthese Storyline offline
 
 --------------------------------------------------------------------------------
-4. 4-WAY COMPETITIVE MATRIX
+4. 10-DIMENSION 4-WAY COMPETITIVE MATRIX (GOVERNANCE INVARIANTS)
 --------------------------------------------------------------------------------
-| Dimension | ai-media-editor | Cloud SaaS (Descript/ElevenLabs) | Heavy NLEs (Premiere/DaVinci) | Raw CLI (FFmpeg/Shell) |
-|:---|:---|:---|:---|:---|
-| **Egress / Privacy** | 100% Local-First / Zero Egress | Mandatory Cloud Upload | Local, but proprietary telemetry | 100% Local / Offline |
-| **Agent Autonomy** | Agent-Native (JSON, frames, CLI) | Closed Web GUI / Fragile APIs | Manual GUI / Scripting complex | Manual Scripting only |
-| **Transcription** | Offline faster-whisper/WhisperX | SaaS STT (Pay-per-minute) | Cloud or bulky offline model | Requires external setup |
-| **Visual LLM Feedback** | Timestamped Contact-Sheets | Web player only | GUI timeline only | Manual frame extraction |
-| **Motion Graphics** | Hyperframes (HTML/CSS/JS -> MP4) | Template-locked SaaS | After Effects / Fusion plugins | Complex FFmpeg filters |
-| **Procedural Audio** | Built-in NumPy Storyline Score | Stock library / AI credits | Manual music track import | None / External audio |
-| **License & Portability** | 100% Permissive Open Source (MIT) | Closed SaaS Subscription | Commercial license / Dongle | Free Open Source |
+| Dimension & Invariant | ai-media-editor | Cloud SaaS (Descript / ElevenLabs) | Commercial NLEs (Premiere / DaVinci) | Raw CLI (FFmpeg / Shell) | Hosted APIs (Whisper API / Google STT) |
+|:---|:---|:---|:---|:---|:---|
+| 1. Egress & Privacy (INV-LOCAL-01) | 100% Local-First / Zero Egress | Mandatory Cloud Upload | Local, with Telemetry | 100% Local / Offline | External Cloud Processing |
+| 2. Privilege Sandbox (INV-RUNAS-02) | Unprivileged RunAsInvoker | Browser / Helper App | Admin Installer / Daemon | User Privileges | API Client Level |
+| 3. Source Isolation (INV-PREV-03) | Read-Only Source Media | Cloud Media Duplication | Non-Destructive Projects | Easy Overwrite Accident | Input Media Preserved |
+| 4. Deterministic State (INV-DETERM-04) | Scribe JSON & Seeded Score | Stochastic Cloud Drift | Complex Binary Project State | Unstructured Outputs | Non-Deterministic Latency |
+| 5. Anti-Traversal Jail (INV-BOUNDARY-05) | Strict Project Boundary | Hosted Cloud Bucket | Arbitrary Filesystem | No Path Validation | Cloud Tenant Boundary |
+| 6. Window Suppression (INV-SUBPROC-06) | windowsHide Preloaded | N/A (Web UI) | N/A (Desktop GUI) | Disruptive Console Bursts | N/A (HTTP Requests) |
+| 7. Cross-Platform OS (INV-PARITY-07) | Windows, Linux, macOS | Browser-Dependent | OS-Specific Features | POSIX / Windows | Cross-Platform HTTP |
+| 8. Concurrency & Locks (INV-SYNC-08) | Lock Discipline & Clean Git | Single-User SaaS Session | Single-Editor Locks | Concurrency Conflicts | Rate Limiting Bottlenecks |
+| 9. Agent / LLM Ingestion (INV-DOCS-09) | Scribe JSON, Frames, llms.txt | Closed Web DOM | Complex Binary Formats | Raw Text stdout/stderr | Text Transcripts Only |
+| 10. Incident Response (INV-SLA-10) | 48h Response / 5d Triage | Support Ticket Queue | Quarterly Updates | Unmaintained Scripts | Standard Cloud SLA |
 
 --------------------------------------------------------------------------------
 5. SIBLING ECOSYSTEM & CROSS-LINKING MATRIX
@@ -98,22 +114,22 @@ German High-Intent Query Phrases:
 The project is deeply integrated into the open-bricks and ellmos-ai federated
 tool ecosystem:
 
-1.  ellmos-ai/clip-storyboard-director  -- Generative storyboard and scene director
-2.  ellmos-ai/assistant-core            -- Conversational supervision and loop control
-3.  ellmos-ai/decision-clicker          -- Interactive user decision intake gateway
-4.  ellmos-ai/lock-master               -- Fail-closed multi-agent locking framework
-5.  ellmos-ai/clutch                    -- Process supervisor and agent coordination
-6.  ellmos-ai/system-explorer           -- Local hardware and capability discovery
-7.  ellmos-ai/roblox-studio-core        -- Headless 3D studio capture and automation
+1.  ellmos-ai/clip-storyboard-director    -- Generative storyboard and scene director
+2.  ellmos-ai/assistant-core              -- Conversational supervision and loop control
+3.  ellmos-ai/decision-clicker            -- Interactive user decision intake gateway
+4.  ellmos-ai/lock-master                 -- Fail-closed multi-agent locking framework
+5.  ellmos-ai/clutch                      -- Process supervisor and agent coordination
+6.  ellmos-ai/system-explorer             -- Local hardware and capability discovery
+7.  ellmos-ai/roblox-studio-core          -- Headless 3D studio capture and automation
 8.  entertain-and-more/usb-podcast-studio -- USB audio capture and podcast staging
-9.  entertain-and-more/BattleStage      -- Server-authoritative physics simulation
-10. dev-bricks/DevCenter                -- Developer tool suite and workspace manager
-11. dev-bricks/MethodenAnalyser         -- Static Python code metrics & method audit
-12. file-bricks/ExplorerPro             -- High-speed desktop file manager (PySide6)
-13. file-bricks/ProFiler                -- Deep directory analysis and inspection
-14. file-bricks/CloudLockFixer          -- Multi-host synchronization conflict fixer
-15. doc-bricks/FormularErstellen        -- Dynamic PDF and form layout generator
-16. open-bricks/open-bricks             -- Umbrella open-source standards organization
+9.  entertain-and-more/BattleStage        -- Server-authoritative physics simulation
+10. dev-bricks/DevCenter                  -- Developer tool suite and workspace manager
+11. dev-bricks/MethodenAnalyser           -- Static Python code metrics & method audit
+12. file-bricks/ExplorerPro               -- High-speed desktop file manager (PySide6)
+13. file-bricks/ProFiler                  -- Deep directory analysis and inspection
+14. file-bricks/CloudLockFixer            -- Multi-host synchronization conflict fixer
+15. doc-bricks/FormularErstellen          -- Dynamic PDF and form layout generator
+16. open-bricks/open-bricks               -- Umbrella open-source standards organization
 
 --------------------------------------------------------------------------------
 6. GOVERNANCE & RUNTIME INVARIANTS (10 GUARANTEES)
@@ -166,4 +182,16 @@ Audit 2026-09-12 (Pfad A Repository Hygiene, CI Hardening & Contract Test Expans
 [x] [tool.ruff.lint] select extended with RUF022
 [x] Version bumped to 0.2.2 across VERSION, pyproject.toml, ellmos-module.v2.json, README.md, README_de.md, llms.txt, and CHANGELOG.md
 [x] Contract test suite in tests/test_metadata.py expanded with 4 new contract tests
+
+Audit 2026-09-20 (Pfad B Discoverability, 18-Point Navigation, Level 1 SBOM & § 521 BGB Parity):
+[x] 18-Point Quick Navigation deployed across README.md and README_de.md with 100% mutual HTML anchor parity
+[x] 10-Dimension comparative matrix vs 4 alternatives mapped across all 10 governance invariants (INV-LOCAL-01 to INV-SLA-10)
+[x] 4 Target Personas formalized ([PERSONA-01] to [PERSONA-04]) with pain points, solutions, and high-intent SEO queries
+[x] Statutory Notice & Liability Limitation (§ 521 BGB Gefälligkeitsrecht) integrated as Section 18 in README.md & README_de.md
+[x] Level 1 SBOM and Invariant Cross-Reference Matrix table deployed in THIRD_PARTY_LICENSES.md
+[x] Explicit RunAsInvoker Non-Elevation Certification and Zero-Copyleft Isolation Boundary documented
+[x] pyproject.toml license-files extended with THIRD_PARTY_LICENSES.md (PEP 621 compliance)
+[x] Version bumped to 0.2.3 across VERSION, pyproject.toml, ellmos-module.v2.json, README.md, README_de.md, llms.txt, and CHANGELOG.md
+[x] llms.txt refreshed to Last-checked: 2026-09-20 with 18-point navigation and § 521 BGB disclaimer
+[x] Automated contract test suite in tests/test_metadata.py expanded to verify all 18-point navigation, matrix, SBOM, and § 521 BGB requirements
 ================================================================================

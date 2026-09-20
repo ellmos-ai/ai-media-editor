@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.2.3] - 2026-09-20
+
+### Added
+- Upgraded bilingual documentation landing pages (`README.md` and `README_de.md`) to full 18-point quick navigation with 100% mutual reciprocal HTML anchor parity (`<a id="..."></a>`).
+- Expanded comparative matrix to 10 feature dimensions mapped across all 10 governance runtime invariants (`INV-LOCAL-01` through `INV-SLA-10`) comparing `ai-media-editor` against Cloud SaaS (Descript / ElevenLabs), Heavy Commercial NLEs (Premiere / DaVinci), Raw CLI / Shell Scripts (FFmpeg), and Hosted Speech-to-Text APIs (Whisper API / Google STT).
+- Formalized 4 target personas with distinct taxonomy (`[PERSONA-01]` through `[PERSONA-04]`), pain points, workflow solutions, and high-intent discovery search queries in `README.md`, `README_de.md`, and `MARKETING-LOG.txt`.
+- Added Section 17 (Level 1 SBOM & Third-Party Licenses) and Section 18 (Statutory Notice & Liability Limitation under § 521 BGB Gefälligkeitsrecht) to both English and German documentation.
+- Integrated Level 1 SBOM Invariant Cross-Reference Matrix table and explicit `RunAsInvoker` Non-Elevation Certification in `THIRD_PARTY_LICENSES.md`.
+- Expanded automated contract test suite in `tests/test_metadata.py`:
+  - `test_readme_18_point_quick_navigation_and_anchor_parity`: validates complete 18-point navigation and reciprocal anchor resolution across English and German READMEs.
+  - `test_comparative_matrix_10_dimensions_and_invariants`: ensures all 10 governance invariants (`INV-LOCAL-01` to `INV-SLA-10`) and 4 alternatives are evaluated.
+  - `test_statutory_bgb_disclaimer_parity`: verifies § 521 BGB statutory liability limitation in both `README.md` and `README_de.md`.
+  - `test_level1_sbom_inventory_and_runasinvoker`: checks Level 1 SBOM table, Stand 2026-09-20, and `RunAsInvoker` certification in `THIRD_PARTY_LICENSES.md`.
+  - `test_changelog_release_0_2_3`: validates release notes integrity for the 0.2.3 Pfad B discoverability and visual architecture overhaul.
+
+### Changed
+- Standardized `pyproject.toml` package metadata with `version = "0.2.3"` and `license-files = ["LICENSE", "THIRD_PARTY_LICENSES.md"]`.
+- Bumped version to `0.2.3` across `VERSION`, `pyproject.toml`, `ellmos-module.v2.json`, `README.md`, `README_de.md`, and `llms.txt`.
+- Synchronized Shields.io badges in `README.md` and `README_de.md` for version 0.2.3, verification timestamp `2026--09--20`, and updated passing contract test counts.
+- Updated `llms.txt` verification timestamp to `2026-09-20` with 18-point navigation, 10-dimension matrix, and § 521 BGB statutory notice.
+
 ## [0.2.2] - 2026-09-12
 
 ### Added

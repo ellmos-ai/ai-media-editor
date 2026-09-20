@@ -1,4 +1,4 @@
-## Last-checked: 2026-09-12
+## Last-checked: 2026-09-20
 
 # ellmos-ai/ai-media-editor
 
@@ -12,8 +12,9 @@ https://github.com/ellmos-ai/ai-media-editor
 `ai-media-editor` prepares media projects for agent-driven editing. It routes local or remote
 speech-to-text, writes the Scribe fields consumed by `video-use`, packs transcript/cut context,
 generates timestamped frame views for visual judgment, and leaves the creative cut, animation,
-and Hyperframes composition to an AI coding agent. All 10 governance invariants and dual-mermaid
-diagrams ensure local-first execution, unprivileged operation, and reproducible audio/video artifacts.
+and Hyperframes composition to an AI coding agent. All 10 governance invariants, dual-mermaid
+diagrams, Level 1 SBOM, and 18-point navigation ensure local-first execution, unprivileged operation,
+and reproducible audio/video artifacts.
 
 ## Audience
 
@@ -21,10 +22,11 @@ diagrams ensure local-first execution, unprivileged operation, and reproducible 
 - Developers building local-first podcast, video, and transcript-editing workflows.
 - Creators who want transcript-based cuts without sending recordings to hosted STT.
 - Tool builders comparing `video-use`, Hyperframes, faster-whisper, and WhisperX workflows.
+- Enterprise compliance officers requiring 100% zero-egress media processing under GDPR / HIPAA.
 
 ## Important files
 
-- `README.md` — public overview, setup, quickstart, dual-mermaid diagrams, and 15-point navigation (English, primary).
+- `README.md` — public overview, setup, quickstart, dual-mermaid diagrams, and 18-point navigation (English, primary).
 - `README_de.md` — German translation of the overview (language stage: Core/DE+EN) with complete anchor parity.
 - `CLAUDE.md` — German agent-facing workflow guide and hard editing rules.
 - `docs/USECASES.md` — step-by-step instructions for the 8 supported media workflows.
@@ -35,10 +37,10 @@ diagrams ensure local-first execution, unprivileged operation, and reproducible 
 - `tools/cut_view.py` — pause-aware transcript cut candidates.
 - `tools/hf.cmd`, `tools/hf-hidden.vbs`, `tools/hide-windows.cjs` — Windows wrapper + Node preload that forces `windowsHide` for every child process (no console-window bursts from HyperFrames); `tools/count_console_windows.ps1` measures visible windows. Details: `docs/WINDOWS-KONSOLENFENSTER.md`.
 - `production/OVERVIEW.md` — optional generative workflows and mandatory cloud/rights gates.
-- `THIRD_PARTY_LICENSES.md` — inventory of third-party open-source components, tools, and licenses.
-- `MARKETING-LOG.txt` — discoverability, marketing personas, and architecture audit log.
+- `THIRD_PARTY_LICENSES.md` — Level 1 SBOM, inventory of third-party open-source components, and RunAsInvoker non-elevation certification.
+- `MARKETING-LOG.txt` — discoverability, 4 target personas, 10-dimension comparative matrix, and architecture audit log.
 - `tests/test_core.py` — dependency-free regression contract for cache, remote, frames, and diarization.
-- `tests/test_metadata.py` — automated contract tests for manifests, CI parity, security SLAs, and discoverability.
+- `tests/test_metadata.py` — automated contract tests for manifests, CI parity, security SLAs, 18-point navigation, and discoverability.
 - `SECURITY.md` — bilingual vulnerability reporting and sensitive-media security scope (48h initial response SLA).
 - `brand/design-tokens.css` — design tokens for generated motion graphics.
 
@@ -58,7 +60,7 @@ diagrams ensure local-first execution, unprivileged operation, and reproducible 
 ## Search Phrases
 
 ```text
-ellmos-ai ai-media-editor
+ellmos-ai/ai-media-editor
 local AI media editor video podcast transcription
 agent driven video editor with local transcription
 Claude Code video podcast editor Hyperframes
@@ -66,7 +68,16 @@ faster-whisper WhisperX Scribe JSON video-use
 transcript based video cutting local first
 Hyperframes motion graphics podcast editor
 local first podcast editing AI agent workflow
+offline procedural music synthesis storyline numpy
+zero egress video transcription and cutting
 ```
+
+## Statutory Notice & Liability Limitation
+
+This software is provided free of charge under the MIT License as open-source software.
+Under German statutory law (§ 521 BGB - Gefälligkeitsrecht), liability in the case of
+gratuitous provision of software is limited to intent (Vorsatz) and gross negligence
+(grobe Fahrlässigkeit).
 
 ## Disambiguation
 
@@ -76,6 +87,6 @@ for local transcript, frame, and edit context.
 
 ## External Discovery Notes
 
-As of 2026-09-12, GitHub search and broad web search surface GitHub repository and topic
+As of 2026-09-20, GitHub search and broad web search surface GitHub repository and topic
 context. The project is maintained under the `ellmos-ai` organization and governed under
 the `open-bricks` umbrella ecosystem. Test suite passes with 100% green contract tests.

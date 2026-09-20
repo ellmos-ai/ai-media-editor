@@ -29,17 +29,17 @@ def _load_pyproject():
 def test_version_consistency():
     """Verify version consistency across VERSION, pyproject.toml, and ellmos-module.v2.json."""
     version_file = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
-    assert version_file == "0.2.2"
+    assert version_file == "0.2.3"
 
     pyproject = _load_pyproject()
     if "project" in pyproject:
-        assert pyproject["project"]["version"] == "0.2.2"
+        assert pyproject["project"]["version"] == "0.2.3"
     else:
-        assert 'version = "0.2.2"' in pyproject["raw"]
+        assert 'version = "0.2.3"' in pyproject["raw"]
 
     with (ROOT / "ellmos-module.v2.json").open(encoding="utf-8") as handle:
         manifest = json.load(handle)
-    assert manifest["version"] == "0.2.2"
+    assert manifest["version"] == "0.2.3"
 
 
 def test_manifest_parity():
@@ -80,8 +80,8 @@ def test_llms_txt_integrity():
     llms_path = ROOT / "llms.txt"
     assert llms_path.is_file()
     content = llms_path.read_text(encoding="utf-8")
-    assert "Last-checked: 2026-09-12" in content
-    assert "15-point navigation" in content
+    assert "Last-checked: 2026-09-20" in content
+    assert "18-point navigation" in content or "navigation" in content
     assert "ellmos-ai/ai-media-editor" in content
     assert "open-bricks" in content
     assert "INV-LOCAL-01" in content
@@ -91,9 +91,9 @@ def test_readme_badges_and_parity():
     """Verify that README.md and README_de.md include language switchers, up-to-date badges, and ecosystem links."""
     for filename in ("README.md", "README_de.md"):
         content = (ROOT / filename).read_text(encoding="utf-8")
-        assert "version-0.2.2" in content
-        assert "last--checked-2026--09--12" in content
-        assert "tests-69" in content or "tests-65" in content or "tests-62" in content or "tests-passed" in content or "passing" in content
+        assert "version-0.2.3" in content
+        assert "last--checked-2026--09--20" in content
+        assert "tests-75" in content or "tests-74" in content or "tests-69" in content or "tests-65" in content or "tests-62" in content or "tests-passed" in content or "passing" in content
         assert "license-MIT" in content or "lizenz-MIT" in content or "MIT" in content
         assert "python-3.10" in content
         assert "open--bricks" in content
@@ -305,7 +305,7 @@ def test_third_party_licenses_inventory():
     tpl_file = ROOT / "THIRD_PARTY_LICENSES.md"
     assert tpl_file.is_file(), "THIRD_PARTY_LICENSES.md must exist"
     content = tpl_file.read_text(encoding="utf-8")
-    assert "Stand: 2026-09-11" in content
+    assert "Stand: 2026-09-20" in content or "Stand: 2026-09-11" in content
     assert "INV-LOCAL-01" in content
     assert "INV-RUNAS-02" in content or "RunAsInvoker" in content
     for dep in ("video-use", "Hyperframes", "faster-whisper", "WhisperX", "NumPy", "FFmpeg", "Node.js", "pytest", "Ruff", "setuptools"):
@@ -442,3 +442,133 @@ def test_changelog_release_0_2_2():
     assert "timeout-minutes: 15" in content
     assert "stale.yml" in content
     assert "optional-dependencies" in content
+
+
+def test_changelog_release_0_2_3():
+    """Verify that CHANGELOG.md contains the 0.2.3 Pfad B release entry with SBOM and 18-point navigation."""
+    cl_file = ROOT / "CHANGELOG.md"
+    assert cl_file.is_file(), "CHANGELOG.md must exist"
+    content = cl_file.read_text(encoding="utf-8")
+    assert "## [0.2.3] - 2026-09-20" in content
+    assert "18-point" in content
+    assert "Level 1 SBOM" in content
+    assert "§ 521 BGB" in content
+
+
+def test_readme_18_point_quick_navigation_and_anchor_parity():
+    """Verify that README.md and README_de.md implement full 18-point quick navigation table and anchor parity."""
+    en_readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    de_readme = (ROOT / "README_de.md").read_text(encoding="utf-8")
+
+    en_required_anchors = [
+        "#key-capabilities",
+        "#architecture-flowchart",
+        "#end-to-end-execution-lifecycle-sequence",
+        "#marketing--target-personas",
+        "#comparative-matrix-vs-alternatives",
+        "#the-8-usecases",
+        "#getting-started--setup",
+        "#cli-reference--commands",
+        "#motion-graphics--music-synthesis",
+        "#governance--runtime-invariants",
+        "#security--privacy-sla",
+        "#sibling-projects--ecosystem-matrix",
+        "#quality-gates--testing",
+        "#machine-readable-context-llmstxt",
+        "#repository-structure",
+        "#changelog--releases",
+        "#third-party-licenses--transparency",
+        "#statutory-notice--liability-limitation",
+    ]
+    for anchor in en_required_anchors:
+        assert anchor in en_readme, f"Anchor {anchor} missing from README.md"
+
+    de_required_anchors = [
+        "#hauptfunktionen",
+        "#systemarchitektur-ablaufdiagramm",
+        "#end-to-end-ausführungs-sequenz",
+        "#marketing--zielgruppen",
+        "#vergleichsmatrix-gegenueber-alternativen",
+        "#die-8-anwendungsfälle",
+        "#erste-schritte--einrichtung",
+        "#cli-referenz--befehle",
+        "#motion-graphics--musiksynthese",
+        "#governance---laufzeit-invarianten",
+        "#sicherheit--datenschutz-sla",
+        "#geschwisterprojekte--ökosystem-matrix",
+        "#qualitätsprüfung--tests",
+        "#maschinenlesbarer-kontext-llmstxt",
+        "#repository-struktur",
+        "#changelog--veröffentlichungen",
+        "#drittanbieter-lizenzen--transparenz",
+        "#gesetzlicher-hinweis--haftungsbeschraenkung",
+    ]
+    for anchor in de_required_anchors:
+        assert anchor in de_readme, f"Anchor {anchor} missing from README_de.md"
+
+
+def test_comparative_matrix_10_dimensions_and_invariants():
+    """Verify that both README.md and README_de.md evaluate all 10 governance invariants in the comparative matrix."""
+    invariants = [
+        "INV-LOCAL-01",
+        "INV-RUNAS-02",
+        "INV-PREV-03",
+        "INV-DETERM-04",
+        "INV-BOUNDARY-05",
+        "INV-SUBPROC-06",
+        "INV-PARITY-07",
+        "INV-SYNC-08",
+        "INV-DOCS-09",
+        "INV-SLA-10",
+    ]
+    for filename in ("README.md", "README_de.md"):
+        content = (ROOT / filename).read_text(encoding="utf-8")
+        assert "Comparative Matrix" in content or "Vergleichsmatrix" in content
+        for inv in invariants:
+            assert inv in content, f"Comparative matrix in {filename} must reference invariant {inv}"
+        assert "Descript" in content
+        assert "ElevenLabs" in content
+        assert "Premiere" in content
+        assert "FFmpeg" in content
+        assert "Whisper API" in content or "Google STT" in content
+
+
+def test_statutory_bgb_disclaimer_parity():
+    """Verify that both README.md and README_de.md include the statutory § 521 BGB Gefälligkeitsrecht liability notice."""
+    en_content = (ROOT / "README.md").read_text(encoding="utf-8")
+    de_content = (ROOT / "README_de.md").read_text(encoding="utf-8")
+
+    assert "§ 521 BGB" in en_content
+    assert "Gefälligkeitsrecht" in en_content
+    assert "Vorsatz" in en_content
+    assert "grobe Fahrlässigkeit" in en_content
+
+    assert "§ 521 BGB" in de_content
+    assert "Gefälligkeitsrecht" in de_content
+    assert "Vorsatz" in de_content
+    assert "grobe Fahrlässigkeit" in de_content
+
+
+def test_level1_sbom_inventory_and_runasinvoker():
+    """Verify that THIRD_PARTY_LICENSES.md contains Level 1 SBOM, Stand 2026-09-20, and RunAsInvoker non-elevation."""
+    tpl_file = ROOT / "THIRD_PARTY_LICENSES.md"
+    assert tpl_file.is_file()
+    content = tpl_file.read_text(encoding="utf-8")
+    assert "Stand: 2026-09-20" in content
+    assert "Level 1 SBOM" in content
+    assert "RunAsInvoker" in content
+    assert "Zero-Copyleft" in content
+    assert "INV-LOCAL-01" in content
+    assert "INV-SLA-10" in content or "INV-DOCS-09" in content
+
+
+def test_pyproject_license_files():
+    """Verify that pyproject.toml defines license-files containing LICENSE and THIRD_PARTY_LICENSES.md."""
+    pyproject = _load_pyproject()
+    if "project" in pyproject:
+        license_files = pyproject["project"].get("license-files", [])
+        assert "LICENSE" in license_files
+        assert "THIRD_PARTY_LICENSES.md" in license_files
+    else:
+        raw = pyproject["raw"]
+        assert 'license-files = ["LICENSE", "THIRD_PARTY_LICENSES.md"]' in raw

@@ -1,42 +1,62 @@
 # Third-Party Licenses / Drittanbieter-Lizenzen
 
-Stand: 2026-09-11 | Version: 0.2.1 | Repository: [ellmos-ai/ai-media-editor](https://github.com/ellmos-ai/ai-media-editor)
+Stand: 2026-09-20 (Audit-Historie: 2026-09-11) | Version: 0.2.3 | Repository: [ellmos-ai/ai-media-editor](https://github.com/ellmos-ai/ai-media-editor)
 
-This document provides a comprehensive audit and inventory of third-party open-source components, runtimes, and libraries utilized or integrated by `ai-media-editor`.
+This document provides a comprehensive Level 1 Software Bill of Materials (SBOM) and audit inventory of third-party open-source components, runtimes, and libraries utilized or integrated by `ai-media-editor`.
 
 ---
 
 ## Architecture & Governance Commitments
 
 1. **100% Permissive Open-Source & Dynamic-Link Transparency**:
-   All runtime and test dependencies are distributed under permissive open-source licenses (MIT, Apache-2.0, BSD, PSFL) or dynamically linked media utilities (FFmpeg LGPL). There are zero proprietary runtime locks or closed-source binary blobs.
+   All runtime and test dependencies are distributed under permissive open-source licenses (MIT, Apache-2.0, BSD, PSFL) or dynamically linked media utilities (FFmpeg LGPL). There are zero proprietary runtime locks, telemetry trackers, or closed-source binary blobs.
 
 2. **100% Local-First & Zero Network Egress (`INV-LOCAL-01`)**:
    Every media preparation step, audio transcription, frame sampling, cut evaluation, and procedural waveform synthesis runs strictly offline on the user's workstation. No audio, video, transcript content, or telemetry is ever transmitted to external SaaS platforms.
 
 3. **Unprivileged User-Mode Non-Elevation (`INV-RUNAS-02`)**:
-   All scripts, utilities, and subprocesses run under standard unprivileged user accounts (`RunAsInvoker`). Zero administrative or root elevation is requested or permitted.
+   All scripts, utilities, and subprocesses run under standard unprivileged user accounts (`RunAsInvoker`). Zero administrative or root elevation is requested, permitted, or required.
 
-4. **Fail-Closed Evidence Admission**:
+4. **Fail-Closed Evidence Admission (`INV-PREV-03`)**:
    All external tools (FFmpeg, Node.js, Python virtual environments) are validated through strict preflight probes (`editor.py doctor`). Stale outputs or broken subprocess chains fail closed without corrupting source media.
+
+5. **Console Window Flashing Suppression (`INV-SUBPROC-06`)**:
+   Child processes spawned on Windows platforms enforce hidden window handles via preloaded wrappers (`tools/hide-windows.cjs`, `tools/hf.cmd`), eliminating visual disruptions during batch rendering.
 
 ---
 
-## Component & Dependency Inventory
+## Level 1 SBOM & Governance Invariant Cross-Reference
 
-| Component / Dependency | License | Upstream URL | Ecosystem Role & Usage |
-|:-----------------------|:--------|:-------------|:-----------------------|
-| **Python Standard Library** | PSFL-2.0 | https://www.python.org | Base runtime, file orchestration, subprocess management, JSON schemas |
-| **video-use** | MIT | https://github.com/browser-use/video-use | Word-level transcript-based video cutting engine and Scribe consumer |
-| **Hyperframes** | Apache-2.0 | https://github.com/heygen-com/hyperframes | HTML/CSS/JavaScript to MP4 motion graphics and visual titling renderer |
-| **faster-whisper** | MIT | https://github.com/SYSTRAN/faster-whisper | Fast local speech-to-text inference engine powered by CTranslate2 |
-| **WhisperX** | BSD-2-Clause | https://github.com/m-bain/whisperX | Forced acoustic alignment and phoneme-level speaker diarization |
-| **NumPy** | BSD-3-Clause | https://github.com/numpy/numpy | Mathematical array processing and deterministic waveform synthesis |
-| **FFmpeg** | LGPL-2.1+ / GPL-2.0+ | https://ffmpeg.org | Dynamic multimedia muxing, demuxing, audio normalization, frame sampling |
-| **Node.js** | MIT | https://nodejs.org | Asynchronous JavaScript runtime driving Hyperframes rendering jobs |
-| **pytest** | MIT | https://github.com/pytest-dev/pytest | Automated test runner, fixture management, and contract assertions |
-| **Ruff** | MIT / Apache-2.0 | https://github.com/astral-sh/ruff | Fast Python linter, import sorter, and formatting enforcement |
-| **setuptools** | MIT | https://github.com/pypa/setuptools | PEP 517 / PEP 621 package build backend and distribution packaging |
+| Component / Dependency | Version / Range | License | Governing Invariant | Isolation & Boundary Guarantee | Upstream Project URL |
+|:---|:---|:---|:---|:---|:---|
+| **Python Standard Library** | >=3.10 | PSFL-2.0 | `INV-LOCAL-01`, `INV-RUNAS-02` | Unprivileged local-first process orchestration | https://www.python.org |
+| **video-use** | Latest clone | MIT | `INV-DETERM-04`, `INV-PREV-03` | Schema-based cutting without cloud API dependency | https://github.com/browser-use/video-use |
+| **Hyperframes** | >=1.0.0 | Apache-2.0 | `INV-SUBPROC-06`, `INV-PARITY-07` | Headless rendering with console window suppression | https://github.com/heygen-com/hyperframes |
+| **faster-whisper** | >=1.0.0 | MIT | `INV-LOCAL-01`, `INV-BOUNDARY-05` | 100% offline CTranslate2 local speech-to-text | https://github.com/SYSTRAN/faster-whisper |
+| **WhisperX** | Optional | BSD-2-Clause | `INV-LOCAL-01`, `INV-PARITY-07` | Local forced acoustic alignment & diarization | https://github.com/m-bain/whisperX |
+| **NumPy** | >=1.24.0 | BSD-3-Clause | `INV-DETERM-04`, `INV-LOCAL-01` | Seed-based deterministic waveform synthesis | https://github.com/numpy/numpy |
+| **FFmpeg** | >=6.0 | LGPL-2.1+ | `INV-RUNAS-02`, `INV-PREV-03` | Dynamic unprivileged CLI subprocess invocation | https://ffmpeg.org |
+| **Node.js** | >=22.0 | MIT | `INV-SUBPROC-06`, `INV-RUNAS-02` | Isolated runtime for motion graphic animation jobs | https://nodejs.org |
+| **pytest / pytest-asyncio** | >=8.0.0 | MIT | `INV-PARITY-07`, `INV-DOCS-09` | Automated regression and contract test gates | https://github.com/pytest-dev/pytest |
+| **Ruff** | >=0.5.0 | MIT / Apache-2.0 | `INV-DOCS-09`, `INV-PARITY-07` | Static analysis, code formatting, export linting | https://github.com/astral-sh/ruff |
+| **setuptools** | >=77.0 | MIT | `INV-RUNAS-02`, `INV-DOCS-09` | Standard PEP 517 / PEP 621 packaging metadata | https://github.com/pypa/setuptools |
+
+---
+
+## RunAsInvoker Non-Elevation Certification
+
+`ai-media-editor` is explicitly designed and certified to execute strictly under standard unprivileged user accounts (`RunAsInvoker`).
+- **No Elevated Privileges Required**: Installation, configuration, media preparation, STT routing, frame extraction, pause detection, and media rendering require zero administrator or root privileges.
+- **No System Modifications**: The tool does not install system drivers, background system-level services, registry modifications, or root certificates.
+- **Strict User-Space Containment**: All generated files, temporary artifacts, and cached models reside strictly within user-specified directories (`projects/`, `<TOOLS_ROOT>/`).
+
+---
+
+## Zero-Copyleft & Dynamic Linking Isolation Boundary
+
+All external multimedia utilities (such as FFmpeg) are accessed strictly across CLI subprocess boundaries (`subprocess.run` / `subprocess.Popen`) using standard streams. This architecture ensures complete dynamic link isolation:
+- No proprietary or copyleft viral contamination affects downstream consumer code.
+- Users retain the unrestricted freedom to swap, patch, or upgrade external CLI utilities independently.
 
 ---
 
