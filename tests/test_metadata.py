@@ -80,7 +80,7 @@ def test_llms_txt_integrity():
     llms_path = ROOT / "llms.txt"
     assert llms_path.is_file()
     content = llms_path.read_text(encoding="utf-8")
-    assert "Last-checked: 2026-09-20" in content
+    assert "Last-checked: 2026-09-21" in content or "Last-checked: 2026-09-20" in content
     assert "18-point navigation" in content or "navigation" in content
     assert "ellmos-ai/ai-media-editor" in content
     assert "open-bricks" in content
@@ -92,8 +92,14 @@ def test_readme_badges_and_parity():
     for filename in ("README.md", "README_de.md"):
         content = (ROOT / filename).read_text(encoding="utf-8")
         assert "version-0.2.3" in content
-        assert "last--checked-2026--09--20" in content
-        assert "tests-75" in content or "tests-74" in content or "tests-69" in content or "tests-65" in content or "tests-62" in content or "tests-passed" in content or "passing" in content
+        assert "last--checked-2026--09--21" in content or "last--checked-2026--09--20" in content
+        assert any(
+            badge in content
+            for badge in (
+                "tests-78", "tests-77", "tests-76", "tests-75",
+                "tests-74", "tests-69", "tests-passed", "passing"
+            )
+        )
         assert "license-MIT" in content or "lizenz-MIT" in content or "MIT" in content
         assert "python-3.10" in content
         assert "open--bricks" in content
@@ -123,12 +129,16 @@ def test_pyproject_tooling_integrity():
         assert "Third-Party Licenses" in urls
         assert "Marketing Log" in urls
         assert "LLM Ready" in urls
+        assert "Notice" in urls or "NOTICE" in urls
         assert urls.get("Parent Organization") == "https://github.com/ellmos-ai"
         assert urls.get("Umbrella Ecosystem") == "https://github.com/open-bricks"
         tool = pyproject.get("tool", {})
         assert "ruff" in tool
         assert "pytest" in tool
         assert tool["pytest"]["ini_options"]["addopts"] == "-ra -v"
+        assert tool["pytest"]["ini_options"].get("minversion") == "7.0"
+        norecursedirs = tool["pytest"]["ini_options"].get("norecursedirs", [])
+        assert ".venv" in norecursedirs
     else:
         raw = pyproject["raw"]
         assert 'name = "ai-media-editor"' in raw
@@ -136,6 +146,8 @@ def test_pyproject_tooling_integrity():
         assert "Umbrella Ecosystem" in raw
         assert "Parent Organization" in raw
         assert "LLM Ready" in raw
+        assert "Notice" in raw
+        assert "minversion = \"7.0\"" in raw
         assert "addopts = \"-ra -v\"" in raw
 
 
@@ -305,7 +317,7 @@ def test_third_party_licenses_inventory():
     tpl_file = ROOT / "THIRD_PARTY_LICENSES.md"
     assert tpl_file.is_file(), "THIRD_PARTY_LICENSES.md must exist"
     content = tpl_file.read_text(encoding="utf-8")
-    assert "Stand: 2026-09-20" in content or "Stand: 2026-09-11" in content
+    assert "Stand: 2026-09-21" in content or "Stand: 2026-09-20" in content or "Stand: 2026-09-11" in content
     assert "INV-LOCAL-01" in content
     assert "INV-RUNAS-02" in content or "RunAsInvoker" in content
     for dep in ("video-use", "Hyperframes", "faster-whisper", "WhisperX", "NumPy", "FFmpeg", "Node.js", "pytest", "Ruff", "setuptools"):
@@ -402,15 +414,25 @@ def test_gitignore_multihost_and_lock_hardening():
     content = gi_path.read_text(encoding="utf-8")
     required = [
         "*-WORKSTATION*",
+        "*-WORKSTATION-LG*",
         "*-ASUS-GEI*",
+        "*-LAPTOP*",
+        "*-Mac Studio*",
+        "*-MacBook*",
         "*conflicted copy*",
         "* (kopie)*",
         "* (copy)*",
+        "LOCK.user.*",
+        "LOCK.until.*",
+        "LOCK.condition.*",
+        ".automation-lock",
         "uv.lock",
         "!package-lock.json",
         ".mypy_cache/",
         ".tox/",
         ".turbo/",
+        ".hypothesis/",
+        ".nyc_output/",
         "*.orig",
         "*.rej",
     ]
@@ -550,11 +572,11 @@ def test_statutory_bgb_disclaimer_parity():
 
 
 def test_level1_sbom_inventory_and_runasinvoker():
-    """Verify that THIRD_PARTY_LICENSES.md contains Level 1 SBOM, Stand 2026-09-20, and RunAsInvoker non-elevation."""
+    """Verify that THIRD_PARTY_LICENSES.md contains Level 1 SBOM, current Stand, and RunAsInvoker non-elevation."""
     tpl_file = ROOT / "THIRD_PARTY_LICENSES.md"
     assert tpl_file.is_file()
     content = tpl_file.read_text(encoding="utf-8")
-    assert "Stand: 2026-09-20" in content
+    assert "Stand: 2026-09-21" in content or "Stand: 2026-09-20" in content
     assert "Level 1 SBOM" in content
     assert "RunAsInvoker" in content
     assert "Zero-Copyleft" in content
@@ -563,12 +585,48 @@ def test_level1_sbom_inventory_and_runasinvoker():
 
 
 def test_pyproject_license_files():
-    """Verify that pyproject.toml defines license-files containing LICENSE and THIRD_PARTY_LICENSES.md."""
+    """Verify that pyproject.toml defines license-files containing LICENSE, NOTICE, and THIRD_PARTY_LICENSES.md."""
     pyproject = _load_pyproject()
     if "project" in pyproject:
         license_files = pyproject["project"].get("license-files", [])
         assert "LICENSE" in license_files
+        assert "NOTICE" in license_files
         assert "THIRD_PARTY_LICENSES.md" in license_files
     else:
         raw = pyproject["raw"]
-        assert 'license-files = ["LICENSE", "THIRD_PARTY_LICENSES.md"]' in raw
+        assert 'license-files = ["LICENSE", "NOTICE", "THIRD_PARTY_LICENSES.md"]' in raw
+
+
+def test_welcome_workflow_integrity():
+    """Verify that .github/workflows/welcome.yml exists and enforces timeouts and concurrency."""
+    wf_path = ROOT / ".github" / "workflows" / "welcome.yml"
+    assert wf_path.is_file(), "welcome.yml workflow must exist"
+    content = wf_path.read_text(encoding="utf-8")
+    assert "actions/first-interaction@v3" in content
+    assert "timeout-minutes: 5" in content
+    assert "concurrency:" in content
+    assert "cancel-in-progress: true" in content
+    assert "issues: write" in content
+    assert "pull-requests: write" in content
+
+
+def test_stale_workflow_concurrency_and_timeout():
+    """Verify that .github/workflows/stale.yml configures concurrency and job timeout."""
+    stale_path = ROOT / ".github" / "workflows" / "stale.yml"
+    assert stale_path.is_file(), "stale.yml workflow must exist"
+    content = stale_path.read_text(encoding="utf-8")
+    assert "timeout-minutes: 10" in content
+    assert "concurrency:" in content
+    assert "cancel-in-progress: true" in content
+
+
+def test_notice_attribution_file():
+    """Verify that NOTICE attribution file exists and attributes Lukas Geiger, ellmos-ai, and open-bricks."""
+    notice_path = ROOT / "NOTICE"
+    assert notice_path.is_file(), "NOTICE file must exist"
+    content = notice_path.read_text(encoding="utf-8")
+    assert "Lukas Geiger" in content
+    assert "ellmos-ai" in content
+    assert "open-bricks" in content
+    assert "MIT License" in content
+

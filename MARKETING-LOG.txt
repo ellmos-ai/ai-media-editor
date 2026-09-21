@@ -1,13 +1,13 @@
 ================================================================================
-ai-media-editor -- Marketing, Discoverability & Architecture Audit (Pfad B v0.2.3)
+ai-media-editor -- Marketing, Discoverability & Architecture Audit (Pfad A/B v0.2.3)
 ================================================================================
-Datum: 2026-09-20
-Status: ACTIVE / HARDENED (Pfad B Discoverability & Architecture Verified)
+Datum: 2026-09-21
+Status: ACTIVE / HARDENED (Pfad A Hygiene, CI Concurrency & Discoverability Verified)
 Repository: https://github.com/ellmos-ai/ai-media-editor
 Organization: ellmos-ai | Umbrella Ecosystem: open-bricks
 Canonical Clone: C:\_Local_DEV\repos\ai-media-editor
-Active Version: 0.2.3 | Language Stage: Core (DE + EN)
-Audit Standard: 18-Point Dual-Navigation Parity, Dual Mermaid Diagrams, 10-Dimension Comparative Matrix, Level 1 SBOM, Statutory § 521 BGB Disclaimer
+Active Version: 0.2.3 (Version Freeze per T-20260920-167562623) | Language Stage: Core (DE + EN)
+Audit Standard: 18-Point Dual-Navigation Parity, Dual Mermaid Diagrams, 10-Dimension Comparative Matrix, Level 1 SBOM, Statutory § 521 BGB Disclaimer, CI Hardening
 
 --------------------------------------------------------------------------------
 1. EXECUTIVE SUMMARY & CORE POSITIONING
@@ -194,4 +194,17 @@ Audit 2026-09-20 (Pfad B Discoverability, 18-Point Navigation, Level 1 SBOM & §
 [x] Version bumped to 0.2.3 across VERSION, pyproject.toml, ellmos-module.v2.json, README.md, README_de.md, llms.txt, and CHANGELOG.md
 [x] llms.txt refreshed to Last-checked: 2026-09-20 with 18-point navigation and § 521 BGB disclaimer
 [x] Automated contract test suite in tests/test_metadata.py expanded to verify all 18-point navigation, matrix, SBOM, and § 521 BGB requirements
+
+Audit 2026-09-21 (Pfad A Repository Hygiene, CI Concurrency Hardening & Contract Test Expansion):
+[x] Deployed Welcome New Contributors workflow (.github/workflows/welcome.yml, actions/first-interaction@v3, timeout-minutes: 5, cancel-in-progress: true)
+[x] Hardened Stale Issues/PRs workflow (.github/workflows/stale.yml) with concurrency control (cancel-in-progress: true) and timeout-minutes: 10
+[x] Hardened .gitignore with multi-host tokens (*-WORKSTATION-LG*, *-LAPTOP*, *-Mac Studio*, *-MacBook*), canonical locks (LOCK.user.*, LOCK.until.*, LOCK.condition.*, .automation-lock), and caches (.hypothesis/, .nyc_output/)
+[x] Created canonical NOTICE open-source attribution file for Lukas Geiger, ellmos-ai, and open-bricks
+[x] Standardized pyproject.toml license-files with ["LICENSE", "NOTICE", "THIRD_PARTY_LICENSES.md"] and added Notice URL to [project.urls]
+[x] Standardized pyproject.toml [tool.pytest.ini_options] with minversion = "7.0" and norecursedirs ignore rules
+[x] Maintained strict version freeze discipline per T-20260920-167562623 (version 0.2.3 untouched)
+[x] Updated THIRD_PARTY_LICENSES.md Stand to 2026-09-21 (Audit-Historie: 2026-09-20, 2026-09-11)
+[x] Updated llms.txt Last-checked to 2026-09-21 and added NOTICE to core file inventory
+[x] Expanded automated contract test suite in tests/test_metadata.py verifying welcome workflow, stale concurrency/timeout, NOTICE attribution, and lock hardening
 ================================================================================
+

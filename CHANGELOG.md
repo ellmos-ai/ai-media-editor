@@ -1,5 +1,22 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- Added `.github/workflows/welcome.yml` workflow (`actions/first-interaction@v3`, `timeout-minutes: 5`, `cancel-in-progress: true`) welcoming first-time issue and PR contributors.
+- Created canonical `NOTICE` attribution file in repository root establishing copyright ownership for Lukas Geiger, `ellmos-ai`, and the `open-bricks` ecosystem.
+- Added `Notice` URL to `[project.urls]` and updated `license-files = ["LICENSE", "NOTICE", "THIRD_PARTY_LICENSES.md"]` in `pyproject.toml`.
+- Expanded automated contract test suite in `tests/test_metadata.py`:
+  - `test_welcome_workflow_integrity`: verifies `.github/workflows/welcome.yml` existence, first-interaction action, timeout, and concurrency settings.
+  - `test_stale_workflow_concurrency_and_timeout`: verifies `stale.yml` concurrency control and 10-minute timeout guardrail.
+  - `test_notice_attribution_file`: validates canonical `NOTICE` file integrity, copyright owner, and ecosystem references.
+
+### Changed
+- Hardened `.github/workflows/stale.yml` with concurrency control (`cancel-in-progress: true`) and job timeout (`timeout-minutes: 10`).
+- Hardened `.gitignore` with multi-host host tokens (`*-WORKSTATION-LG*`, `*-LAPTOP*`, `*-Mac Studio*`, `*-MacBook*`), canonical lock patterns (`LOCK.user.*`, `LOCK.until.*`, `LOCK.condition.*`, `.automation-lock`), and test cache patterns (`.hypothesis/`, `.nyc_output/`).
+- Standardized `pyproject.toml` `[tool.pytest.ini_options]` with `minversion = "7.0"` and `norecursedirs` ignore list.
+- Re-audited `THIRD_PARTY_LICENSES.md` Level 1 SBOM Stand 2026-09-21 and updated `llms.txt` and `MARKETING-LOG.txt`.
+
 ## [0.2.3] - 2026-09-20
 
 ### Added

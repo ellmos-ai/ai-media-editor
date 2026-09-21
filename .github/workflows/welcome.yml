@@ -1,0 +1,41 @@
+name: 'Welcome New Contributors'
+
+on:
+  issues:
+    types: [opened]
+  pull_request_target:
+    types: [opened]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  welcome:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/first-interaction@v3
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          issue_message: |
+            Welcome! 👋 Thanks for opening your first issue in this repository.
+
+            We'll review it as soon as possible. In the meantime:
+            - Check if there's a similar issue already open
+            - Add as much detail as possible (steps to reproduce, expected behavior, environment)
+
+            If you'd like to contribute a fix, PRs are always welcome!
+          pr_message: |
+            Welcome! 👋 Thanks for your first pull request in this repository.
+
+            A maintainer will review it soon. Please make sure:
+            - [ ] Your changes are tested
+            - [ ] Documentation is updated if needed
+            - [ ] The PR description explains what and why
+
+            Thanks for contributing!

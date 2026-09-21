@@ -44,7 +44,13 @@ wheelhouse/
 *-conflict-*
 *.sync-temp-*
 *-ASUS-GEI*
+*-ASUS-GEI.*
 *-WORKSTATION*
+*-WORKSTATION-LG*
+*-WORKSTATION-LG.*
+*-LAPTOP*
+*-Mac Studio*
+*-MacBook*
 * (kopie)*
 * (Kopie)*
 * (copy)*
@@ -52,9 +58,13 @@ wheelhouse/
 *conflicted copy*
 LOCK
 LOCK.*
+LOCK.user.*
+LOCK.until.*
+LOCK.condition.*
 *.lock
 LOCK*.txt
 LOCK.permissions.json
+.automation-lock
 uv.lock
 !package-lock.json
 
@@ -71,6 +81,8 @@ uv.lock
 .mypy_cache/
 .tox/
 .turbo/
+.hypothesis/
+.nyc_output/
 
 # --- Data ---
 data/

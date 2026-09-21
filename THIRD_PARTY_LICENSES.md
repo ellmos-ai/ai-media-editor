@@ -1,6 +1,6 @@
 # Third-Party Licenses / Drittanbieter-Lizenzen
 
-Stand: 2026-09-20 (Audit-Historie: 2026-09-11) | Version: 0.2.3 | Repository: [ellmos-ai/ai-media-editor](https://github.com/ellmos-ai/ai-media-editor)
+Stand: 2026-09-21 (Audit-Historie: 2026-09-20, 2026-09-11) | Version: 0.2.3 | Repository: [ellmos-ai/ai-media-editor](https://github.com/ellmos-ai/ai-media-editor)
 
 This document provides a comprehensive Level 1 Software Bill of Materials (SBOM) and audit inventory of third-party open-source components, runtimes, and libraries utilized or integrated by `ai-media-editor`.
 

@@ -9,7 +9,7 @@ description = "Local-first AI media editor for video, audio, and podcast workflo
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
-license-files = ["LICENSE", "THIRD_PARTY_LICENSES.md"]
+license-files = ["LICENSE", "NOTICE", "THIRD_PARTY_LICENSES.md"]
 keywords = [
     "ai",
     "video-editor",
@@ -65,10 +65,13 @@ Security = "https://github.com/ellmos-ai/ai-media-editor/blob/main/SECURITY.md"
 "LLM Ready" = "https://github.com/ellmos-ai/ai-media-editor/blob/main/llms.txt"
 "Parent Organization" = "https://github.com/ellmos-ai"
 "Umbrella Ecosystem" = "https://github.com/open-bricks"
+Notice = "https://github.com/ellmos-ai/ai-media-editor/blob/main/NOTICE"
 
 [tool.pytest.ini_options]
+minversion = "7.0"
 pythonpath = "."
 testpaths = ["tests"]
+norecursedirs = [".venv", "venv", "build", "dist", ".git", ".pytest_cache", ".ruff_cache"]
 addopts = "-ra -v"
 
 [tool.ruff]
