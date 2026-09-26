@@ -37,6 +37,7 @@ This document provides a comprehensive audit and inventory of third-party open-s
 | **pytest** | MIT | https://github.com/pytest-dev/pytest | Automated test runner, fixture management, and contract assertions |
 | **Ruff** | MIT / Apache-2.0 | https://github.com/astral-sh/ruff | Fast Python linter, import sorter, and formatting enforcement |
 | **setuptools** | MIT | https://github.com/pypa/setuptools | PEP 517 / PEP 621 package build backend and distribution packaging |
+| **clip-storyboard-director** (optional, `[storyboard]` extra) | MIT | https://github.com/ellmos-ai/clip-storyboard-director | Sister project ("Director"): pre-production shot planning and rough-cut assembly handed off to this editor |
 
 ---
 

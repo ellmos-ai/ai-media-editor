@@ -381,3 +381,29 @@ Siehe [`CHANGELOG.md`](CHANGELOG.md) für die vollständige Versionshistorie.
 | **Lizenz & Freiheit** | :white_check_mark: 100% Frei (MIT) | :x: Monatliches Bezahl-Abo | :x: Kommerzielle Lizenz | :white_check_mark: Open Source |
 
 Detailliertes Marketing-Audit, Suchbegriffe und Audit-Protokoll: [`MARKETING-LOG.txt`](MARKETING-LOG.txt).
+
+---
+
+## Schwesterprojekt: `clip-storyboard-director`
+
+[`clip-storyboard-director`](https://github.com/ellmos-ai/clip-storyboard-director) ist der
+**Regisseur** zum **Cutter** dieses Editors in einem Zwei-Agenten-Produktionsmodell: Er
+übernimmt die Vorproduktion (Drehbuchzerlegung, Shot-Timing, KI-Videogenerator-Prompting via
+CDP-Browser-Automation, 4D-Persistenz-/Kontinuitätspuffer) und übergibt einen zusammengesetzten
+Rohschnitt, den `ai-media-editor` fertigstellt (Nichtlinearer Schnitt, Farbkorrektur, Übergänge,
+Audio-Ducking, finales Rendering). Beide Werkzeuge funktionieren jeweils eigenständig und
+benötigen einander nicht.
+
+Als optionale Abhängigkeit `storyboard` in der `pyproject.toml` dieses Projekts deklariert,
+gepinnt auf einen konkret geprüften Commit für Reproduzierbarkeit. `ai-media-editor` selbst
+ist eine Skriptsammlung (siehe [Erste Schritte & Einrichtung](#getting-started--setup)), kein
+pip-Paket — das Begleitwerkzeug wird deshalb direkt mit derselben gepinnten Angabe installiert:
+
+```bash
+pip install "clip-storyboard-director @ git+https://github.com/ellmos-ai/clip-storyboard-director.git@efd7159cacd34b3067b80543268cd70f68731b1b"
+clip-director --version
+```
+
+`clip-storyboard-director` steht wie dieses Projekt unter der MIT-Lizenz; das Komponenten-
+inventar liegt in dessen eigener
+[`THIRD_PARTY_LICENSES.md`](https://github.com/ellmos-ai/clip-storyboard-director/blob/main/THIRD_PARTY_LICENSES.md).
