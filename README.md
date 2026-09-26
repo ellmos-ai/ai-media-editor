@@ -46,6 +46,7 @@
 | 16 | [Changelog & Releases](#changelog--releases) | Release history, version milestones, and Pfad B discoverability updates |
 | 17 | [Level 1 SBOM & Third-Party Licenses](#third-party-licenses--transparency) | Permissive open-source inventory, RunAsInvoker guarantee, and Level 1 SBOM |
 | 18 | [Statutory Notice & Liability Limitation](#statutory-notice--liability-limitation) | MIT license, § 521 BGB Gefälligkeitsrecht disclaimer, and liability limits |
+| 19 | [Sister Project: `clip-storyboard-director`](#19-sister-project-clip-storyboard-director) | The Director half of the Director/Cutter duo, bundled as a pinned optional dependency |
 
 ---
 
@@ -447,3 +448,29 @@ See [`CHANGELOG.md`](CHANGELOG.md) for full version history.
 ## 18. Statutory Notice & Liability Limitation
 
 This software is provided free of charge under the MIT License as open-source software. Under German statutory law (§ 521 BGB - *Gefälligkeitsrecht* / gratuitous contracts), liability in the case of gratuitous provision of software is limited to intent (*Vorsatz*) and gross negligence (*grobe Fahrlässigkeit*). In particular, no warranties are provided for fitness for a particular purpose, merchantability, or absence of defects.
+
+---
+
+<a id="19-sister-project-clip-storyboard-director"></a>
+## 19. Sister Project: `clip-storyboard-director`
+
+[`clip-storyboard-director`](https://github.com/ellmos-ai/clip-storyboard-director) is the
+**Director** to this editor's **Cutter** in a two-agent media production model: it handles
+pre-production (script breakdown, shot timing, AI video-generator prompting via CDP browser
+automation, 4D persistence/continuity buffers) and hands off an assembled rough cut for
+`ai-media-editor` to finish (non-linear editing, color grading, transitions, audio ducking,
+final render). Each tool is standalone and does not require the other to function.
+
+It is declared as the `storyboard` optional dependency in this project's `pyproject.toml`,
+pinned to a specific reviewed commit for reproducibility. `ai-media-editor` itself is a
+script collection (see [Getting Started & Setup](#getting-started--setup)), not a pip
+package, so install the companion tool directly with the same pinned spec:
+
+```bash
+pip install "clip-storyboard-director @ git+https://github.com/ellmos-ai/clip-storyboard-director.git@efd7159cacd34b3067b80543268cd70f68731b1b"
+clip-director --version
+```
+
+`clip-storyboard-director` is MIT-licensed, same as this project; see its own
+[`THIRD_PARTY_LICENSES.md`](https://github.com/ellmos-ai/clip-storyboard-director/blob/main/THIRD_PARTY_LICENSES.md)
+for its component inventory.

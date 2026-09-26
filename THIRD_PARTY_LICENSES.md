@@ -40,6 +40,7 @@ This document provides a comprehensive Level 1 Software Bill of Materials (SBOM)
 | **pytest / pytest-asyncio** | >=8.0.0 | MIT | `INV-PARITY-07`, `INV-DOCS-09` | Automated regression and contract test gates | https://github.com/pytest-dev/pytest |
 | **Ruff** | >=0.5.0 | MIT / Apache-2.0 | `INV-DOCS-09`, `INV-PARITY-07` | Static analysis, code formatting, export linting | https://github.com/astral-sh/ruff |
 | **setuptools** | >=77.0 | MIT | `INV-RUNAS-02`, `INV-DOCS-09` | Standard PEP 517 / PEP 621 packaging metadata | https://github.com/pypa/setuptools |
+| **clip-storyboard-director** (`[storyboard]` extra) | Pinned commit `efd7159` | MIT | N/A (optional companion, not a runtime invariant) | Separate installable "Director" package; `ai-media-editor` runs fully without it | https://github.com/ellmos-ai/clip-storyboard-director |
 
 ---
 
