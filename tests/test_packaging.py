@@ -9,6 +9,7 @@ console script declaration, the explicit package list, and that stt/tools
 are now real importable packages.
 """
 
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -58,7 +59,8 @@ def test_editor_module_importable_with_stt_tools_on_syspath():
         [sys.executable, str(ROOT / "editor.py"), "modes"],
         cwd=ROOT,
         capture_output=True,
-        text=True,
+        encoding="utf-8",
+        env={**os.environ, "PYTHONIOENCODING": "utf-8"},
         timeout=30,
     )
     assert result.returncode == 0, result.stderr
