@@ -41,6 +41,9 @@ classifiers = [
     "Programming Language :: Python :: 3.13"
 ]
 
+[project.scripts]
+ai-media-editor = "editor:main"
+
 [project.optional-dependencies]
 storyboard = [
     "clip-storyboard-director @ git+https://github.com/ellmos-ai/clip-storyboard-director.git@efd7159cacd34b3067b80543268cd70f68731b1b",
@@ -69,6 +72,17 @@ Security = "https://github.com/ellmos-ai/ai-media-editor/blob/main/SECURITY.md"
 "Parent Organization" = "https://github.com/ellmos-ai"
 "Umbrella Ecosystem" = "https://github.com/open-bricks"
 Notice = "https://github.com/ellmos-ai/ai-media-editor/blob/main/NOTICE"
+
+[tool.setuptools]
+# editor.py is the CLI entrypoint script, not part of a package; stt/ and
+# tools/ are the two real packages (see packages.find below). Without this,
+# setuptools' flat-layout auto-discovery finds editor.py plus six ambiguous
+# top-level directories (stt, brand, assets, config, projects, production)
+# and refuses to build ("Multiple top-level packages discovered").
+py-modules = ["editor"]
+
+[tool.setuptools.packages.find]
+include = ["stt*", "tools*"]
 
 [tool.pytest.ini_options]
 minversion = "7.0"

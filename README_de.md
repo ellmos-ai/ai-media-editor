@@ -220,6 +220,10 @@ Schritt-für-Schritt-Anleitung für jeden Modus: [`docs/USECASES.md`](docs/USECA
    - **Lokal:** `ffmpeg`, `Node.js >= 22` (für Hyperframes), Python 3.10–3.13 venv.
    - **Optionaler Remote-Host:** faster-whisper + WhisperX auf einem per SSH erreichbaren Rechner.
    - **HuggingFace-Token:** Nur nötig, wenn `engines.multi_speaker` auf `whisperx` steht.
+4. **Optional: als Paket installieren.** `pip install -e .` (oder `-e ".[storyboard]"`, um
+   [`clip-storyboard-director`](#19-schwesterprojekt-clip-storyboard-director) mitzuinstallieren)
+   registriert den Kommandozeilenbefehl `ai-media-editor`, gleichwertig zum direkten Aufruf von
+   `python editor.py` unten.
 
 ---
 
@@ -463,12 +467,12 @@ Audio-Ducking, finales Rendering). Beide Werkzeuge funktionieren jeweils eigenst
 benötigen einander nicht.
 
 Als optionale Abhängigkeit `storyboard` in der `pyproject.toml` dieses Projekts deklariert,
-gepinnt auf einen konkret geprüften Commit für Reproduzierbarkeit. `ai-media-editor` selbst
-ist eine Skriptsammlung (siehe [Erste Schritte & Einrichtung](#getting-started--setup)), kein
-pip-Paket — das Begleitwerkzeug wird deshalb direkt mit derselben gepinnten Angabe installiert:
+gepinnt auf einen konkret geprüften Commit für Reproduzierbarkeit. Beides zusammen mit dem
+`ai-media-editor`-Kommandozeilenbefehl in einem Schritt installieren:
 
 ```bash
-pip install "clip-storyboard-director @ git+https://github.com/ellmos-ai/clip-storyboard-director.git@efd7159cacd34b3067b80543268cd70f68731b1b"
+pip install -e ".[storyboard]"
+ai-media-editor modes
 clip-director --version
 ```
 

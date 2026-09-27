@@ -220,6 +220,9 @@ For complete step-by-step guides for each mode, refer to [`docs/USECASES.md`](do
    - **Local:** `ffmpeg`, `Node.js >= 22` (for Hyperframes), Python 3.10–3.13 venv.
    - **Optional Remote Host:** faster-whisper + WhisperX on a remote machine reachable via SSH.
    - **HuggingFace Token:** Only required when `engines.multi_speaker` is set to `whisperx`.
+4. **Optional: install as a package.** `pip install -e .` (or `-e ".[storyboard]"` to also pull
+   in [`clip-storyboard-director`](#19-sister-project-clip-storyboard-director)) registers the
+   `ai-media-editor` console script, equivalent to running `python editor.py` below.
 
 ---
 
@@ -462,12 +465,12 @@ automation, 4D persistence/continuity buffers) and hands off an assembled rough 
 final render). Each tool is standalone and does not require the other to function.
 
 It is declared as the `storyboard` optional dependency in this project's `pyproject.toml`,
-pinned to a specific reviewed commit for reproducibility. `ai-media-editor` itself is a
-script collection (see [Getting Started & Setup](#getting-started--setup)), not a pip
-package, so install the companion tool directly with the same pinned spec:
+pinned to a specific reviewed commit for reproducibility. Install both together with the
+`ai-media-editor` console script in one step:
 
 ```bash
-pip install "clip-storyboard-director @ git+https://github.com/ellmos-ai/clip-storyboard-director.git@efd7159cacd34b3067b80543268cd70f68731b1b"
+pip install -e ".[storyboard]"
+ai-media-editor modes
 clip-director --version
 ```
 
