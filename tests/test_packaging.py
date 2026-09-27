@@ -1,13 +1,4 @@
-"""Packaging regression tests (T-20260927-253152857).
-
-Before this fix, `pip install [-e] .` failed outright with a setuptools
-"Multiple top-level packages discovered in a flat-layout" error -- there was
-no __init__.py anywhere and no explicit packages.find configuration, so the
-storyboard extra (pip install -e ".[storyboard]") could never be exercised.
-These tests guard the three things that made it installable again: the
-console script declaration, the explicit package list, and that stt/tools
-are now real importable packages.
-"""
+"""Regression tests for the installable :mod:`ai_media_editor` namespace."""
 
 import os
 import subprocess
@@ -33,28 +24,34 @@ def _load_pyproject():
 def test_console_script_declared():
     pyproject = _load_pyproject()
     scripts = pyproject["project"]["scripts"]
-    assert scripts["ai-media-editor"] == "editor:main"
+    assert scripts["ai-media-editor"] == "ai_media_editor.editor:main"
 
 
 def test_packages_find_is_explicit_not_automatic():
     pyproject = _load_pyproject()
     setuptools_cfg = pyproject["tool"]["setuptools"]
-    assert setuptools_cfg["py-modules"] == ["editor"]
+    assert "py-modules" not in setuptools_cfg
 
     find_cfg = pyproject["tool"]["setuptools"]["packages"]["find"]
     include = set(find_cfg["include"])
-    assert include == {"stt*", "tools*"}
+    assert include == {"ai_media_editor*"}
+
+    package_data = setuptools_cfg["package-data"]["ai_media_editor.tools"]
+    assert set(package_data) == {"*.cjs", "*.cmd", "*.ps1", "*.vbs"}
 
 
-def test_stt_and_tools_are_real_packages():
-    assert (ROOT / "stt" / "__init__.py").is_file()
-    assert (ROOT / "tools" / "__init__.py").is_file()
+def test_namespace_contains_stt_and_tools_packages_only():
+    package = ROOT / "ai_media_editor"
+    assert (package / "__init__.py").is_file()
+    assert (package / "editor.py").is_file()
+    assert (package / "stt" / "__init__.py").is_file()
+    assert (package / "tools" / "__init__.py").is_file()
+    assert not (ROOT / "stt").exists()
+    assert not (ROOT / "tools").exists()
 
 
-def test_editor_module_importable_with_stt_tools_on_syspath():
-    """editor.py's own sys.path.insert(HERE/"stt"), sys.path.insert(HERE/"tools")
-    trick must keep working after packaging -- this is what doctor()/prepare()
-    rely on at runtime, editable or not."""
+def test_root_compatibility_shim_runs_without_install():
+    """The documented root script remains available without an install."""
     result = subprocess.run(
         [sys.executable, str(ROOT / "editor.py"), "modes"],
         cwd=ROOT,

@@ -26,7 +26,7 @@ from pathlib import Path
 
 try:
     from . import transcribe_local
-except ImportError:  # standalone import from stt/
+except ImportError:  # standalone execution outside the package
     import transcribe_local
 
 HERE = Path(__file__).resolve().parent

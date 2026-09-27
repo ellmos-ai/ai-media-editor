@@ -19,8 +19,8 @@ The LLM can be:
   - A local LLM (Mac Ollama) for automated assignment.
 
 Usage:
-    python diarize_llm.py prepare --edit-dir <dir> [--max-speakers N] [--silence 0.4]
-    python diarize_llm.py apply   --edit-dir <dir> --stem <name> --labels <labels.json>
+    python -m ai_media_editor.stt.diarize_llm prepare --edit-dir <dir> [--max-speakers N] [--silence 0.4]
+    python -m ai_media_editor.stt.diarize_llm apply --edit-dir <dir> --stem <name> --labels <labels.json>
 """
 from __future__ import annotations
 
@@ -33,10 +33,14 @@ import sys
 import tempfile
 from pathlib import Path
 
+from ai_media_editor import resolve_home
+
 # pack_transcripts (Re-Pack) aus video-use wiederverwenden
 def _packer_command(edit_dir: Path) -> list[str]:
     try:
-        cfg = json.loads((Path(__file__).resolve().parent.parent / "config" / "settings.json").read_text(encoding="utf-8"))
+        cfg = json.loads(
+            (resolve_home() / "config" / "settings.json").read_text(encoding="utf-8")
+        )
         vu_root = Path(cfg["paths"]["video_use"])
         python = str(cfg["paths"]["venv_python"])
     except (OSError, KeyError, json.JSONDecodeError):
@@ -174,7 +178,7 @@ Ordne jede Phrase einem Sprecher zu. {spk_hint}
 **Ausgabe:** Schreibe eine Datei `{jf.stem}.labels.json` mit einem Array von
 Objekten `{{"i": <phrasen-index>, "speaker": <int>}}` — für JEDE Phrase genau
 einen Eintrag. Dann ausführen:
-    python diarize_llm.py apply --edit-dir "<edit_dir>" --stem "{jf.stem}" --labels "<pfad/{jf.stem}.labels.json>"
+    python -m ai_media_editor.stt.diarize_llm apply --edit-dir "<edit_dir>" --stem "{jf.stem}" --labels "<pfad/{jf.stem}.labels.json>"
 
 ## Phrasen ({len(items)})
 {listing}

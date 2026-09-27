@@ -1,20 +1,15 @@
 from __future__ import annotations
 
 import json
-import sys
 import tempfile
 import unittest
 import wave
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-for directory in (ROOT, ROOT / "stt", ROOT / "tools"):
-    sys.path.insert(0, str(directory))
-
 try:
-    import numpy as np  # noqa: E402
+    import numpy as np
 
-    import compose_music  # noqa: E402
+    from ai_media_editor.tools import compose_music
 
     HAVE_NUMPY = True
 except ImportError:  # numpy is an optional dependency of the fast gate

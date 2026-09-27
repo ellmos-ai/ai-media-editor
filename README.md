@@ -83,15 +83,15 @@ flowchart TB
 
     subgraph Engines ["Layer 3: Processing & Synthesis Engines"]
         FW["faster-whisper / WhisperX<br/>100% Local STT & Word Alignment"]
-        DIAR["stt/diarize_llm.py<br/>Text-based Multi-Speaker Diarization"]
-        MUSIC["tools/compose_music.py<br/>Procedural NumPy Waveform Synthesis"]
+        DIAR["ai_media_editor/stt/diarize_llm.py<br/>Text-based Multi-Speaker Diarization"]
+        MUSIC["ai_media_editor/tools/compose_music.py<br/>Procedural NumPy Waveform Synthesis"]
         HF["Hyperframes & hide-windows.cjs<br/>HTML/CSS/JS -> MP4 Motion Graphics"]
     end
 
     subgraph Agentic ["Layer 4: Agentic Interaction Layer"]
         SCRIBE["Scribe JSON Schema<br/>Word-level Timing for video-use"]
-        FRAMES["tools/frame_view.py<br/>Timestamped Contact-Sheets"]
-        CUTS["tools/cut_view.py<br/>Pause & Inflection Cut Candidates"]
+        FRAMES["ai_media_editor/tools/frame_view.py<br/>Timestamped Contact-Sheets"]
+        CUTS["ai_media_editor/tools/cut_view.py<br/>Pause & Inflection Cut Candidates"]
         LLM["AI Coding Agent<br/>(Claude Code / Gemini / Codex)"]
     end
 
@@ -255,18 +255,18 @@ PYTHONIOENCODING=utf-8 "$VENV" editor.py frames my-video --from 30 --to 45 --ste
 ## 9. Motion Graphics & Music Synthesis
 
 ### Offline Video-Synced Score (`compose_music.py`)
-`tools/compose_music.py` composes background music following a video storyline — 100% local with zero cloud services.
+`ai_media_editor.tools.compose_music` composes background music following a video storyline — 100% local with zero cloud services.
 Input is a **storyline JSON** defining sections with exact time windows, emotions, and intensity levels:
 
 ```bash
 # Compose music from storyline JSON
-python tools/compose_music.py docs/examples/storyline-roshambo.json -o projects/<name>/assets/score
+python -m ai_media_editor.tools.compose_music docs/examples/storyline-roshambo.json -o projects/<name>/assets/score
 
 # Generate storyline template
-python tools/compose_music.py --init
+python -m ai_media_editor.tools.compose_music --init
 
 # Run deterministic synthesis selftest
-python tools/compose_music.py --selftest
+python -m ai_media_editor.tools.compose_music --selftest
 ```
 
 Output: Stereo WAV + MP3 + `<name>.notes.json` + `<name>.mid` (Standard MIDI File Type 1).
@@ -289,9 +289,9 @@ The architecture enforces 10 strict runtime guarantees across all operating mode
 | `INV-LOCAL-01` | Privacy & Data Egress | **100% Local-First Execution**: Raw media, transcripts, and embeddings never leave localhost. Zero cloud calls by default. | `tests/test_core.py`, no cloud sockets in core pipeline |
 | `INV-RUNAS-02` | Privilege & Sandbox | **Unprivileged User-Mode (`RunAsInvoker`)**: Zero administrative or elevated privileges required. | Standard user execution across all scripts |
 | `INV-PREV-03` | Storage & Immutability | **Preview-Safe & Non-Destructive Source Media**: Input files are strictly read-only; all artifacts write to `projects/<name>/`. | Isolation checks in `tests/test_core.py` |
-| `INV-DETERM-04` | Reproducibility | **Deterministic Synthesis & Schema Stability**: Fixed seed for procedural audio and rigid adherence to Scribe JSON schema. | `tests/test_compose_music.py`, `stt/scribe_schema.py` |
+| `INV-DETERM-04` | Reproducibility | **Deterministic Synthesis & Schema Stability**: Fixed seed for procedural audio and rigid adherence to Scribe JSON schema. | `tests/test_compose_music.py`, `ai_media_editor/stt/scribe_schema.py` |
 | `INV-BOUNDARY-05` | File Traversal Safety | **Anti-Traversal & Project Containment**: Filenames and project stems cannot escape the project boundaries. | `test_project_names_cannot_escape_projects` |
-| `INV-SUBPROC-06` | Process Sanitation | **Clean Lifecycle & Window Suppression**: Preloaded wrappers suppress console window flashing on Windows. | `tools/hf.cmd`, `tools/hide-windows.cjs` |
+| `INV-SUBPROC-06` | Process Sanitation | **Clean Lifecycle & Window Suppression**: Preloaded wrappers suppress console window flashing on Windows. | `ai_media_editor/tools/hf.cmd`, `ai_media_editor/tools/hide-windows.cjs` |
 | `INV-PARITY-07` | Multi-OS Support | **Cross-Platform OS Parity**: Identical execution and path handling across Windows, Linux, and macOS. | Multi-OS GitHub Actions CI matrix |
 | `INV-SYNC-08` | Concurrency & Locks | **Cloud-Sync & Multi-Agent Lock Discipline**: Heavy tools and projects excluded from cloud sync conflicts. | `.gitignore` conflict & lock filter rules |
 | `INV-DOCS-09` | Accessibility & Discovery | **Multimodal LLM Readiness & Bilingual Parity**: Frame contact sheets for vision LLMs; full EN/DE documentation parity. | `llms.txt`, `README.md`, `README_de.md` contract tests |
@@ -358,7 +358,7 @@ python editor.py modes
 ```
 
 ### Windows Console Window Suppression
-Hyperframes and Node subprocesses run through `tools/hf.cmd` and `tools/hide-windows.cjs` to enforce `windowsHide: true`, eliminating distracting console window flashing during rendering. Background details: [`docs/WINDOWS-KONSOLENFENSTER.md`](docs/WINDOWS-KONSOLENFENSTER.md).
+Hyperframes and Node subprocesses run through `ai_media_editor/tools/hf.cmd` and `ai_media_editor/tools/hide-windows.cjs` to enforce `windowsHide: true`, eliminating distracting console window flashing during rendering. Background details: [`docs/WINDOWS-KONSOLENFENSTER.md`](docs/WINDOWS-KONSOLENFENSTER.md).
 
 ---
 
@@ -390,15 +390,16 @@ ai-media-editor/                  (code/docs/projects)
 ├── CLAUDE.md                     ← agent guide (editor workflow, German)
 ├── README.md                     ← English overview & 18-point visual architecture
 ├── README_de.md                  ← German documentation (1:1 anchor parity)
-├── editor.py                     ← orchestrator (prepare / frames / modes / doctor)
-├── tools/
+├── editor.py                     ← compatibility shim for documented direct calls
+├── ai_media_editor/editor.py     ← orchestrator (prepare / frames / modes / doctor)
+├── ai_media_editor/tools/
 │   ├── cut_view.py               ← pauses as explicit cut candidates
 │   ├── frame_view.py             ← video → timestamped frames ("video-scatterer", UC3/4/8)
 │   ├── compose_cover.py          ← UC7: loop a cover over audio
 │   ├── compose_music.py          ← storyline JSON → video-synced score (NumPy waveform synthesis)
 │   ├── hf.cmd / hf-hidden.vbs    ← Windows console window suppression wrappers
 │   └── hide-windows.cjs          ← Node.js preload script enforcing windowsHide: true
-├── stt/
+├── ai_media_editor/stt/
 │   ├── scribe_schema.py          ← Scribe-JSON format (contract with video-use)
 │   ├── transcribe_local.py       ← faster-whisper + WhisperX → Scribe-JSON
 │   ├── diarize_llm.py            ← token-free text-based speaker assignment

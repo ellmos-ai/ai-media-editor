@@ -16,27 +16,27 @@ nutzt hier `puppeteer-core` 25.2.1; Playwright war Teil der ursprünglichen Hypo
 nicht der Browser-Launcher dieses HyperFrames-Stands.
 
 ## Gegenmittel (reversibel, kein Eingriff in HyperFrames)
-1. **Node-Preload `tools/hide-windows.cjs`** — umhüllt `spawn/spawnSync/exec/execSync/execFile/
+1. **Node-Preload `ai_media_editor/tools/hide-windows.cjs`** — umhüllt `spawn/spawnSync/exec/execSync/execFile/
    execFileSync/fork` und **erzwingt** `windowsHide: true` (auch gegen ein explizites `false` des
    Aufrufers; Escape-Luke ist der globale Schalter `HIDE_WINDOWS_PRELOAD_OFF=1`). Aktiv über
    `NODE_OPTIONS=--require <pfad>/hide-windows.cjs` (**Forward-Slashes** — `NODE_OPTIONS` liest
    Backslashes als Escape). Debug: `HIDE_WINDOWS_DEBUG=1` schreibt je Node-Prozess eine Zeile
    `[hide-windows] aktiv in pid …` nach stderr.
-2. **Wrapper `tools/hf.cmd`** — setzt das Preload und bevorzugt ein vorhandenes reguläres
+2. **Wrapper `ai_media_editor/tools/hf.cmd`** — setzt das Preload und bevorzugt ein vorhandenes reguläres
    Google Chrome aus `%ProgramW6432%`, `%PROGRAMFILES%`, `%ProgramFiles(x86)%` oder
    `%LOCALAPPDATA%`. Dazu setzt
    das Preload nur im lokalen `setlocal`-Prozessbaum HyperFrames' nativen Override
    `HYPERFRAMES_BROWSER_PATH`; eine bereits gesetzte Vorgabe gewinnt. Wird kein Chrome gefunden,
    bleibt HyperFrames' bisheriger Cache-/Downloadweg unverändert. Opt-out für den gepinnten
    `chrome-headless-shell`: vor dem Aufruf `set HF_PREFER_FULL_CHROME=0` setzen.
-   Aus dem Projektordner: `tools\hf.cmd render -q high -o renders\video.mp4`,
-   `tools\hf.cmd snapshot --at 5`, …
-3. **`tools/hf-hidden.vbs`** — für Aufrufe ohne Terminal (Scheduled Tasks, Starter): startet
+   Aus dem Projektordner: `ai_media_editor\tools\hf.cmd render -q high -o renders\video.mp4`,
+   `ai_media_editor\tools\hf.cmd snapshot --at 5`, …
+3. **`ai_media_editor/tools/hf-hidden.vbs`** — für Aufrufe ohne Terminal (Scheduled Tasks, Starter): startet
    `hf.cmd` in einer versteckten Konsole (`wscript //B //Nologo hf-hidden.vbs render …`); Kinder
    erben die versteckte Konsole. stdout ist dabei unsichtbar.
 
 ## Messung — Prozesse ≠ Fenster
-`tools/count_console_windows.ps1` zählt **sichtbare** neue Fenster (EnumWindows) während einer
+`ai_media_editor/tools/count_console_windows.ps1` zählt **sichtbare** neue Fenster (EnumWindows) während einer
 Messdauer; mit `-All -Log <datei>` protokolliert es jedes neue Fenster mit Klasse, Prozess und
 Titel. Selbsttest: ein sichtbares `cmd /c timeout 1` wird als 1 gezählt (Klasse
 `PseudoConsoleWindow` unter ConPTY-Hosts, sonst `ConsoleWindowClass`).
@@ -66,7 +66,7 @@ setzt `HF_PREFER_FULL_CHROME=0`. Der Preload bleibt für `cmd`, `npx`, `ffmpeg` 
 Konsolen-Kindprozesse nötig.
 
 ## Standardweg (Windows)
-HyperFrames **immer über `tools/hf.cmd`** (bzw. `hf-hidden.vbs` ohne Terminal) starten — auch
+HyperFrames **immer über `ai_media_editor/tools/hf.cmd`** (bzw. `hf-hidden.vbs` ohne Terminal) starten — auch
 wenn der Burst in der eigenen Umgebung nicht auftritt. Der Wrapper kombiniert
 `windowsHide: true` mit regulärem Full Chrome, sofern es installiert ist. Eine abschließende
 0-Fenster-Abnahme für diesen Stand bleibt eine echte Sichtmessung auf WORKSTATION-LG.

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import io
+import os
 import subprocess
 import sys
 import tempfile
@@ -10,17 +11,9 @@ from contextlib import redirect_stdout
 from pathlib import Path
 from unittest import mock
 
-ROOT = Path(__file__).resolve().parents[1]
-for directory in (ROOT, ROOT / "stt", ROOT / "tools"):
-    sys.path.insert(0, str(directory))
-
-import cut_view  # noqa: E402
-import diarize_llm  # noqa: E402
-import editor  # noqa: E402
-import frame_view  # noqa: E402
-import mac_remote  # noqa: E402
-import scribe_schema  # noqa: E402
-import transcribe_local  # noqa: E402
+from ai_media_editor import editor, resolve_home
+from ai_media_editor.stt import diarize_llm, mac_remote, scribe_schema, transcribe_local
+from ai_media_editor.tools import cut_view, frame_view
 
 
 def completed(returncode: int = 0, stdout: str = "", stderr: str = "") -> subprocess.CompletedProcess[str]:
@@ -165,6 +158,24 @@ class TranscriptCacheTests(unittest.TestCase):
 
 
 class EditorTests(unittest.TestCase):
+    def test_home_resolution_prefers_environment_and_defaults_to_cwd(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            explicit = root / "explicit-home"
+            with mock.patch.dict(
+                os.environ, {"AI_MEDIA_EDITOR_HOME": str(explicit)}
+            ):
+                self.assertEqual(resolve_home(), explicit.resolve())
+
+            previous_cwd = Path.cwd()
+            try:
+                os.chdir(root)
+                with mock.patch.dict(os.environ):
+                    os.environ.pop("AI_MEDIA_EDITOR_HOME", None)
+                    self.assertEqual(resolve_home(), root.resolve())
+            finally:
+                os.chdir(previous_cwd)
+
     def test_usecase_labels_use_real_german_umlauts(self) -> None:
         self.assertEqual(editor.USECASES[2].label, "Audio, mehrere Sprecher (Gespräch)")
         self.assertEqual(editor.USECASES[6].label, "Erklärvideo aus Audio")
@@ -256,7 +267,7 @@ class EditorTests(unittest.TestCase):
                 "hf_token": "",
             }
             with (
-                mock.patch.object(editor, "HERE", root),
+                mock.patch.dict(os.environ, {"AI_MEDIA_EDITOR_HOME": str(root)}),
                 mock.patch.object(editor, "load_config", return_value=cfg),
                 mock.patch.object(editor.transcribe_local, "cache_is_valid", return_value=True),
                 mock.patch.object(editor, "_run_helper", return_value=completed()),

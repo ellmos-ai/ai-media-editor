@@ -11,7 +11,7 @@ const {
   configureHyperframesBrowser,
   findSystemChrome,
   systemChromeCandidates,
-} = require('../tools/hide-windows.cjs');
+} = require('../ai_media_editor/tools/hide-windows.cjs');
 delete process.env.HIDE_WINDOWS_PRELOAD_OFF;
 
 const fakeEnv = {
@@ -64,7 +64,13 @@ function runWrapper(extraEnv = {}) {
     if (value === null) delete env[key];
   }
   try {
-    const wrapper = path.resolve(__dirname, '..', 'tools', 'hf.cmd');
+    const wrapper = path.resolve(
+      __dirname,
+      '..',
+      'ai_media_editor',
+      'tools',
+      'hf.cmd',
+    );
     fs.writeFileSync(runner, `@echo off\r\ncall "${wrapper}" --version\r\n`);
     const result = spawnSync('cmd.exe', ['/d', '/c', runner], {
       encoding: 'utf8',

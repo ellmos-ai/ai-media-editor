@@ -1,7 +1,7 @@
 @echo off
 REM hf.cmd - HyperFrames ohne Konsolenfenster-Bursts (Windows). Ticket T-20260829-486029203.
-REM Nutzung: tools\hf.cmd render --quality high --output renders\video.mp4
-REM          tools\hf.cmd snapshot --at 5   /   tools\hf.cmd check   /   tools\hf.cmd lint
+REM Nutzung: ai_media_editor\tools\hf.cmd render --quality high --output renders\video.mp4
+REM          ai_media_editor\tools\hf.cmd snapshot --at 5   /   ai_media_editor\tools\hf.cmd check   /   ai_media_editor\tools\hf.cmd lint
 REM Setzt NODE_OPTIONS auf das Preload hide-windows.cjs (erzwingt windowsHide fuer alle Kindprozesse)
 REM und bevorzugt regulaeres Chrome. Opt-out: set HF_PREFER_FULL_CHROME=0
 REM Ruft npx hyperframes mit allen Argumenten auf. Aus dem HyperFrames-Projektordner aufrufen.
