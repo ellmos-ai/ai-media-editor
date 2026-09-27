@@ -31,7 +31,7 @@ PYTHONIOENCODING=utf-8 "$VENV" editor.py prepare "<media>" --mode <#> --project 
    den Diarisierungs-Prompt `edit/diarization/<stem>.prompt.md` + `.phrases.json`.
 2. **Sprecher zuordnen (Claude Code als LLM):** Prompt + Phrasen lesen →
    `<stem>.labels.json` schreiben (`[{"i":idx,"speaker":int}]`) →
-   `python stt/diarize_llm.py apply --edit-dir <dir> --stem <stem> --labels <labels>`.
+   `python -m ai_media_editor.stt.diarize_llm apply --edit-dir <dir> --stem <stem> --labels <labels>`.
    Danach zeigt `takes_packed.md` `S0/S1/...` und bricht an Sprecherwechseln.
 3. Schnitt wie UC1, Sprecher-Handoffs mit Luft (400–600 ms).
 4. `edl.json` → Audio-Render.

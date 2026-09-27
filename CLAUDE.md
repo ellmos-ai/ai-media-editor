@@ -14,7 +14,7 @@ Animations-Entscheidungen triffst du.
 | **Hyperframes** (HeyGen) | HTML/CSS/JS → MP4-Animationen | `npx --yes hyperframes …` (Node ≥ 22) |
 | ~~Claude Design (Web)~~ → **`frontend-design`-Skill** | Motion-Graphics/Branding generieren | lokaler Skill, kein Browser/ZIP nötig |
 
-**ElevenLabs Scribe ist ersetzt** durch `stt/transcribe_local.py`: standardmäßig
+**ElevenLabs Scribe ist ersetzt** durch `ai_media_editor/stt/transcribe_local.py`: standardmäßig
 faster-whisper plus tokenfreie LLM-Zuordnung für mehrere Sprecher; WhisperX ist
 die optionale akustische Alternative. Compute ist standardmäßig lokal, optional
 Remote-Host-primär mit lokalem Fallback. Der Ersatz erzeugt die von den verwendeten
@@ -82,7 +82,7 @@ Der Schnitt oben läuft über Ton/Transkript. Bei **Video**-Usecases brauchst du
 zusätzlich die **Bild-Ebene**, um zu beurteilen, was im Bild passiert (Slide-/
 B-Roll-Wechsel, Gestik, „hält etwas hoch", Framing für 9:16-Crops, leere Momente,
 wo Lower-Thirds/Animationen hinpassen). Dafür: `editor.py frames` (Tool
-`tools/frame_view.py`, „Video-Scatterer"). Coarse-to-fine, token-effizient:
+`ai_media_editor/tools/frame_view.py`, „Video-Scatterer"). Coarse-to-fine, token-effizient:
 
 1. **Übersicht** — `editor.py frames <video|projekt> --contact-sheet` legt ein
    gekacheltes Sheet alle paar Sekunden an (sehr sparsam). Alternativ Einzelframes:
@@ -116,7 +116,7 @@ unterscheidbar); Einzelframes bleiben pixelrein, Einbrennen nur mit `--label`
 
 - 1 Sprecher → **faster-whisper** (schnell, kein Token nötig).
 - mehrere Sprecher (Usecase 2/4 oder `--num-speakers > 1`) → **faster-whisper +
-  tokenfreie LLM-Diarisierung** (`stt/diarize_llm.py`). Whisper transkribiert, dann
+  tokenfreie LLM-Diarisierung** (`ai_media_editor/stt/diarize_llm.py`). Whisper transkribiert, dann
   ordnet **das LLM die Sprecher aus dem Text zu** (Anrede, Frage/Antwort, Pausen) —
   **kein HuggingFace-Token** nötig. Ablauf: `editor.py prepare` erzeugt
   `edit/diarization/<stem>.prompt.md` + `.phrases.json`; Claude Code (oder eine
@@ -137,14 +137,14 @@ unterscheidbar); Einzelframes bleiben pixelrein, Einbrennen nur mit `--label`
 
 ## Windows: HyperFrames ohne Konsolenfenster-Bursts [C 2026-09-02]
 
-HyperFrames auf Windows **immer über `tools\hf.cmd`** starten (`hf.cmd render …`, `hf.cmd
-snapshot …`), nie nackt über `npx hyperframes`. Der Wrapper lädt `tools/hide-windows.cjs`
+HyperFrames auf Windows **immer über `ai_media_editor\tools\hf.cmd`** starten (`hf.cmd render …`, `hf.cmd
+snapshot …`), nie nackt über `npx hyperframes`. Der Wrapper lädt `ai_media_editor/tools/hide-windows.cjs`
 per `NODE_OPTIONS=--require`, erzwingt `windowsHide: true` für alle Kindprozesse und bevorzugt
 ein vorhandenes reguläres Google Chrome über HyperFrames' nativen
 `HYPERFRAMES_BROWSER_PATH`-Override. Explizite Browserpfade werden nicht überschrieben; mit
 `set HF_PREFER_FULL_CHROME=0` bleibt der gepinnte `chrome-headless-shell` wählbar. Ohne Terminal
-(Scheduled Task, Starter) `wscript //B //Nologo tools\hf-hidden.vbs …`. Nachweis nur visuell:
-`tools/count_console_windows.ps1 -All -Log <datei>` mitlaufen lassen. Hintergrund, Befund und
+(Scheduled Task, Starter) `wscript //B //Nologo ai_media_editor\tools\hf-hidden.vbs …`. Nachweis nur visuell:
+`ai_media_editor/tools/count_console_windows.ps1 -All -Log <datei>` mitlaufen lassen. Hintergrund, Befund und
 verbleibendes WORKSTATION-LG-Gate: `docs/WINDOWS-KONSOLENFENSTER.md` (Ticket
 T-20260829-486029203).
 

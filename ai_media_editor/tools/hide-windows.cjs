@@ -4,12 +4,12 @@
 // kurze Kindprozesse. Ein Konsolenprogramm bekommt dabei ein NEUES sichtbares Konsolenfenster, wenn
 // der Spawn ohne `windowsHide` laeuft. Dieses Preload umhuellt child_process und erzwingt
 // `windowsHide: true` fuer jeden Spawn — ohne das Werkzeug selbst zu patchen.
-// Fuer HyperFrames bevorzugt tools/hf.cmd zusaetzlich ein installiertes regulaeres Chrome: dessen
+// Fuer HyperFrames bevorzugt ai_media_editor/tools/hf.cmd zusaetzlich ein installiertes regulaeres Chrome: dessen
 // Windows-GUI-Subsystem erzeugte im Gegensatz zu chrome-headless-shell kein PseudoConsoleWindow.
 //
-// Nutzung (Windows):  set NODE_OPTIONS=--require "C:\pfad\tools\hide-windows.cjs"
+// Nutzung (Windows):  set NODE_OPTIONS=--require "C:\pfad\ai_media_editor\tools\hide-windows.cjs"
 //                     npx hyperframes render ...
-// Bequem: tools\hf.cmd (setzt NODE_OPTIONS und ruft npx hyperframes auf).
+// Bequem: ai_media_editor\tools\hf.cmd (setzt NODE_OPTIONS und ruft npx hyperframes auf).
 // Auf anderen Plattformen ist das Preload ein No-op. Ticket: T-20260829-486029203.
 'use strict';
 

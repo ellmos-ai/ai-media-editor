@@ -19,9 +19,9 @@ Genau diese Linie ist die Modulgrenze.
 | Bestandteil | Ziel | Begründung |
 |---|---|---|
 | `editor.py` (Orchestrator) | **media-editor-core** | deterministische Pipeline, kein LLM-Zwang |
-| `stt/transcribe_local.py`, `stt/scribe_schema.py`, `stt/mac_remote.py` | **media-editor-core** | lokale/entfernte STT-Engines + Schema = Kernfähigkeit |
-| `stt/diarize_llm.py` | **media-editor-core als Adapter** (Grenzfall) | Schema/Aufruf deterministisch, LLM-Provider injizierbar halten — der Kern trägt den Adapter, der Stack liefert das Modell |
-| `tools/` (cut_view, frame_view, compose_cover, compose_music) | **media-editor-core** | deterministische Werkzeuge |
+| `ai_media_editor/stt/transcribe_local.py`, `scribe_schema.py`, `mac_remote.py` | **media-editor-core** | lokale/entfernte STT-Engines + Schema = Kernfähigkeit |
+| `ai_media_editor/stt/diarize_llm.py` | **media-editor-core als Adapter** (Grenzfall) | Schema/Aufruf deterministisch, LLM-Provider injizierbar halten — der Kern trägt den Adapter, der Stack liefert das Modell |
+| `ai_media_editor/tools/` (cut_view, frame_view, compose_cover, compose_music) | **media-editor-core** | deterministische Werkzeuge |
 | `config/` | **media-editor-core** (Schema) | Werte bleiben Installationsdatum |
 | `production/` (musik, podcast-tts, pr, storys, text, video-generativ) | **ellmos-media-stack** (Skills/Workflows) | kreative Usecase-Strecken, LLM-/dienstgebunden |
 | `projects/` | **weder noch — Laufzeitdaten** | Baukastenregel: keine Runtime-Daten in Modulquellen; gehört in ein Arbeitsverzeichnis außerhalb der Quelle |

@@ -41,6 +41,9 @@ classifiers = [
     "Programming Language :: Python :: 3.13"
 ]
 
+[project.scripts]
+ai-media-editor = "ai_media_editor.editor:main"
+
 [project.optional-dependencies]
 storyboard = [
     "clip-storyboard-director @ git+https://github.com/ellmos-ai/clip-storyboard-director.git@efd7159cacd34b3067b80543268cd70f68731b1b",
@@ -69,6 +72,12 @@ Security = "https://github.com/ellmos-ai/ai-media-editor/blob/main/SECURITY.md"
 "Parent Organization" = "https://github.com/ellmos-ai"
 "Umbrella Ecosystem" = "https://github.com/open-bricks"
 Notice = "https://github.com/ellmos-ai/ai-media-editor/blob/main/NOTICE"
+
+[tool.setuptools.packages.find]
+include = ["ai_media_editor*"]
+
+[tool.setuptools.package-data]
+"ai_media_editor.tools" = ["*.cjs", "*.cmd", "*.ps1", "*.vbs"]
 
 [tool.pytest.ini_options]
 minversion = "7.0"

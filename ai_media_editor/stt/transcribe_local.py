@@ -36,6 +36,7 @@ CACHE_VERSION = 1
 try:
     from .scribe_schema import Word, build_scribe_payload, speaker_label
 except ImportError:  # standalone
+    # Keep the Mac-copy standalone fallback: it runs only if the package import fails.
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     from scribe_schema import Word, build_scribe_payload, speaker_label
 
