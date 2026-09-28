@@ -1,0 +1,148 @@
+THIRD-PARTY LICENSES & LEVEL 1 SBOM NOTICE
+Project: ellmos-ai/ai-media-editor
+Audited: 2026-09-28
+Repository Version: 0.2.3 (Version Freeze per T-20260920-167562623)
+Repository License: MIT License (see LICENSE)
+Repository Attribution Notice: NOTICE (see NOTICE)
+Architecture & Privacy: 100% Local-First, Zero-Egress by default, Unprivileged User-Mode (RunAsInvoker), Console Window Flashing Suppression
+
+================================================================================
+1. EXECUTIVE SUMMARY & COMPLIANCE ASSURANCE
+================================================================================
+
+ai-media-editor is engineered under strict architectural and governance invariants:
+100% Local-First, Zero-Egress by default, unprivileged user-mode execution (RunAsInvoker),
+and pure offline operation. The media preparation, local speech-to-text routing
+(faster-whisper, WhisperX), Scribe JSON schema generation, frame extraction, pause
+detection, and procedural music synthesis operate entirely within local process and
+filesystem boundaries without unsolicited network communication or telemetry.
+
+All direct, runtime, optional, and development dependencies utilized across ai-media-editor
+are distributed under strictly permissive and free open-source licenses (MIT, Apache-2.0,
+BSD-2-Clause, BSD-3-Clause, PSFL-2.0) or dynamically linked media utilities (FFmpeg LGPL-2.1+).
+There are ZERO AGPL or viral copyleft constraints, ensuring maximum portability and compliance
+for autonomous AI coding agents, enterprise media workflows, and local podcast production.
+
+================================================================================
+2. INVARIANT CROSS-REFERENCE MATRIX
+================================================================================
+
+Invariant ID  | Operational Mandate                  | Technical Enforcement                  | License Scope
+--------------+--------------------------------------+----------------------------------------+-------------------
+INV-LOCAL-01  | 100% Local-First & Zero Egress       | All STT, framing & audio run offline   | MIT / PSFL-2.0
+INV-RUNAS-02  | Non-Elevation (RunAsInvoker)         | Unprivileged user mode, zero root      | MIT / PSFL-2.0
+INV-PREV-03   | Non-Destructive Source Isolation     | Preflight probes (editor.py doctor)    | MIT / PSFL-2.0
+INV-DETERM-04 | Deterministic Waveform Synthesis     | Pure NumPy procedural music synthesis  | BSD-3-Clause
+INV-BOUNDARY-05| Anti-Traversal & Project Containment| Path boundary validation in editor.py  | MIT / PSFL-2.0
+INV-SUBPROC-06| Console Window Burst Suppression     | Node preload & hide-windows wrappers   | MIT / Apache-2.0
+INV-PARITY-07 | Cross-Platform Operating Parity      | Windows, Linux, macOS full parity      | MIT / PSFL-2.0
+INV-SYNC-08   | Cloud-Sync & Multi-Agent Defense     | .gitignore multi-host & lock defense   | MIT
+INV-DOCS-09   | Transparent Bilingual Documentation  | 18-point dual-anchor parity & llms.txt | MIT
+INV-SLA-10    | Dual Security Response & Triage SLA  | 48h response, 5-day triage commitment  | SECURITY.md
+
+================================================================================
+3. ZERO-COPYLEFT ISOLATION GUARANTEE & RUNASINVOKER CERTIFICATION
+================================================================================
+
+1. Zero-Copyleft Isolation Guarantee:
+   All external multimedia utilities (such as FFmpeg) are accessed strictly across CLI
+   subprocess boundaries (subprocess.run / subprocess.Popen) using standard streams. No
+   component of ai-media-editor links against, vendors, or invokes any code under GPLv1,
+   GPLv2, GPLv3, AGPLv3, SSPL, or CC-BY-SA copyleft licenses. All dependencies and tools
+   are strictly permissive (MIT, Apache-2.0, BSD, PSFL) or dynamically invoked CLI utilities
+   (FFmpeg LGPL-2.1+). This preserves complete dynamic link isolation: no copyleft viral
+   contamination affects downstream consumer code.
+
+2. Unprivileged Execution (RunAsInvoker):
+   ai-media-editor requires no administrative privileges, no daemon services, no root
+   credentials, and no kernel-level device drivers. It operates entirely in unprivileged
+   user space under standard user profiles.
+
+3. Zero-Egress Perimeter:
+   By default, no network traffic is emitted by ai-media-editor. All transcription models,
+   waveform computations, and frame contact sheets are processed on local compute.
+   Controlled remote compute via SSH is strictly opt-in and governed by isolated job
+   directories and mandatory remote cleanup.
+
+================================================================================
+4. RUNTIME DEPENDENCY MATRIX
+================================================================================
+
+Package / Component     Role / Functional Scope                                License      Source / Upstream
+-----------------------+------------------------------------------------------+------------+---------------------
+Python Standard Library Core orchestrator, CLI, path validation, JSON schemas  PSFL-2.0     python/cpython
+video-use               Word-level transcript-based cut execution              MIT          browser-use/video-use
+faster-whisper          100% offline CTranslate2 local speech-to-text          MIT          SYSTRAN/faster-whisper
+NumPy (>=1.24.0)        Procedural waveform audio synthesis & scoring          BSD-3-Clause numpy/numpy
+Hyperframes (>=1.0.0)   HTML/CSS/JS to MP4 programmatic motion graphics        Apache-2.0   heygen-com/hyperframes
+FFmpeg (>=6.0)          Dynamic CLI subprocess for audio/video muxing & frames LGPL-2.1+    ffmpeg.org
+Node.js (>=22.0)        Isolated JavaScript runtime for Hyperframes animations MIT          nodejs/node
+
+================================================================================
+5. OPTIONAL RUNTIME DEPENDENCIES
+================================================================================
+
+Package / Component     Usage & Purpose                                        License      Source / Upstream
+-----------------------+------------------------------------------------------+------------+---------------------
+WhisperX                Optional local acoustic alignment & speaker diarization BSD-2-Clause m-bain/whisperX
+
+================================================================================
+6. DEVELOPMENT & QUALITY ASSURANCE TOOLING
+================================================================================
+
+Package / Component     Usage & Purpose                                        License      Source / Upstream
+-----------------------+------------------------------------------------------+------------+---------------------
+pytest (>=8.0.0)        Automated regression test runner & contract suites     MIT          pytest-dev/pytest
+pytest-asyncio (>=0.23) Asynchronous test execution support                    Apache-2.0   pytest-dev/pytest-asyncio
+ruff (>=0.5.0)          High-performance Python linter and code formatter      MIT/Apache   astral-sh/ruff
+setuptools (>=77.0)     Standard package build backend (PEP 517 / PEP 621)     MIT          pypa/setuptools
+
+================================================================================
+7. FULL LICENSE TEXTS (EXCERPTS)
+================================================================================
+
+--- MIT LICENSE ---
+Used by ai-media-editor, video-use, faster-whisper, Node.js, pytest, and setuptools.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+
+--- APACHE LICENSE 2.0 ---
+Used by Hyperframes, pytest-asyncio, and Ruff.
+Licensed under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License. You may obtain a copy of
+the License at http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software distributed
+under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+CONDITIONS OF ANY KIND, either express or implied.
+
+--- BSD 3-CLAUSE LICENSE ---
+Used by NumPy.
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the copyright notice, this list of conditions and
+the following disclaimer are reproduced in source and documentation distributions.
+
+--- BSD 2-CLAUSE LICENSE ---
+Used by WhisperX.
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the copyright notice and this list of conditions
+are reproduced in source and documentation distributions.
+
+--- PYTHON SOFTWARE FOUNDATION LICENSE VERSION 2 (PSFL-2.0) ---
+Used by Python standard library components.
+Python software and documentation are licensed under the PSF License Agreement.
+Copyright (c) 2001-2026 Python Software Foundation. All rights reserved.
+
+--- GNU LESSER GENERAL PUBLIC LICENSE VERSION 2.1 (LGPL-2.1+) ---
+Used by FFmpeg via dynamic CLI subprocess invocation.
+FFmpeg is a trademark of Fabrice Bellard, originator of the FFmpeg project.
+Dynamically invoked across standard process boundaries under LGPL-2.1+.
+User freedom to inspect, replace, and re-link FFmpeg binaries is fully preserved.

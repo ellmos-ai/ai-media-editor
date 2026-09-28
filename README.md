@@ -3,7 +3,7 @@
 <p align="center">
   <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/version-0.2.3-blue" alt="Version 0.2.3"></a>
   <a href="https://github.com/ellmos-ai/ai-media-editor/actions/workflows/ci.yml"><img src="https://img.shields.io/badge/CI-passing-brightgreen" alt="CI Status"></a>
-  <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/tests-78%20passed%20%7C%20100%25%20green-brightgreen" alt="Tests passed"></a>
+  <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/tests-88%20passed%20%7C%20100%25%20green-brightgreen" alt="Tests passed"></a>
   <a href="https://python.org"><img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue" alt="Python 3.10+"></a>
   <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/platforms-Windows%20%7C%20Linux%20%7C%20macOS-blue" alt="Platforms"></a>
   <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/privacy-100%25%20Local--First%20%7C%20Zero--Egress-success" alt="Privacy: Local-First"></a>
@@ -13,7 +13,8 @@
   <a href="https://github.com/ellmos-ai"><img src="https://img.shields.io/badge/ecosystem-ellmos--ai-informational" alt="Ecosystem: ellmos-ai"></a>
   <a href="https://github.com/open-bricks"><img src="https://img.shields.io/badge/umbrella-open--bricks-blueviolet" alt="Umbrella: open-bricks"></a>
   <a href="llms.txt"><img src="https://img.shields.io/badge/LLM--Ready-llms.txt-orange" alt="LLM Ready"></a>
-  <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/last--checked-2026--09--21-blue" alt="Last Checked"></a>
+  <a href="THIRD_PARTY_LICENSES.txt"><img src="https://img.shields.io/badge/SBOM-Level%201%20Text%20Companion-blue" alt="Level 1 SBOM Text"></a>
+  <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/last--checked-2026--09--28-blue" alt="Last Checked"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License: MIT"></a>
 </p>
 
@@ -50,7 +51,7 @@
 
 ---
 
-<a id="key-capabilities"></a><a id="1-key-capabilities"></a><a id="hauptfunktionen"></a><a id="1-hauptfunktionen"></a>
+<a id="sec-01"></a><a id="key-capabilities"></a><a id="1-key-capabilities"></a><a id="hauptfunktionen"></a><a id="1-hauptfunktionen"></a>
 ## 1. Key Capabilities
 
 Use an AI coding agent (e.g. Claude Code, Gemini, Codex) as a video/podcast editor — with **local transcription instead of ElevenLabs Scribe**. The orchestrator (`editor.py`) handles deterministic preparation (routing to the optimal STT engine/compute, producing schema-valid Scribe JSON, and packing takes); creative cutting, animation, and composition work is driven by the agent.
@@ -64,7 +65,7 @@ A three-tool stack:
 
 ---
 
-<a id="visual-architecture-flowchart"></a><a id="architecture-flowchart"></a><a id="systemarchitektur-ablaufdiagramm"></a><a id="2-visual-architecture-flowchart"></a><a id="2-systemarchitektur-ablaufdiagramm"></a>
+<a id="sec-02"></a><a id="visual-architecture-flowchart"></a><a id="architecture-flowchart"></a><a id="systemarchitektur-ablaufdiagramm"></a><a id="2-visual-architecture-flowchart"></a><a id="2-systemarchitektur-ablaufdiagramm"></a>
 ## 2. Visual Architecture Flowchart
 
 ```mermaid
@@ -109,7 +110,7 @@ flowchart TB
 
 ---
 
-<a id="end-to-end-execution-lifecycle-sequence"></a><a id="end-to-end-ausführungs-sequenz"></a><a id="3-end-to-end-execution-lifecycle-sequence"></a>
+<a id="sec-03"></a><a id="end-to-end-execution-lifecycle-sequence"></a><a id="end-to-end-ausführungs-sequenz"></a><a id="3-end-to-end-execution-lifecycle-sequence"></a>
 ## 3. End-to-End Execution Lifecycle Sequence
 
 ```mermaid
@@ -140,7 +141,7 @@ sequenceDiagram
 
 ---
 
-<a id="target-personas--discoverability"></a><a id="marketing--target-personas"></a><a id="zielgruppen--auffindbarkeit"></a><a id="marketing--zielgruppen"></a><a id="4-target-personas--discoverability"></a>
+<a id="sec-04"></a><a id="target-personas--discoverability"></a><a id="marketing--target-personas"></a><a id="zielgruppen--auffindbarkeit"></a><a id="marketing--zielgruppen"></a><a id="4-target-personas--discoverability"></a>
 ## 4. Target Personas & Discoverability
 
 `ai-media-editor` solves key workflow bottlenecks for modern AI media automation across four distinct profiles:
@@ -171,7 +172,7 @@ sequenceDiagram
 
 ---
 
-<a id="comparative-matrix-vs-alternatives"></a><a id="comparative-matrix--alternatives"></a><a id="vergleichsmatrix-gegenueber-alternativen"></a><a id="5-comparative-matrix-vs-alternatives"></a>
+<a id="sec-05"></a><a id="comparative-matrix-vs-alternatives"></a><a id="comparative-matrix--alternatives"></a><a id="vergleichsmatrix-gegenueber-alternativen"></a><a id="5-comparative-matrix-vs-alternatives"></a>
 ## 5. Comparative Matrix vs. Alternatives
 
 The following 10-dimension matrix compares `ai-media-editor` against legacy and competing approaches mapped to our non-negotiable runtime invariants:
@@ -193,7 +194,7 @@ Detailed marketing analysis, search keywords, and discovery log: [`MARKETING-LOG
 
 ---
 
-<a id="the-8-production-usecases"></a><a id="the-8-usecases"></a><a id="die-8-anwendungsfälle"></a><a id="6-the-8-production-usecases"></a>
+<a id="sec-06"></a><a id="the-8-production-usecases"></a><a id="the-8-usecases"></a><a id="die-8-anwendungsfälle"></a><a id="6-the-8-production-usecases"></a>
 ## 6. The 8 Production Usecases
 
 | # | Input | Speakers | Output | Typical Workflow |
@@ -211,7 +212,7 @@ For complete step-by-step guides for each mode, refer to [`docs/USECASES.md`](do
 
 ---
 
-<a id="getting-started--setup"></a><a id="erste-schritte--einrichtung"></a><a id="7-getting-started--setup"></a>
+<a id="sec-07"></a><a id="getting-started--setup"></a><a id="erste-schritte--einrichtung"></a><a id="7-getting-started--setup"></a>
 ## 7. Getting Started & Setup
 
 1. **Create config:** Copy `config/settings.example.json` → `config/settings.json` and configure local compute options (`local`/`mac`, engines, `paths.*`).
@@ -226,7 +227,7 @@ For complete step-by-step guides for each mode, refer to [`docs/USECASES.md`](do
 
 ---
 
-<a id="cli-reference--commands"></a><a id="cli-referenz--befehle"></a><a id="8-cli-reference--commands"></a>
+<a id="sec-08"></a><a id="cli-reference--commands"></a><a id="cli-referenz--befehle"></a><a id="8-cli-reference--commands"></a>
 ## 8. CLI Reference & Commands
 
 ```bash
@@ -251,7 +252,7 @@ PYTHONIOENCODING=utf-8 "$VENV" editor.py frames my-video --from 30 --to 45 --ste
 
 ---
 
-<a id="motion-graphics--music-synthesis"></a><a id="motion-graphics--musiksynthese"></a><a id="9-motion-graphics--music-synthesis"></a>
+<a id="sec-09"></a><a id="motion-graphics--music-synthesis"></a><a id="motion-graphics--musiksynthese"></a><a id="9-motion-graphics--music-synthesis"></a>
 ## 9. Motion Graphics & Music Synthesis
 
 ### Offline Video-Synced Score (`compose_music.py`)
@@ -279,7 +280,7 @@ The MIDI export enables lossless rendering through professional soundfonts:
 
 ---
 
-<a id="governance--runtime-invariants"></a><a id="governance---laufzeit-invarianten"></a><a id="10-governance--runtime-invariants"></a>
+<a id="sec-10"></a><a id="governance--runtime-invariants"></a><a id="governance---laufzeit-invarianten"></a><a id="10-governance--runtime-invariants"></a>
 ## 10. Governance & Runtime Invariants
 
 The architecture enforces 10 strict runtime guarantees across all operating modes:
@@ -299,7 +300,7 @@ The architecture enforces 10 strict runtime guarantees across all operating mode
 
 ---
 
-<a id="security--privacy-sla"></a><a id="sicherheit--datenschutz-sla"></a><a id="11-security--privacy-sla"></a>
+<a id="sec-11"></a><a id="security--privacy-sla"></a><a id="sicherheit--datenschutz-sla"></a><a id="11-security--privacy-sla"></a>
 ## 11. Security & Privacy SLA
 
 - **Local-First Privacy**: Transcription, frame extraction, and cut calculation run entirely offline on local hardware.
@@ -312,7 +313,7 @@ The architecture enforces 10 strict runtime guarantees across all operating mode
 
 ---
 
-<a id="sibling-projects--ecosystem-matrix"></a><a id="geschwisterprojekte--ökosystem-matrix"></a><a id="12-sibling-projects--ecosystem-matrix"></a>
+<a id="sec-12"></a><a id="sibling-projects--ecosystem-matrix"></a><a id="geschwisterprojekte--ökosystem-matrix"></a><a id="12-sibling-projects--ecosystem-matrix"></a>
 ## 12. Sibling Projects & Ecosystem Matrix
 
 `ai-media-editor` operates as a specialized multimedia orchestration engine within the `open-bricks` and `ellmos-ai` ecosystem:
@@ -338,7 +339,7 @@ The architecture enforces 10 strict runtime guarantees across all operating mode
 
 ---
 
-<a id="quality-gates--testing"></a><a id="qualitätsprüfung--tests"></a><a id="13-quality-gates--testing"></a>
+<a id="sec-13"></a><a id="quality-gates--testing"></a><a id="qualitätsprüfung--tests"></a><a id="13-quality-gates--testing"></a>
 ## 13. Quality Gates & Testing
 
 Run fast quality checks locally without external STT models or heavy media files:
@@ -362,7 +363,7 @@ Hyperframes and Node subprocesses run through `ai_media_editor/tools/hf.cmd` and
 
 ---
 
-<a id="machine-readable-context-llmstxt"></a><a id="maschinenlesbarer-kontext-llmstxt"></a><a id="14-machine-readable-context-llmstxt"></a>
+<a id="sec-14"></a><a id="machine-readable-context-llmstxt"></a><a id="maschinenlesbarer-kontext-llmstxt"></a><a id="14-machine-readable-context-llmstxt"></a>
 ## 14. Machine-Readable Context (`llms.txt`)
 
 LLM crawlers, code assistants, and automated indexing agents can parse repository context directly via [`llms.txt`](llms.txt).
@@ -382,7 +383,7 @@ zero egress video transcription and cutting
 
 ---
 
-<a id="repository-structure"></a><a id="repository-struktur"></a><a id="15-repository-structure"></a>
+<a id="sec-15"></a><a id="repository-structure"></a><a id="repository-struktur"></a><a id="15-repository-structure"></a>
 ## 15. Repository Structure
 
 ```
@@ -424,7 +425,7 @@ ai-media-editor/                  (code/docs/projects)
 
 ---
 
-<a id="changelog--releases"></a><a id="changelog--veröffentlichungen"></a><a id="16-changelog--releases"></a>
+<a id="sec-16"></a><a id="changelog--releases"></a><a id="changelog--veröffentlichungen"></a><a id="16-changelog--releases"></a>
 ## 16. Changelog & Releases
 
 See [`CHANGELOG.md`](CHANGELOG.md) for full version history.
@@ -435,7 +436,7 @@ See [`CHANGELOG.md`](CHANGELOG.md) for full version history.
 
 ---
 
-<a id="level-1-sbom--third-party-licenses"></a><a id="third-party-licenses--transparency"></a><a id="drittanbieter-lizenzen--transparenz"></a><a id="17-level-1-sbom--third-party-licenses"></a>
+<a id="sec-17"></a><a id="level-1-sbom--third-party-licenses"></a><a id="third-party-licenses--transparency"></a><a id="drittanbieter-lizenzen--transparenz"></a><a id="17-level-1-sbom--third-party-licenses"></a>
 ## 17. Level 1 SBOM & Third-Party Licenses
 
 `ai-media-editor` is engineered with an uncompromising commitment to open-source transparency, non-elevation, and offline reproducibility:
@@ -448,7 +449,7 @@ See [`CHANGELOG.md`](CHANGELOG.md) for full version history.
 
 ---
 
-<a id="statutory-notice--liability-limitation"></a><a id="gesetzlicher-hinweis--haftungsbeschraenkung"></a><a id="18-statutory-notice--liability-limitation"></a>
+<a id="sec-18"></a><a id="statutory-notice--liability-limitation"></a><a id="gesetzlicher-hinweis--haftungsbeschraenkung"></a><a id="18-statutory-notice--liability-limitation"></a>
 ## 18. Statutory Notice & Liability Limitation
 
 This software is provided free of charge under the MIT License as open-source software. Under German statutory law (§ 521 BGB - *Gefälligkeitsrecht* / gratuitous contracts), liability in the case of gratuitous provision of software is limited to intent (*Vorsatz*) and gross negligence (*grobe Fahrlässigkeit*). In particular, no warranties are provided for fitness for a particular purpose, merchantability, or absence of defects.

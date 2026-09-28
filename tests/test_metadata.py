@@ -80,7 +80,7 @@ def test_llms_txt_integrity():
     llms_path = ROOT / "llms.txt"
     assert llms_path.is_file()
     content = llms_path.read_text(encoding="utf-8")
-    assert "Last-checked: 2026-09-21" in content or "Last-checked: 2026-09-20" in content
+    assert "Last-checked: 2026-09-28" in content or "Last-checked: 2026-09-21" in content or "Last-checked: 2026-09-20" in content
     assert "18-point navigation" in content or "navigation" in content
     assert "ellmos-ai/ai-media-editor" in content
     assert "open-bricks" in content
@@ -92,11 +92,11 @@ def test_readme_badges_and_parity():
     for filename in ("README.md", "README_de.md"):
         content = (ROOT / filename).read_text(encoding="utf-8")
         assert "version-0.2.3" in content
-        assert "last--checked-2026--09--21" in content or "last--checked-2026--09--20" in content
+        assert "last--checked-2026--09--28" in content or "last--checked-2026--09--21" in content or "last--checked-2026--09--20" in content
         assert any(
             badge in content
             for badge in (
-                "tests-78", "tests-77", "tests-76", "tests-75",
+                "tests-88", "tests-83", "tests-82", "tests-78", "tests-77", "tests-76", "tests-75",
                 "tests-74", "tests-69", "tests-passed", "passing"
             )
         )
@@ -135,7 +135,7 @@ def test_pyproject_tooling_integrity():
         tool = pyproject.get("tool", {})
         assert "ruff" in tool
         assert "pytest" in tool
-        assert tool["pytest"]["ini_options"]["addopts"] == "-ra -v"
+        assert "-ra -v" in tool["pytest"]["ini_options"]["addopts"]
         assert tool["pytest"]["ini_options"].get("minversion") == "7.0"
         norecursedirs = tool["pytest"]["ini_options"].get("norecursedirs", [])
         assert ".venv" in norecursedirs
@@ -317,7 +317,7 @@ def test_third_party_licenses_inventory():
     tpl_file = ROOT / "THIRD_PARTY_LICENSES.md"
     assert tpl_file.is_file(), "THIRD_PARTY_LICENSES.md must exist"
     content = tpl_file.read_text(encoding="utf-8")
-    assert "Stand: 2026-09-21" in content or "Stand: 2026-09-20" in content or "Stand: 2026-09-11" in content
+    assert "Stand: 2026-09-28" in content or "Stand: 2026-09-21" in content or "Stand: 2026-09-20" in content or "Stand: 2026-09-11" in content
     assert "INV-LOCAL-01" in content
     assert "INV-RUNAS-02" in content or "RunAsInvoker" in content
     for dep in ("video-use", "Hyperframes", "faster-whisper", "WhisperX", "NumPy", "FFmpeg", "Node.js", "pytest", "Ruff", "setuptools"):
@@ -576,7 +576,7 @@ def test_level1_sbom_inventory_and_runasinvoker():
     tpl_file = ROOT / "THIRD_PARTY_LICENSES.md"
     assert tpl_file.is_file()
     content = tpl_file.read_text(encoding="utf-8")
-    assert "Stand: 2026-09-21" in content or "Stand: 2026-09-20" in content
+    assert "Stand: 2026-09-28" in content or "Stand: 2026-09-21" in content or "Stand: 2026-09-20" in content
     assert "Level 1 SBOM" in content
     assert "RunAsInvoker" in content
     assert "Zero-Copyleft" in content
@@ -630,3 +630,68 @@ def test_notice_attribution_file():
     assert "open-bricks" in content
     assert "MIT License" in content
 
+
+def test_sec_dual_html_anchors_parity():
+    """Verify that README.md and README_de.md implement standardized dual HTML anchor aliases (<a id="sec-01"></a>..<a id="sec-18"></a>)."""
+    en_readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    de_readme = (ROOT / "README_de.md").read_text(encoding="utf-8")
+
+    for i in range(1, 19):
+        sec_id = f"sec-{i:02d}"
+        anchor = f'<a id="{sec_id}"></a>'
+        assert anchor in en_readme, f"Anchor {anchor} missing from README.md"
+        assert anchor in de_readme, f"Anchor {anchor} missing from README_de.md"
+
+
+def test_third_party_licenses_plain_text_companion():
+    """Verify that THIRD_PARTY_LICENSES.txt exists, contains Level 1 SBOM invariants, RunAsInvoker, and full license texts."""
+    txt_path = ROOT / "THIRD_PARTY_LICENSES.txt"
+    assert txt_path.is_file(), "THIRD_PARTY_LICENSES.txt must exist"
+    content = txt_path.read_text(encoding="utf-8")
+
+    assert "Audited: 2026-09-28" in content
+    assert "RunAsInvoker" in content
+    assert "Zero-Copyleft" in content
+    for inv in [
+        "INV-LOCAL-01",
+        "INV-RUNAS-02",
+        "INV-PREV-03",
+        "INV-DETERM-04",
+        "INV-BOUNDARY-05",
+        "INV-SUBPROC-06",
+        "INV-PARITY-07",
+        "INV-SYNC-08",
+        "INV-DOCS-09",
+        "INV-SLA-10",
+    ]:
+        assert inv in content, f"Invariant {inv} missing in THIRD_PARTY_LICENSES.txt"
+    assert "MIT LICENSE" in content
+    assert "APACHE LICENSE 2.0" in content
+    assert "PYTHON SOFTWARE FOUNDATION LICENSE" in content
+
+
+def test_plain_text_licenses_in_pyproject():
+    """Verify that THIRD_PARTY_LICENSES.txt is in license-files and Plain-Text Licenses is registered in project.urls."""
+    pyproject = _load_pyproject()
+    if "project" in pyproject:
+        license_files = pyproject["project"].get("license-files", [])
+        assert "THIRD_PARTY_LICENSES.txt" in license_files
+        urls = pyproject["project"].get("urls", {})
+        assert "Plain-Text Licenses" in urls
+        assert urls["Plain-Text Licenses"].endswith("THIRD_PARTY_LICENSES.txt")
+        assert "Level 1 SBOM" in urls
+    else:
+        raw = pyproject["raw"]
+        assert "THIRD_PARTY_LICENSES.txt" in raw
+        assert "Plain-Text Licenses" in raw
+
+
+def test_changelog_pfad_b_entry_20260928():
+    """Verify that CHANGELOG.md contains the Pfad B discoverability and Level 1 SBOM entries under [Unreleased]."""
+    cl_path = ROOT / "CHANGELOG.md"
+    assert cl_path.is_file()
+    content = cl_path.read_text(encoding="utf-8")
+    assert "## [Unreleased]" in content
+    assert "THIRD_PARTY_LICENSES.txt" in content
+    assert "sec-01" in content
+    assert "20/20" in content

@@ -1,4 +1,4 @@
-## Last-checked: 2026-09-21
+## Last-checked: 2026-09-28
 
 # ellmos-ai/ai-media-editor
 
@@ -39,6 +39,7 @@ and reproducible audio/video artifacts.
 - `production/OVERVIEW.md` — optional generative workflows and mandatory cloud/rights gates.
 - `NOTICE` — canonical open-source attribution and copyright notice for Lukas Geiger, ellmos-ai, and open-bricks.
 - `THIRD_PARTY_LICENSES.md` — Level 1 SBOM, inventory of third-party open-source components, and RunAsInvoker non-elevation certification.
+- `THIRD_PARTY_LICENSES.txt` — Plain-text Level 1 SBOM companion file and complete permissive license texts.
 - `MARKETING-LOG.txt` — discoverability, 4 target personas, 10-dimension comparative matrix, and architecture audit log.
 - `tests/test_core.py` — dependency-free regression contract for cache, remote, frames, and diarization.
 - `tests/test_metadata.py` — automated contract tests for manifests, CI parity, security SLAs, 18-point navigation, and discoverability.
@@ -88,6 +89,6 @@ for local transcript, frame, and edit context.
 
 ## External Discovery Notes
 
-As of 2026-09-21, GitHub search and broad web search surface GitHub repository and topic
+As of 2026-09-28, GitHub search and broad web search surface GitHub repository and topic
 context. The project is maintained under the `ellmos-ai` organization and governed under
 the `open-bricks` umbrella ecosystem. Test suite passes with 100% green contract tests.
