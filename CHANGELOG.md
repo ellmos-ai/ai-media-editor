@@ -3,21 +3,33 @@
 ## [Unreleased]
 
 ### Added
+- Provided CI lifecycle workflows `.github/workflows/auto-assign.yml` (assigns author on issue/PR creation, `actions/github-script@v7`, `timeout-minutes: 5`, `cancel-in-progress: true`, least-privilege `issues: write`, `pull-requests: write`) and `.github/workflows/label-sync.yml` (`EndBug/label-sync@v2`, `timeout-minutes: 5`, `cancel-in-progress: true`, least-privilege `issues: write`).
+- Created canonical `.github/labels.yml` with 11 standard labels (`bug`, `documentation`, `duplicate`, `enhancement`, `good first issue`, `help wanted`, `invalid`, `question`, `wontfix`, `security`, `dependencies`) per GOVERNANCE.md.
+- Expanded `CONTRIBUTING.md` to a comprehensive bilingual contribution guide with pre-commit quality gates (`pytest`, `ruff`, `compileall`, `git diff --check`), Developer Certificate of Origin (DCO) signoff, Version Freeze policy (T-20260920-167562623), and Plan D local git clone dev setup.
+- Added `Contributing` and `Third-Party Licenses (Text)` URLs to `[project.urls]` in `pyproject.toml`.
+- Expanded automated contract test suite in `tests/test_metadata.py`:
+  - `test_ci_lifecycle_workflows_auto_assign_and_label_sync`: validates auto-assign and label-sync workflows, timeouts, concurrency, and permissions.
+  - `test_github_labels_configuration`: validates `.github/labels.yml` presence and canonical 11 labels.
+  - `test_extended_multihost_lock_defense`: verifies `.gitignore` protection against IDEAPAD and WORKSTATION variants, fine-grained locks, and OS artifacts.
+  - `test_contributing_guide_and_quality_gates`: ensures `CONTRIBUTING.md` defines quality gates, version freeze discipline, and Plan D setup.
+  - `test_pyproject_contributing_url_and_pytest_norecursedirs`: validates `Contributing` URL in `project.urls` and hardened pytest `norecursedirs`.
+  - `test_third_party_licenses_audit_20260930`: verifies Level 1 SBOM audit date `2026-09-30` in both text companion and markdown inventory.
+  - `test_changelog_pfad_a_entry_20260930`: verifies release notes integrity for Pfad A technical hygiene and CI lifecycle workflows.
 - Created Level 1 SBOM plain-text companion file `THIRD_PARTY_LICENSES.txt` in repository root establishing invariant cross-reference matrix (`INV-LOCAL-01` to `INV-SLA-10`), unprivileged `RunAsInvoker` non-elevation certification, zero-copyleft dynamic link isolation guarantee, and full permissive license texts (MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, PSFL-2.0, LGPL-2.1+).
 - Enhanced bilingual documentation (`README.md` and `README_de.md`) with standardized reciprocal dual HTML anchor aliases (`<a id="sec-01"></a>` through `<a id="sec-18"></a>`) across all 18 primary sections for seamless cross-language deep linking.
 - Added `Plain-Text Licenses` and `Level 1 SBOM` URLs to `[project.urls]` and expanded `license-files = ["LICENSE", "NOTICE", "THIRD_PARTY_LICENSES.md", "THIRD_PARTY_LICENSES.txt"]` in `pyproject.toml`.
 - Saturated GitHub topics and `pyproject.toml` keywords to 20/20 standardized taxonomy (`faster-whisper`, `hyperframes`, `local-transcription`, `media-editing`, `podcast-editing`, `video-editing`, `whisperx`, `ai-media-editor`, `agent-workflow`, `ai-video-editing`, `local-first`, `podcast-tools`, `transcript-editing`, `audio-editing`, `ellmos-ai`, `offline-first`, `open-bricks`, `python`, `runasinvoker`, `zero-egress`).
 - Added Level 1 SBOM text companion badge to `README.md` and `README_de.md`.
-- Expanded automated contract test suite in `tests/test_metadata.py`:
-  - `test_sec_dual_html_anchors_parity`: validates complete 18-point dual HTML anchor alias coverage (`#sec-01` through `#sec-18`) across both English and German documentation.
-  - `test_third_party_licenses_plain_text_companion`: verifies presence, structure, invariants (`INV-LOCAL-01` to `INV-SLA-10`), and `RunAsInvoker` certification in `THIRD_PARTY_LICENSES.txt`.
-  - `test_plain_text_licenses_in_pyproject`: ensures `THIRD_PARTY_LICENSES.txt` is listed in `license-files` and registered in `[project.urls]`.
-  - `test_changelog_pfad_b_entry_20260928`: verifies release notes integrity for Pfad B discoverability and Level 1 SBOM standardization.
 - Added `.github/workflows/welcome.yml` workflow (`actions/first-interaction@v3`, `timeout-minutes: 5`, `cancel-in-progress: true`) welcoming first-time issue and PR contributors.
 - Created canonical `NOTICE` attribution file in repository root establishing copyright ownership for Lukas Geiger, `ellmos-ai`, and the `open-bricks` ecosystem.
 - Added `Notice` URL to `[project.urls]` in `pyproject.toml`.
 
 ### Changed
+- Re-audited `THIRD_PARTY_LICENSES.txt` and `THIRD_PARTY_LICENSES.md` as of Stand 2026-09-30, confirming all 10 governance invariants (`INV-LOCAL-01` to `INV-SLA-10`), unprivileged `RunAsInvoker` non-elevation, and zero-copyleft dynamic link isolation guarantee.
+- Hardened `.gitignore` with `*-IDEAPAD*`, `*-IDEAPAD-GEI*`, `*-WORKSTATION.*`, `*_WORKSTATION*`, `*_WORKSTATION-LG*`, `LOCK.dev.*`, `LOCK.antigravity.*`, `LOCK.bugsearch.*`, `TASKPLAN_*.md`, `.pytest_tmp*/`, `*.swo`, `Desktop.ini`, `desktop.ini`, `ehthumbs.db`.
+- Hardened `[tool.pytest.ini_options]` in `pyproject.toml` with expanded `norecursedirs` (`.pytest_tmp*`, `.hypothesis`, `.turbo`, `.nyc_output`, `.tox`).
+- Synchronized Shields.io badges in `README.md` and `README_de.md` (`tests-95 passed | 100% green`, `last--checked-2026--09--30` / `zuletzt geprüft-2026--09--30`, and attribution NOTICE badge).
+- Synchronized `llms.txt` Stand to `2026-09-30` with `CONTRIBUTING.md`, `auto-assign.yml`, and `label-sync.yml`.
 - Re-audited `THIRD_PARTY_LICENSES.md` Level 1 SBOM Stand 2026-09-28 with cross-reference to `THIRD_PARTY_LICENSES.txt`.
 - Synchronized `llms.txt` Stand 2026-09-28 and Shields.io badges to `Verified-2026--09--28`.
 - Hardened `[tool.pytest.ini_options]` in `pyproject.toml` with `addopts = "-ra -v --basetemp=.pytest_temp"` and added `.pytest_temp` to `norecursedirs`.

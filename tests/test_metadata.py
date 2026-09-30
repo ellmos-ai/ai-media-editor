@@ -80,7 +80,15 @@ def test_llms_txt_integrity():
     llms_path = ROOT / "llms.txt"
     assert llms_path.is_file()
     content = llms_path.read_text(encoding="utf-8")
-    assert "Last-checked: 2026-09-28" in content or "Last-checked: 2026-09-21" in content or "Last-checked: 2026-09-20" in content
+    assert any(
+        ts in content
+        for ts in (
+            "Last-checked: 2026-09-30",
+            "Last-checked: 2026-09-28",
+            "Last-checked: 2026-09-21",
+            "Last-checked: 2026-09-20",
+        )
+    )
     assert "18-point navigation" in content or "navigation" in content
     assert "ellmos-ai/ai-media-editor" in content
     assert "open-bricks" in content
@@ -92,11 +100,19 @@ def test_readme_badges_and_parity():
     for filename in ("README.md", "README_de.md"):
         content = (ROOT / filename).read_text(encoding="utf-8")
         assert "version-0.2.3" in content
-        assert "last--checked-2026--09--28" in content or "last--checked-2026--09--21" in content or "last--checked-2026--09--20" in content
+        assert any(
+            lc in content
+            for lc in (
+                "last--checked-2026--09--30",
+                "last--checked-2026--09--28",
+                "last--checked-2026--09--21",
+                "last--checked-2026--09--20",
+            )
+        )
         assert any(
             badge in content
             for badge in (
-                "tests-88", "tests-83", "tests-82", "tests-78", "tests-77", "tests-76", "tests-75",
+                "tests-95", "tests-88", "tests-83", "tests-82", "tests-78", "tests-77", "tests-76", "tests-75",
                 "tests-74", "tests-69", "tests-passed", "passing"
             )
         )
@@ -317,7 +333,16 @@ def test_third_party_licenses_inventory():
     tpl_file = ROOT / "THIRD_PARTY_LICENSES.md"
     assert tpl_file.is_file(), "THIRD_PARTY_LICENSES.md must exist"
     content = tpl_file.read_text(encoding="utf-8")
-    assert "Stand: 2026-09-28" in content or "Stand: 2026-09-21" in content or "Stand: 2026-09-20" in content or "Stand: 2026-09-11" in content
+    assert any(
+        s in content
+        for s in (
+            "Stand: 2026-09-30",
+            "Stand: 2026-09-28",
+            "Stand: 2026-09-21",
+            "Stand: 2026-09-20",
+            "Stand: 2026-09-11",
+        )
+    )
     assert "INV-LOCAL-01" in content
     assert "INV-RUNAS-02" in content or "RunAsInvoker" in content
     for dep in ("video-use", "Hyperframes", "faster-whisper", "WhisperX", "NumPy", "FFmpeg", "Node.js", "pytest", "Ruff", "setuptools"):
@@ -576,7 +601,15 @@ def test_level1_sbom_inventory_and_runasinvoker():
     tpl_file = ROOT / "THIRD_PARTY_LICENSES.md"
     assert tpl_file.is_file()
     content = tpl_file.read_text(encoding="utf-8")
-    assert "Stand: 2026-09-28" in content or "Stand: 2026-09-21" in content or "Stand: 2026-09-20" in content
+    assert any(
+        s in content
+        for s in (
+            "Stand: 2026-09-30",
+            "Stand: 2026-09-28",
+            "Stand: 2026-09-21",
+            "Stand: 2026-09-20",
+        )
+    )
     assert "Level 1 SBOM" in content
     assert "RunAsInvoker" in content
     assert "Zero-Copyleft" in content
@@ -649,7 +682,13 @@ def test_third_party_licenses_plain_text_companion():
     assert txt_path.is_file(), "THIRD_PARTY_LICENSES.txt must exist"
     content = txt_path.read_text(encoding="utf-8")
 
-    assert "Audited: 2026-09-28" in content
+    assert any(
+        a in content
+        for a in (
+            "Audited: 2026-09-30",
+            "Audited: 2026-09-28",
+        )
+    )
     assert "RunAsInvoker" in content
     assert "Zero-Copyleft" in content
     for inv in [
@@ -695,3 +734,120 @@ def test_changelog_pfad_b_entry_20260928():
     assert "THIRD_PARTY_LICENSES.txt" in content
     assert "sec-01" in content
     assert "20/20" in content
+
+
+def test_ci_lifecycle_workflows_auto_assign_and_label_sync():
+    """Verify that .github/workflows/auto-assign.yml and label-sync.yml exist with 5m timeout and least privilege permissions."""
+    wf_dir = ROOT / ".github" / "workflows"
+    auto_assign = wf_dir / "auto-assign.yml"
+    assert auto_assign.is_file(), "auto-assign.yml must exist"
+    aa_content = auto_assign.read_text(encoding="utf-8")
+    assert "actions/github-script@v7" in aa_content
+    assert "timeout-minutes: 5" in aa_content
+    assert "cancel-in-progress: true" in aa_content
+    assert "pull-requests: write" in aa_content
+    assert "issues: write" in aa_content
+
+    label_sync = wf_dir / "label-sync.yml"
+    assert label_sync.is_file(), "label-sync.yml must exist"
+    ls_content = label_sync.read_text(encoding="utf-8")
+    assert "EndBug/label-sync@v2" in ls_content
+    assert "timeout-minutes: 5" in ls_content
+    assert "cancel-in-progress: true" in ls_content
+    assert "issues: write" in ls_content
+    assert ".github/labels.yml" in ls_content
+
+
+def test_github_labels_configuration():
+    """Verify that .github/labels.yml exists and defines the 11 standard GOVERNANCE.md labels."""
+    labels_path = ROOT / ".github" / "labels.yml"
+    assert labels_path.is_file(), ".github/labels.yml must exist"
+    content = labels_path.read_text(encoding="utf-8")
+    expected_labels = [
+        "bug",
+        "documentation",
+        "duplicate",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "invalid",
+        "question",
+        "wontfix",
+        "security",
+        "dependencies",
+    ]
+    for lbl in expected_labels:
+        assert f'name: "{lbl}"' in content, f"Label {lbl} missing in .github/labels.yml"
+
+
+def test_extended_multihost_lock_defense():
+    """Verify that .gitignore excludes IDEAPAD, WORKSTATION variants, fine-grained locks, and OS artifacts."""
+    gitignore = (ROOT / ".gitignore").read_text(encoding="utf-8")
+    patterns = [
+        "*-IDEAPAD*",
+        "*-IDEAPAD-GEI*",
+        "*-WORKSTATION.*",
+        "*_WORKSTATION*",
+        "*_WORKSTATION-LG*",
+        "LOCK.dev.*",
+        "LOCK.antigravity.*",
+        "LOCK.bugsearch.*",
+        "TASKPLAN_*.md",
+        ".pytest_tmp*/",
+        "*.swo",
+        "Desktop.ini",
+        "desktop.ini",
+        "ehthumbs.db",
+    ]
+    for pat in patterns:
+        assert pat in gitignore, f"Pattern {pat} missing from .gitignore"
+
+
+def test_contributing_guide_and_quality_gates():
+    """Verify that CONTRIBUTING.md defines pre-commit quality gates, version freeze discipline, and Plan D setup."""
+    contrib_path = ROOT / "CONTRIBUTING.md"
+    assert contrib_path.is_file(), "CONTRIBUTING.md must exist"
+    content = contrib_path.read_text(encoding="utf-8")
+    assert "pytest" in content
+    assert "ruff check ." in content
+    assert "compileall" in content
+    assert "git diff --check" in content
+    assert "T-20260920-167562623" in content
+    assert "0.2.3" in content
+    assert "Plan D" in content
+    assert "Developer Certificate of Origin" in content
+
+
+def test_pyproject_contributing_url_and_pytest_norecursedirs():
+    """Verify pyproject.toml registers Contributing URL and hardens pytest norecursedirs."""
+    pyproject = _load_pyproject()
+    if "project" in pyproject:
+        urls = pyproject["project"].get("urls", {})
+        assert "Contributing" in urls
+        assert urls["Contributing"].endswith("CONTRIBUTING.md")
+        assert "Third-Party Licenses (Text)" in urls
+        norecursedirs = pyproject.get("tool", {}).get("pytest", {}).get("ini_options", {}).get("norecursedirs", [])
+        assert ".pytest_temp" in norecursedirs
+        assert ".pytest_tmp*" in norecursedirs
+    else:
+        raw = pyproject["raw"]
+        assert "Contributing" in raw
+        assert ".pytest_tmp*" in raw
+
+
+def test_third_party_licenses_audit_20260930():
+    """Verify that THIRD_PARTY_LICENSES.txt and THIRD_PARTY_LICENSES.md confirm Stand 2026-09-30."""
+    txt_content = (ROOT / "THIRD_PARTY_LICENSES.txt").read_text(encoding="utf-8")
+    md_content = (ROOT / "THIRD_PARTY_LICENSES.md").read_text(encoding="utf-8")
+    assert "Audited: 2026-09-30" in txt_content
+    assert "Stand: 2026-09-30" in md_content
+
+
+def test_changelog_pfad_a_entry_20260930():
+    """Verify that CHANGELOG.md contains the 2026-09-30 Pfad A technical hygiene entry under [Unreleased]."""
+    content = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+    assert "## [Unreleased]" in content
+    assert "auto-assign.yml" in content
+    assert "label-sync.yml" in content
+    assert "labels.yml" in content
+    assert "Stand 2026-09-30" in content

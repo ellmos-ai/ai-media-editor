@@ -206,5 +206,18 @@ Audit 2026-09-21 (Pfad A Repository Hygiene, CI Concurrency Hardening & Contract
 [x] Updated THIRD_PARTY_LICENSES.md Stand to 2026-09-21 (Audit-Historie: 2026-09-20, 2026-09-11)
 [x] Updated llms.txt Last-checked to 2026-09-21 and added NOTICE to core file inventory
 [x] Expanded automated contract test suite in tests/test_metadata.py verifying welcome workflow, stale concurrency/timeout, NOTICE attribution, and lock hardening
-================================================================================
 
+Audit 2026-09-30 (Pfad A Repository Hygiene, CI Lifecycle Workflows, Multi-Host Lock Defense, Level 1 SBOM Text Companion & Contract Tests):
+[x] Deployed Auto Assign workflow (.github/workflows/auto-assign.yml, actions/github-script@v7, timeout-minutes: 5, cancel-in-progress: true, least-privilege permissions: issues: write, pull-requests: write)
+[x] Deployed Label Sync workflow (.github/workflows/label-sync.yml, EndBug/label-sync@v2, timeout-minutes: 5, cancel-in-progress: true, least-privilege permissions: issues: write)
+[x] Deployed canonical GitHub issue/PR labels specification (.github/labels.yml) with 11 standard labels per GOVERNANCE.md
+[x] Expanded CONTRIBUTING.md to comprehensive bilingual guide with pre-commit quality gates, DCO signoff, version freeze discipline, and Plan D local dev setup
+[x] Standardized pyproject.toml [project.urls] with Contributing and Third-Party Licenses (Text) endpoints
+[x] Hardened pyproject.toml [tool.pytest.ini_options] norecursedirs with .pytest_tmp*, .hypothesis, .turbo, .nyc_output, and .tox
+[x] Hardened .gitignore with *-IDEAPAD*, *-IDEAPAD-GEI*, *-WORKSTATION.*, *_WORKSTATION*, *_WORKSTATION-LG*, LOCK.dev.*, LOCK.antigravity.*, LOCK.bugsearch.*, TASKPLAN_*.md, .pytest_tmp*/, *.swo, Desktop.ini, desktop.ini, and ehthumbs.db
+[x] Re-audited Level 1 SBOM in THIRD_PARTY_LICENSES.txt and THIRD_PARTY_LICENSES.md as of Stand 2026-09-30, confirming all 10 invariants (INV-LOCAL-01 to INV-SLA-10) and RunAsInvoker non-elevation
+[x] Synchronized Shields.io badges in README.md and README_de.md to tests-95 passed | 100% green, last-checked 2026-09-30, and added attribution NOTICE badge
+[x] Refreshed llms.txt Stand to 2026-09-30 with CONTRIBUTING.md and lifecycle workflows
+[x] Maintained strict version freeze discipline per T-20260920-167562623 (version 0.2.3 untouched)
+[x] Expanded automated contract test suite in tests/test_metadata.py with 7 new contract tests verifying lifecycle workflows, labels, lock defense, contributing guide, pyproject URLs, SBOM audit date, and changelog
+================================================================================

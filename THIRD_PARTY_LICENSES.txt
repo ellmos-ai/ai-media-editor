@@ -1,6 +1,6 @@
 THIRD-PARTY LICENSES & LEVEL 1 SBOM NOTICE
 Project: ellmos-ai/ai-media-editor
-Audited: 2026-09-28
+Audited: 2026-09-30 (Audit-Historie: 2026-09-28, 2026-09-21, 2026-09-20, 2026-09-11)
 Repository Version: 0.2.3 (Version Freeze per T-20260920-167562623)
 Repository License: MIT License (see LICENSE)
 Repository Attribution Notice: NOTICE (see NOTICE)

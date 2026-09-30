@@ -47,8 +47,13 @@ wheelhouse/
 *-ASUS-GEI*
 *-ASUS-GEI.*
 *-WORKSTATION*
+*-WORKSTATION.*
+*_WORKSTATION*
 *-WORKSTATION-LG*
 *-WORKSTATION-LG.*
+*_WORKSTATION-LG*
+*-IDEAPAD*
+*-IDEAPAD-GEI*
 *-LAPTOP*
 *-Mac Studio*
 *-MacBook*
@@ -62,10 +67,14 @@ LOCK.*
 LOCK.user.*
 LOCK.until.*
 LOCK.condition.*
+LOCK.dev.*
+LOCK.antigravity.*
+LOCK.bugsearch.*
 *.lock
 LOCK*.txt
 LOCK.permissions.json
 .automation-lock
+TASKPLAN_*.md
 uv.lock
 !package-lock.json
 
@@ -73,12 +82,14 @@ uv.lock
 *.tmp
 *.bak
 *.swp
+*.swo
 *~
 *.log
 *.orig
 *.rej
 
 # --- Caches & Test Artifacts ---
+.pytest_tmp*/
 .mypy_cache/
 .tox/
 .turbo/
@@ -91,5 +102,8 @@ data/
 # --- OS / editor ---
 .DS_Store
 Thumbs.db
+ehthumbs.db
+Desktop.ini
+desktop.ini
 .idea/
 .vscode/

@@ -1,4 +1,4 @@
-## Last-checked: 2026-09-28
+## Last-checked: 2026-09-30
 
 # ellmos-ai/ai-media-editor
 
@@ -28,6 +28,7 @@ and reproducible audio/video artifacts.
 
 - `README.md` — public overview, setup, quickstart, dual-mermaid diagrams, and 18-point navigation (English, primary).
 - `README_de.md` — German translation of the overview (language stage: Core/DE+EN) with complete anchor parity.
+- `CONTRIBUTING.md` — bilingual contribution guidelines, pre-commit quality gates, version freeze policy, and Plan D local dev setup.
 - `CLAUDE.md` — German agent-facing workflow guide and hard editing rules.
 - `docs/USECASES.md` — step-by-step instructions for the 8 supported media workflows.
 - `editor.py` — orchestrator for `doctor`, `modes`, `prepare`, and `frames`.

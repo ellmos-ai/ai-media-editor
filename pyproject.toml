@@ -75,8 +75,10 @@ Repository = "https://github.com/ellmos-ai/ai-media-editor.git"
 Issues = "https://github.com/ellmos-ai/ai-media-editor/issues"
 Documentation = "https://github.com/ellmos-ai/ai-media-editor#readme"
 Changelog = "https://github.com/ellmos-ai/ai-media-editor/blob/main/CHANGELOG.md"
+Contributing = "https://github.com/ellmos-ai/ai-media-editor/blob/main/CONTRIBUTING.md"
 Security = "https://github.com/ellmos-ai/ai-media-editor/blob/main/SECURITY.md"
 "Third-Party Licenses" = "https://github.com/ellmos-ai/ai-media-editor/blob/main/THIRD_PARTY_LICENSES.md"
+"Third-Party Licenses (Text)" = "https://github.com/ellmos-ai/ai-media-editor/blob/main/THIRD_PARTY_LICENSES.txt"
 "Plain-Text Licenses" = "https://github.com/ellmos-ai/ai-media-editor/blob/main/THIRD_PARTY_LICENSES.txt"
 "Level 1 SBOM" = "https://github.com/ellmos-ai/ai-media-editor/blob/main/THIRD_PARTY_LICENSES.md"
 "Marketing Log" = "https://github.com/ellmos-ai/ai-media-editor/blob/main/MARKETING-LOG.txt"
@@ -95,7 +97,7 @@ include = ["ai_media_editor*"]
 minversion = "7.0"
 pythonpath = "."
 testpaths = ["tests"]
-norecursedirs = [".venv", "venv", "build", "dist", ".git", ".pytest_cache", ".pytest_temp", ".ruff_cache"]
+norecursedirs = [".venv", "venv", "build", "dist", ".git", ".pytest_cache", ".pytest_temp", ".pytest_tmp*", ".ruff_cache", ".hypothesis", ".turbo", ".nyc_output", ".tox"]
 addopts = "-ra -v --basetemp=.pytest_temp"
 
 [tool.ruff]
