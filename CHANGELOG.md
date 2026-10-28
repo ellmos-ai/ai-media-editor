@@ -25,6 +25,7 @@
 - Added `Notice` URL to `[project.urls]` in `pyproject.toml`.
 
 ### Changed
+- Synchronized the German README Section 4 with current English persona details and corrected translation omissions.
 - Re-audited `THIRD_PARTY_LICENSES.txt` and `THIRD_PARTY_LICENSES.md` as of Stand 2026-09-30, confirming all 10 governance invariants (`INV-LOCAL-01` to `INV-SLA-10`), unprivileged `RunAsInvoker` non-elevation, and zero-copyleft dynamic link isolation guarantee.
 - Hardened `.gitignore` with `*-IDEAPAD*`, `*-IDEAPAD-GEI*`, `*-WORKSTATION.*`, `*_WORKSTATION*`, `*_WORKSTATION-LG*`, `LOCK.dev.*`, `LOCK.antigravity.*`, `LOCK.bugsearch.*`, `TASKPLAN_*.md`, `.pytest_tmp*/`, `*.swo`, `Desktop.ini`, `desktop.ini`, `ehthumbs.db`.
 - Hardened `[tool.pytest.ini_options]` in `pyproject.toml` with expanded `norecursedirs` (`.pytest_tmp*`, `.hypothesis`, `.turbo`, `.nyc_output`, `.tox`).

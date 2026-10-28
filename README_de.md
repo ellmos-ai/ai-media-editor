@@ -145,31 +145,31 @@ sequenceDiagram
 <a id="sec-04"></a><a id="target-personas--discoverability"></a><a id="marketing--target-personas"></a><a id="zielgruppen--auffindbarkeit"></a><a id="marketing--zielgruppen"></a><a id="4-target-personas--discoverability"></a>
 ## 4. Zielgruppen & Auffindbarkeit
 
-`ai-media-editor` löst zentrale Workflow-Engpässe moderner KI-Medien-Automatisierung für vier dedizierte Zielgruppen:
+`ai-media-editor` löst zentrale Engpässe in Arbeitsabläufen der modernen KI-Medienautomatisierung für vier klar abgegrenzte Profile:
 
-### [PERSONA-01] Autonome KI-Coding-Agenten-Entwickler & Schwarm-Architekten
-- **Profil:** Software-Entwickler, die Multi-Agenten-Pipelines (Claude Code, Gemini/Antigravity, Codex CLI, Kimi Code) für autonome Medienproduktion steuern.
-- **Problem:** Proprietäre Cloud-STT-Dienste setzen API-Ratenlimits, erzwingen fehleranfällige Browser-Automationen und leiten vertrauliche, unveröffentlichte Medien an externe Server weiter.
-- **Lösung:** Reine CLI-Orchestrierung mit deterministischer Scribe-JSON-Schemagenerierung, Pausenschnitt-Kandidaten und visuellen Kontaktbögen direkt für Multimodal-LLMs.
-- **High-Intent-Suchbegriff:** `"agent driven video editor with local transcription"`
+### [PERSONA-01] Autonome KI-Coding-Agenten-Entwickler & Schwarmarchitekten
+- **Profil:** Softwareentwickler, die Multi-Agenten-Workflows (Claude Code, Gemini/Antigravity, Codex CLI, Kimi Code) für die autonome Medienproduktion entwerfen.
+- **Problem:** Proprietäre Cloud-STT-Dienste setzen API-Ratenlimits, erfordern anfällige Browserautomatisierung und geben vertrauliche, noch unveröffentlichte Medien an externe Anbieter weiter.
+- **Lösung:** Reine CLI-Orchestrierung mit deterministischer Erzeugung des Scribe-JSON-Schemas, Kandidaten für Schnitte an Pausen und zeitgestempelten Kontaktbögen, die multimodale LLMs direkt einlesen können.
+- **Suchanfrage mit hoher Kaufabsicht:** `"agent driven video editor with local transcription"`
 
-### [PERSONA-02] Local-First Podcaster & Content-Produzenten
-- **Profil:** Unabhängige Podcaster, Interviewer und Video-Creators mit regelmäßigen Veröffentlichungen.
-- **Problem:** Hohe monatliche Abo-Kosten für Cloud-SaaS-Editoren (Descript, Riverside) und lange Uploadzeiten bei mehrstündigen Rohaufnahmen.
-- **Lösung:** 100% offline faster-whisper-Transkription, sprechergetrennte Audio-Spuren, automatische Pausenbereinigung und prozedurale Vinyl-/Wellenform-Covervideos.
-- **High-Intent-Suchbegriff:** `"local first podcast editing AI agent workflow"`
+### [PERSONA-02] Local-First Podcaster & Content-Creator
+- **Profil:** Unabhängige Podcaster, Interviewer und Creator, die wöchentlich Audio- und Videobeiträge veröffentlichen.
+- **Problem:** Sehr hohe monatliche Abokosten für Cloud-Schnitt-SaaS (Descript, Riverside) und langsame Uploads bei Aufnahmen, die mehrere Gigabyte groß sind.
+- **Lösung:** 100% Offline-Transkription mit faster-whisper, nach Sprechern getrennte Audiospuren, automatisches Kürzen von Pausen und prozedurale Erzeugung animierter Covervideos.
+- **Suchanfrage mit hoher Kaufabsicht:** `"local first podcast editing AI agent workflow"`
 
-### [PERSONA-03] KI-Video- & Motion-Graphics-Entwickler
-- **Profil:** Frontend-Entwickler und Motion-Designer, die visuelle Video-Assets programmatisch generieren möchten.
-- **Problem:** Klassische NLEs (Premiere, After Effects) bieten keine sauberen Code-Schnittstellen und können Animationen nicht direkt aus CSS-/HTML-Design-Tokens erzeugen.
-- **Lösung:** Direkte Hyperframes-Integration: Wandelt HTML/CSS/JavaScript-Komponenten in 60fps-MP4-Motion-Graphics um — mit unterdrückten Windows-Konsolenfenstern.
-- **High-Intent-Suchbegriff:** `"Hyperframes motion graphics podcast editor"`
+### [PERSONA-03] Entwickler für KI-Video & Motion Graphics
+- **Profil:** Frontend-Entwickler und Motion-Designer, die gebrandete visuelle Video-Assets automatisieren.
+- **Problem:** Traditionelle NLEs (Premiere, After Effects) bieten keine sauberen programmatischen Schnittstellen und können Animationen nicht direkt aus CSS-/HTML-Design-Tokens rendern.
+- **Lösung:** Direkte Hyperframes-Integration, die HTML-/CSS-/JavaScript-Komponenten mit 60 fps in MP4-Motion-Graphics umwandelt und das Aufblitzen von Windows-Konsolenfenstern unterdrückt.
+- **Suchanfrage mit hoher Kaufabsicht:** `"Hyperframes motion graphics podcast editor"`
 
-### [PERSONA-04] Sicherheits-, Datenschutz- & Compliance-Verantwortliche
-- **Profil:** Datenschutz- und Compliance-Beauftragte in regulierten Branchen (Medizin, Recht, Finanzen).
-- **Problem:** Gesetzliche Vorgaben (DSGVO Art. 28, Berufsgeheimnis, vertrauliche M&A-Audits) verbieten das Hochladen interner Aufnahmen auf fremde Cloud-Plattformen strikt.
-- **Lösung:** Nachweisbare Zero-Egress-Garantie (`INV-LOCAL-01`), unprivilegierte `RunAsInvoker`-Ausführung (`INV-RUNAS-02`), Level 1 SBOM und ein verbindliches 48h-Sicherheits-SLA.
-- **High-Intent-Suchbegriff:** `"zero egress video transcription and cutting"`
+### [PERSONA-04] Sicherheits-, Datenschutz- & Compliance-Verantwortliche in Unternehmen
+- **Profil:** Compliance- und Informationssicherheitsverantwortliche in regulierten Branchen (Gesundheitswesen, Recht, Bankwesen).
+- **Problem:** Gesetzliche Verbote (DSGVO Art. 28, HIPAA) sowie Vertraulichkeitsanforderungen für M&A-Daten untersagen das Hochladen unternehmenseigener Aufnahmen zu cloudbasierten Transkriptionsanbietern.
+- **Lösung:** Nachweisbare Zero-Egress-Garantie (`INV-LOCAL-01`), unprivilegierte Ausführung ohne Rechteerhöhung mit `RunAsInvoker` (`INV-RUNAS-02`), Level 1 SBOM und eine formelle 48-Stunden-SLA für die Reaktion auf Sicherheitslücken.
+- **Suchanfrage mit hoher Kaufabsicht:** `"zero egress video transcription and cutting"`
 
 ---
 
