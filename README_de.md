@@ -19,7 +19,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/lizenz-MIT-blue" alt="Lizenz: MIT"></a>
 </p>
 
-<p align="center"><a href="README.md">English</a> · <strong>Deutsch</strong></p>
+<p align="center"><a href="README.md">English</a> · <strong>Deutsch</strong> · <a href="README_es.md">Español</a></p>
 
 # ai-media-editor — lokaler KI-Medien-Editor (Video · Audio · Podcast)
 
