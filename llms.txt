@@ -36,6 +36,7 @@ and reproducible audio/video artifacts.
 - `stt/diarize_llm.py` — token-free LLM-based speaker assignment.
 - `tools/frame_view.py` — video frame sampling and contact-sheet context.
 - `tools/cut_view.py` — pause-aware transcript cut candidates.
+- `tools/make_loop.py`, `tools/qa_clips.py`, `tools/atmo.py`, `tools/synth.py`, `tools/fx.js` — multi-clip black-pause loop assembly, ffprobe/luma clip QA contact sheets, 48 kHz NumPy/SciPy procedural instrument & EBU R128 atmospheric synthesis, and deterministic seek-safe HyperFrames scene helpers (`HFX.ft` with `immediateRender: false`).
 - `tools/hf.cmd`, `tools/hf-hidden.vbs`, `tools/hide-windows.cjs` — Windows wrapper + Node preload that forces `windowsHide` for every child process (no console-window bursts from HyperFrames); `tools/count_console_windows.ps1` measures visible windows. Details: `docs/WINDOWS-KONSOLENFENSTER.md`.
 - `production/OVERVIEW.md` — optional generative workflows and mandatory cloud/rights gates.
 - `NOTICE` — canonical open-source attribution and copyright notice for Lukas Geiger, ellmos-ai, and open-bricks.

@@ -91,7 +91,7 @@ Notice = "https://github.com/ellmos-ai/ai-media-editor/blob/main/NOTICE"
 include = ["ai_media_editor*"]
 
 [tool.setuptools.package-data]
-"ai_media_editor.tools" = ["*.cjs", "*.cmd", "*.ps1", "*.vbs"]
+"ai_media_editor.tools" = ["*.cjs", "*.cmd", "*.js", "*.ps1", "*.vbs"]
 
 [tool.pytest.ini_options]
 minversion = "7.0"
