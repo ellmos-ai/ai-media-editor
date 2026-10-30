@@ -9,7 +9,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PACKAGE_DATA_SUFFIXES = {".cjs", ".cmd", ".ps1", ".vbs"}
+PACKAGE_DATA_SUFFIXES = {".cjs", ".cmd", ".js", ".ps1", ".vbs"}
 
 
 def test_wheel_install_and_modes(tmp_path):

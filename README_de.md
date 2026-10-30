@@ -280,6 +280,16 @@ Der MIDI-Export erlaubt verlustfreies Rendering über professionelle SoundFonts:
   `fluidsynth -ni soundfont.sf2 out.mid -F out.wav -r 44100`
 - **Pfad B — Orchester-Libraries:** VSCO 2 Community Edition oder Salamander Grand Piano.
 
+### Multi-Clip-Loop, Clip-QA & Atmosphären-Synthese (`make_loop.py`, `qa_clips.py`, `atmo.py`, `synth.py`, `fx.js`)
+Aus der Halloween-Fensterprojektion (`T-20261025-256694132`) übernommene, wiederverwendbare Loop-, QA- und Klangsynthese-Werkzeuge unter `ai_media_editor.tools`:
+- **`ai_media_editor.tools.make_loop`**: Setzt Einzelclips (`<sid>.mp4`) mit konfigurierbaren Schwarzpausen (`loop.json` oder `--pause`) und optionaler AAC-48-kHz-Tonspur (`--audio`) zu einem nahtlosen Loopvideo zusammen:
+  `python -m ai_media_editor.tools.make_loop docs/examples/loop-halloween.json renders/ -o loop.mp4 [--pause 8] [--audio atmo.wav]`
+- **`ai_media_editor.tools.qa_clips`**: Prüft gerenderte Clips per `ffprobe`, misst die Helligkeit (Luma) am ersten/letzten Frame (Schwarzwert-Kontrolle), extrahiert Anfangs-/Mittel-/End-/Höhepunkt-Frames und baut einen `xstack`-Kontaktbogen (`qa.json`, `VORSCHAU_kontaktbogen.jpg`):
+  `python -m ai_media_editor.tools.qa_clips renders/ qa_out/`
+- **`ai_media_editor.tools.synth` & `ai_media_editor.tools.atmo`**: Prozedurale 48-kHz-Klangsynthese mit NumPy/SciPy (`chip_pulse`, `marimba`, `glock`, `pizz`, `flute`, `fm_brass`, `fm_bell`, `make_ir`) sowie szenen-/pausenraster-basierter Atmo-Generator mit iterativem EBU-R128-Mastering (`-16 LUFS-I`, `<= -3,5 dBTP`):
+  `python -m ai_media_editor.tools.atmo docs/examples/loop-halloween.json -o atmo.wav [--pause 8]`
+- **`ai_media_editor/tools/fx.js` (`window.HFX`)**: Deterministische, seek-sichere HyperFrames-Helfer inkl. `HFX.ft` (GSAP-`fromTo`-Wrapper mit `immediateRender: false`), `HFX.drive`, `HFX.rng` (mulberry32), `HFX.noise1`, `HFX.key`, `HFX.bump`, `HFX.path`, `HFX.spider` und `HFX.bat`.
+
 ---
 
 <a id="sec-10"></a><a id="governance--runtime-invariants"></a><a id="governance---laufzeit-invarianten"></a><a id="10-governance--runtime-invariants"></a>
@@ -400,6 +410,9 @@ ai-media-editor/                  (Code/Doku/Projekte)
 │   ├── frame_view.py             ← Video → zeitgestempelte Frames ("Video-Scatterer", UC3/4/8)
 │   ├── compose_cover.py          ← UC7: Cover über Audio loopen
 │   ├── compose_music.py          ← Storyline-JSON → videosynchroner Score (NumPy-Synthese)
+│   ├── synth.py / atmo.py        ← 48-kHz-SciPy-Instrumentensynthese & loopfähige EBU-R128-Atmo
+│   ├── make_loop.py / qa_clips.py← Multi-Clip-Loop-Assembler & ffprobe/Luma-QA-Kontaktbogen
+│   ├── fx.js                     ← deterministische HyperFrames-Szenenhelfer (HFX.ft, HFX.drive, SVG-Rigs)
 │   ├── hf.cmd / hf-hidden.vbs    ← Wrapper zur Unterdrückung von Konsolenfenstern unter Windows
 │   └── hide-windows.cjs          ← Node.js-Preload-Skript für windowsHide: true
 ├── ai_media_editor/stt/

@@ -169,3 +169,4 @@ T-20260829-486029203).
 - video-use-Editor-Workflow + Render-Helpers: `<TOOLS_ROOT>\video-use\SKILL.md`
 - Branding/Design-Tokens: `brand/design-tokens.css`
 - Konfiguration: `config/settings.json`
+- Loop-Assembly, Clip-QA, Atmo-Synthese & HyperFrames-Helfer: `ai_media_editor/tools/make_loop.py`, `ai_media_editor/tools/qa_clips.py`, `ai_media_editor/tools/atmo.py`, `ai_media_editor/tools/synth.py`, `ai_media_editor/tools/fx.js` (`HFX.ft`, `HFX.drive`)

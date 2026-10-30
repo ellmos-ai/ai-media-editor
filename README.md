@@ -279,6 +279,16 @@ The MIDI export enables lossless rendering through professional soundfonts:
   `fluidsynth -ni soundfont.sf2 out.mid -F out.wav -r 44100`
 - **Path B — Orchestral Libraries:** VSCO 2 Community Edition or Salamander Grand Piano.
 
+### Multi-Clip Loop Assembly, QA & Atmospheric Synthesis (`make_loop.py`, `qa_clips.py`, `atmo.py`, `synth.py`, `fx.js`)
+Ported from the Halloween Window Projection production pipeline (`T-20261025-256694132`), `ai_media_editor.tools` also provides reusable scene-loop and procedural sound-design utilities:
+- **`ai_media_editor.tools.make_loop`**: Concatenates rendered scene clips (`<sid>.mp4`) with configurable black pause intervals (`loop.json` or `--pause`) and optional AAC 48 kHz audio track (`--audio`):
+  `python -m ai_media_editor.tools.make_loop docs/examples/loop-halloween.json renders/ -o loop.mp4 [--pause 8] [--audio atmo.wav]`
+- **`ai_media_editor.tools.qa_clips`**: Verifies rendered clips via `ffprobe`, measures first/last frame luma (black-level verification), extracts start/mid/end/peak frames, and builds an `xstack` contact sheet (`qa.json`, `VORSCHAU_kontaktbogen.jpg`):
+  `python -m ai_media_editor.tools.qa_clips renders/ qa_out/`
+- **`ai_media_editor.tools.synth` & `ai_media_editor.tools.atmo`**: 48 kHz NumPy/SciPy procedural instrument & atmospheric synthesis (`chip_pulse`, `marimba`, `glock`, `pizz`, `flute`, `fm_brass`, `fm_bell`, `make_ir`) and scene-grid loopable soundscape generator with iterative EBU R128 loudness (`-16 LUFS-I`) and true-peak (`<= -3.5 dBTP`) mastering:
+  `python -m ai_media_editor.tools.atmo docs/examples/loop-halloween.json -o atmo.wav [--pause 8]`
+- **`ai_media_editor/tools/fx.js` (`window.HFX`)**: Deterministic seek-safe HyperFrames scene helpers including `HFX.ft` (GSAP `fromTo` wrapper enforcing `immediateRender: false` so effects stay hidden before tween start), `HFX.drive`, `HFX.rng` (mulberry32), `HFX.noise1`, `HFX.key`, `HFX.bump`, `HFX.path`, `HFX.spider`, and `HFX.bat`.
+
 ---
 
 <a id="sec-10"></a><a id="governance--runtime-invariants"></a><a id="governance---laufzeit-invarianten"></a><a id="10-governance--runtime-invariants"></a>
@@ -399,6 +409,9 @@ ai-media-editor/                  (code/docs/projects)
 │   ├── frame_view.py             ← video → timestamped frames ("video-scatterer", UC3/4/8)
 │   ├── compose_cover.py          ← UC7: loop a cover over audio
 │   ├── compose_music.py          ← storyline JSON → video-synced score (NumPy waveform synthesis)
+│   ├── synth.py / atmo.py        ← 48 kHz SciPy instrument synthesis & loopable EBU R128 atmo generator
+│   ├── make_loop.py / qa_clips.py← multi-clip black-pause loop builder & ffprobe/luma QA contact sheet
+│   ├── fx.js                     ← deterministic HyperFrames scene helpers (HFX.ft, HFX.drive, SVG rigs)
 │   ├── hf.cmd / hf-hidden.vbs    ← Windows console window suppression wrappers
 │   └── hide-windows.cjs          ← Node.js preload script enforcing windowsHide: true
 ├── ai_media_editor/stt/

@@ -1,0 +1,30 @@
+{
+  "comment": "Beispiel-Loop: Reihenfolge wechselt gruselig/lustig; nach jedem Clip eine Schwarzpause. Dauern = data-duration der Kompositionen.",
+  "pause_s": 8,
+  "order": [
+    "01-weisse-frau",
+    "05-kuerbis-lacht",
+    "03-riesenspinne",
+    "08-bettlakengespenst",
+    "06-scream-opfer",
+    "02-schleimgeist",
+    "07-vampir-fledermaus",
+    "11-kobolde-schatz",
+    "09-silhouette",
+    "04-kleine-spinnen",
+    "10-hexe-lockt"
+  ],
+  "durations_s": {
+    "01-weisse-frau": 26,
+    "02-schleimgeist": 33,
+    "03-riesenspinne": 29,
+    "04-kleine-spinnen": 32,
+    "05-kuerbis-lacht": 30,
+    "06-scream-opfer": 26,
+    "07-vampir-fledermaus": 25,
+    "08-bettlakengespenst": 23,
+    "09-silhouette": 31,
+    "10-hexe-lockt": 28,
+    "11-kobolde-schatz": 39
+  }
+}

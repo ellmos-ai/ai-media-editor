@@ -37,7 +37,7 @@ def test_packages_find_is_explicit_not_automatic():
     assert include == {"ai_media_editor*"}
 
     package_data = setuptools_cfg["package-data"]["ai_media_editor.tools"]
-    assert set(package_data) == {"*.cjs", "*.cmd", "*.ps1", "*.vbs"}
+    assert set(package_data) == {"*.cjs", "*.cmd", "*.js", "*.ps1", "*.vbs"}
 
 
 def test_namespace_contains_stt_and_tools_packages_only():
