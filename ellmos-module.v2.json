@@ -47,5 +47,20 @@
     "path": ".",
     "repository": "https://github.com/ellmos-ai/ai-media-editor.git"
   },
-  "adapters": []
+  "adapters": [],
+  "roles": [
+    {
+      "id": "media-creator",
+      "label": "MEDIA-CREATOR",
+      "prompt": "CLAUDE.md",
+      "request": "Start as MEDIA-CREATOR. Produce deterministic audio, video, and HyperFrames media compositions.",
+      "modes": [],
+      "providers": [
+        "claude",
+        "codex",
+        "agy",
+        "kimi"
+      ]
+    }
+  ]
 }
