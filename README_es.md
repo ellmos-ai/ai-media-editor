@@ -6,7 +6,7 @@
   <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/tests-95%20passed%20%7C%20100%25%20green-brightgreen" alt="Pruebas superadas"></a>
   <a href="https://python.org"><img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue" alt="Python 3.10+"></a>
   <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/platforms-Windows%20%7C%20Linux%20%7C%20macOS-blue" alt="Plataformas"></a>
-  <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/privacy-100%25%20Local--First%20%7C%20Zero--Egress-success" alt="Privacidad: procesamiento local"></a>
+  <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/privacy-Local--First--por--defecto-success" alt="Privacidad: Local-First por defecto; STT SSH opcional"></a>
   <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/security-RunAsInvoker%20%7C%20Non--Elevation-success" alt="Seguridad: sin elevación"></a>
   <a href="https://github.com/ellmos-ai/ai-media-editor/blob/main/SECURITY.md"><img src="https://img.shields.io/badge/security%20SLA-48h%20Response%20%7C%205d%20Triage-blue" alt="SLA de seguridad"></a>
   <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/badge/code%20style-ruff-black" alt="Estilo de código: Ruff"></a>
@@ -39,14 +39,14 @@
 | 07 | [Primeros pasos y configuración](#getting-started--setup) | Requisitos previos, configuración de `<TOOLS_ROOT>` e inicialización del entorno |
 | 08 | [Referencia y comandos de CLI](#cli-reference--commands) | Comandos de CLI paso a paso para `doctor`, `modes`, `prepare` y `frames` |
 | 09 | [Gráficos en movimiento y síntesis musical](#motion-graphics--music-synthesis) | Estilos con Hyperframes y composición local de partituras basadas en formas de onda NumPy y tramas narrativas |
-| 10 | [Gobernanza e invariantes de ejecución](#governance--runtime-invariants) | 10 garantías arquitectónicas obligatorias (`INV-LOCAL-01` a `INV-SLA-10`) |
-| 11 | [SLA de seguridad y privacidad](#security--privacy-sla) | Procesamiento 100 % local y sin salida de datos, respuesta inicial en 48 h y SLA de triaje de 5 días |
+| 10 | [Gobernanza e invariantes de ejecución](#governance--runtime-invariants) | 10 invariantes de ejecución documentadas, con alcance según el modo seleccionado (`INV-LOCAL-01` a `INV-SLA-10`) |
+| 11 | [SLA de seguridad y privacidad](#security--privacy-sla) | Local-First por defecto y STT SSH opcional, respuesta inicial en 48 h y SLA de triaje de 5 días |
 | 12 | [Proyectos relacionados y matriz del ecosistema](#sibling-projects--ecosystem-matrix) | 16 herramientas federadas de `ellmos-ai`, `dev-bricks`, `file-bricks` y `open-bricks` |
 | 13 | [Controles de calidad y pruebas](#quality-gates--testing) | Suite de pruebas automatizada, análisis con Ruff, compileall y supresión de ventanas de consola |
 | 14 | [Contexto legible por máquinas (`llms.txt`)](#machine-readable-context-llmstxt) | Manifiesto para rastreadores LLM, palabras clave para indexación y reglas de incorporación para agentes |
 | 15 | [Estructura del repositorio](#repository-structure) | Taxonomía detallada de carpetas de código, herramientas, STT, pruebas y proyectos |
 | 16 | [Registro de cambios y versiones](#changelog--releases) | Historial de versiones, hitos y mejoras de visibilidad de Pfad B |
-| 17 | [SBOM de nivel 1 y licencias de terceros](#third-party-licenses--transparency) | Inventario de licencias permisivas de código abierto, garantía de RunAsInvoker y SBOM de nivel 1 |
+| 17 | [SBOM de nivel 1 y licencias de terceros](#third-party-licenses--transparency) | Inventario de licencias de terceros, garantía de RunAsInvoker y SBOM de nivel 1 |
 | 18 | [Aviso legal y limitación de responsabilidad](#statutory-notice--liability-limitation) | Licencia MIT, aviso sobre el régimen de liberalidad del § 521 BGB y límites de responsabilidad |
 | 19 | [Proyecto hermano: `clip-storyboard-director`](#19-sister-project-clip-storyboard-director) | La parte de dirección del dúo Director/Cutter, incluida como dependencia opcional fijada a una versión |
 
@@ -136,7 +136,7 @@ sequenceDiagram
     Dev->>Visual: cut_view.py (find speech pauses & stumbles)
     Visual-->>Dev: Return pause cut candidate intervals
     Dev->>Render: Formulate cut list & motion graphics
-    Render->>FS: Render final clean MP4 / WAV with zero network egress
+    Render->>FS: Render final clean MP4 / WAV
     FS-->>Dev: Deliver production media artifact
 ```
 
@@ -156,7 +156,7 @@ sequenceDiagram
 ### [PERSONA-02] Podcasters y creadores de contenido con prioridad local
 - **Perfil:** Podcasters independientes, entrevistadores y creadores que publican contenido de audio y vídeo cada semana.
 - **Problema:** El elevado coste mensual de suscripciones a servicios SaaS de edición en la nube (Descript, Riverside) y la lentitud al subir grabaciones de varios gigabytes.
-- **Solución:** Transcripción con faster-whisper 100 % sin conexión, pistas de audio separadas por hablante, recorte automático de pausas y generación procedural de vídeos animados de portada.
+- **Solución:** Transcripción local con faster-whisper, pistas de audio separadas por hablante, recorte automático de pausas y generación procedural de vídeos animados de portada. El código no fuerza la carga de modelos exclusivamente sin conexión.
 - **Búsqueda de alta intención:** `"local first podcast editing AI agent workflow"`
 
 ### [PERSONA-03] Ingenieros de vídeo con IA y gráficos en movimiento
@@ -167,8 +167,8 @@ sequenceDiagram
 
 ### [PERSONA-04] Responsables empresariales de seguridad y cumplimiento de medios
 - **Perfil:** Responsables de cumplimiento y seguridad de la información en sectores regulados (sanidad, derecho y banca).
-- **Problema:** Prohibiciones legales (artículo 28 del GDPR, HIPAA y datos confidenciales de fusiones y adquisiciones) que impiden subir grabaciones empresariales propietarias a proveedores de transcripción alojados en la nube.
-- **Solución:** Garantía verificable de cero salida de datos a la red (`INV-LOCAL-01`), ejecución sin privilegios ni elevación mediante `RunAsInvoker` (`INV-RUNAS-02`), SBOM de nivel 1 y SLA formal de respuesta a vulnerabilidades en 48 horas.
+- **Problema:** Las políticas internas o los requisitos contractuales pueden impedir enviar grabaciones empresariales a proveedores de transcripción alojados.
+- **Solución:** El STT local es el modo predeterminado; al elegir `compute.prefer=mac`, se envía la copia completa del archivo multimedia de entrada al host SSH configurado. El modo elegido debe ajustarse a los requisitos de tratamiento de datos de la organización. También se documentan la ejecución sin privilegios mediante `RunAsInvoker` (`INV-RUNAS-02`), una SBOM de nivel 1 y un SLA formal de respuesta a vulnerabilidades de 48 horas.
 - **Búsqueda de alta intención:** `"zero egress video transcription and cutting"`
 
 ---
@@ -176,17 +176,17 @@ sequenceDiagram
 <a id="sec-05"></a><a id="comparative-matrix-vs-alternatives"></a><a id="comparative-matrix--alternatives"></a><a id="vergleichsmatrix-gegenueber-alternativen"></a><a id="5-comparative-matrix-vs-alternatives"></a>
 ## 5. Matriz comparativa de alternativas
 
-La siguiente matriz de 10 dimensiones compara `ai-media-editor` con enfoques heredados y competidores según nuestras invariantes de ejecución obligatorias:
+La siguiente matriz de 10 dimensiones compara `ai-media-editor` con enfoques heredados y competidores mediante invariantes de ejecución documentadas, cuyo alcance depende del modo operativo seleccionado:
 
 | Dimensión e invariante | ai-media-editor | SaaS en la nube (Descript / ElevenLabs) | NLE comerciales (Premiere / DaVinci) | CLI / Shell sin procesar (FFmpeg) | API alojadas (Whisper API / Google STT) |
 |---|:---:|:---:|:---:|:---:|:---:|
-| **1. Prioridad local y cero salida (`INV-LOCAL-01`)** | :white_check_mark: 100 % sin conexión en local | :x: Subida obligatoria a la nube | :warning: Local (telemetría propietaria) | :white_check_mark: 100 % sin conexión en local | :x: Procesamiento externo en la nube |
+| **1. Local-First y flujo de datos según el modo (`INV-LOCAL-01`)** | :white_check_mark: Local-First por defecto; STT SSH opcional | :x: Subida obligatoria a la nube | :warning: Local (telemetría propietaria) | :white_check_mark: 100 % sin conexión en local | :x: Procesamiento externo en la nube |
 | **2. Modo de usuario sin privilegios (`INV-RUNAS-02`)** | :white_check_mark: `RunAsInvoker` estándar | :warning: Navegador / aplicación auxiliar | :warning: Instalador / daemon de administrador | :white_check_mark: Privilegios de usuario | :white_check_mark: Nivel de cliente de API |
-| **3. Protección no destructiva del material de origen (`INV-PREV-03`)** | :white_check_mark: Entrada de medios de solo lectura | :warning: Duplicación de medios en la nube | :white_check_mark: Proyectos no destructivos | :warning: Riesgo de sobrescritura accidental | :white_check_mark: Se conserva el material de entrada |
+| **3. Protección no destructiva del material de origen (`INV-PREV-03`)** | :white_check_mark: `prepare` conserva el original | :warning: Duplicación de medios en la nube | :white_check_mark: Proyectos no destructivos | :warning: Riesgo de sobrescritura accidental | :white_check_mark: Se conserva el material de entrada |
 | **4. Síntesis determinista (`INV-DETERM-04`)** | :white_check_mark: JSON de Scribe y partitura con semilla fija | :x: Variación estocástica en la nube | :warning: Estado de proyecto complejo | :warning: Salidas sin estructura | :x: Latencia no determinista |
-| **5. Contención contra el recorrido de rutas (`INV-BOUNDARY-05`)** | :white_check_mark: Aislamiento estricto del proyecto | :warning: Bucket en la nube del proveedor | :warning: Sistema de archivos arbitrario | :x: Sin validación de rutas | :white_check_mark: Límite del espacio del cliente en la nube |
+| **5. Validación de nombres de proyecto (`INV-BOUNDARY-05`)** | :white_check_mark: Comprobación léxica de nombres; no es una jaula del sistema de archivos | :warning: Bucket en la nube del proveedor | :warning: Sistema de archivos arbitrario | :x: Sin validación de rutas | :white_check_mark: Límite del espacio del cliente en la nube |
 | **6. Supresión del destello de ventanas (`INV-SUBPROC-06`)** | :white_check_mark: `windowsHide` precargado | :heavy_minus_sign: No aplicable (interfaz web) | :heavy_minus_sign: No aplicable (interfaz de escritorio) | :x: Aperturas de consola molestas | :heavy_minus_sign: No aplicable (solicitudes HTTP) |
-| **7. Paridad entre plataformas (`INV-PARITY-07`)** | :white_check_mark: Windows, Linux, macOS | :warning: Depende del navegador | :x: Funciones específicas del sistema operativo | :white_check_mark: POSIX / Windows | :white_check_mark: HTTP multiplataforma |
+| **7. Compatibilidad entre plataformas (`INV-PARITY-07`)** | :white_check_mark: Windows, Linux y macOS con rutas específicas por sistema operativo | :warning: Depende del navegador | :x: Funciones específicas del sistema operativo | :white_check_mark: POSIX / Windows | :white_check_mark: HTTP multiplataforma |
 | **8. Concurrencia multiagente (`INV-SYNC-08`)** | :white_check_mark: Disciplina de bloqueo y Git limpio | :x: Sesión SaaS de un solo usuario | :x: Bloqueos de proyecto para un solo editor | :warning: Conflictos de concurrencia | :warning: Cuellos de botella por límites de uso |
 | **9. Legibilidad para agentes y LLM (`INV-DOCS-09`)** | :white_check_mark: JSON de Scribe, hojas de contacto, `llms.txt` | :x: Binario cerrado / DOM HTML | :x: Archivos binarios de proyecto complejos | :warning: Texto sin procesar en stdout/stderr | :warning: Solo transcripciones de texto |
 | **10. SLA coordinado de seguridad (`INV-SLA-10`)** | :white_check_mark: Respuesta en 48 h / triaje en 5 días | :warning: Cola de soporte empresarial | :warning: Actualizaciones comerciales trimestrales | :heavy_minus_sign: Scripts sin mantenimiento | :warning: SLA estándar en la nube |
@@ -216,7 +216,7 @@ Para consultar guías completas paso a paso de cada modo, véase [`docs/USECASES
 <a id="sec-07"></a><a id="getting-started--setup"></a><a id="erste-schritte--einrichtung"></a><a id="7-getting-started--setup"></a>
 ## 7. Primeros pasos y configuración
 
-1. **Crear la configuración:** Copia `config/settings.example.json` → `config/settings.json` y configura las opciones de cómputo local (`local`/`mac`, motores y `paths.*`).
+1. **Crear la configuración:** Copia `config/settings.example.json` → `config/settings.json` y configura las opciones de cómputo local (`local`/`mac`, motores y `paths.*`). Configura `paths.venv_python` con la ruta al ejecutable de Python de este sistema operativo; el valor se usa directamente. La ruta de ejemplo `.venv/Scripts/python.exe` es específica de Windows; en sistemas POSIX suele usarse `.venv/bin/python`.
 2. **Directorio de herramientas (`<TOOLS_ROOT>`):** `paths.tools_root` en `settings.json` indica la raíz de las herramientas pesadas (`video-use`, ffmpeg, Node ≥ 22). **No** lo sitúes dentro de una carpeta sincronizada con la nube.
 3. **Requisitos externos:**
    - **En local:** `ffmpeg`, `Node.js >= 22` (para Hyperframes) y un entorno virtual de Python 3.10–3.13.
@@ -294,17 +294,17 @@ Adaptadas a partir del flujo de producción de proyección de ventanas de Hallow
 <a id="sec-10"></a><a id="governance--runtime-invariants"></a><a id="governance---laufzeit-invarianten"></a><a id="10-governance--runtime-invariants"></a>
 ## 10. Gobernanza e invariantes de ejecución
 
-La arquitectura impone 10 garantías estrictas de ejecución en todos los modos:
+La arquitectura documenta 10 invariantes de ejecución; el comportamiento depende del modo seleccionado:
 
 | ID de invariante | Dominio operativo | Garantía y regla de aplicación | Mecanismo de verificación |
 |---|---|---|---|
-| `INV-LOCAL-01` | Privacidad y salida de datos | **Ejecución 100 % local**: Los medios originales, las transcripciones y las representaciones vectoriales nunca salen de localhost. No se realizan llamadas a la nube de forma predeterminada. | `tests/test_core.py`, sin sockets de nube en el flujo principal |
+| `INV-LOCAL-01` | Privacidad y salida de datos | **Local-First por defecto**: Con `compute.prefer=local`, el STT se procesa en este equipo; el código no fuerza la carga de modelos exclusivamente sin conexión. Con `compute.prefer=mac`, se envía la copia completa del archivo multimedia de entrada al host SSH configurado y también se transfiere cualquier token HF configurado. Se intenta limpiar el trabajo remoto en un bloque `finally`, pero no se verifica que la limpieza haya tenido éxito. | `tests/test_core.py`, `editor.py`, `ai_media_editor/stt/mac_remote.py` |
 | `INV-RUNAS-02` | Privilegios y aislamiento | **Modo de usuario sin privilegios (`RunAsInvoker`)**: No se requieren privilegios administrativos ni elevados. | Ejecución como usuario estándar en todos los scripts |
-| `INV-PREV-03` | Almacenamiento e inmutabilidad | **Medios de origen seguros para previsualizar y no destructivos**: Los archivos de entrada son estrictamente de solo lectura; todos los artefactos se escriben en `projects/<name>/`. | Comprobaciones de aislamiento en `tests/test_core.py` |
+| `INV-PREV-03` | Almacenamiento e inmutabilidad | **Tratamiento no destructivo de la entrada**: `prepare` deja intacto el archivo original y lo copia en `projects/<name>/`. El audio temporal puede guardarse en el directorio temporal del sistema operativo; el modo remoto también utiliza el directorio de trabajo SSH configurado. | Comprobaciones de aislamiento en `tests/test_core.py` |
 | `INV-DETERM-04` | Reproducibilidad | **Síntesis determinista y estabilidad del esquema**: Semilla fija para el audio procedural y cumplimiento estricto del esquema JSON de Scribe. | `tests/test_compose_music.py`, `ai_media_editor/stt/scribe_schema.py` |
-| `INV-BOUNDARY-05` | Seguridad frente al recorrido de archivos | **Protección contra recorridos de rutas y contención del proyecto**: Los nombres de archivo y las raíces de los proyectos no pueden salir de los límites del proyecto. | `test_project_names_cannot_escape_projects` |
+| `INV-BOUNDARY-05` | Validación de nombres de proyecto | **Comprobaciones léxicas de nombres**: Los nombres de proyecto se validan como componentes individuales de ruta; esto no es una caja de aislamiento del sistema de archivos. | `test_project_names_cannot_escape_projects` |
 | `INV-SUBPROC-06` | Limpieza de procesos | **Ciclo de vida limpio y supresión de ventanas**: Los wrappers precargados suprimen el destello de ventanas de consola en Windows. | `ai_media_editor/tools/hf.cmd`, `ai_media_editor/tools/hide-windows.cjs` |
-| `INV-PARITY-07` | Compatibilidad con varios sistemas operativos | **Paridad entre sistemas operativos**: Ejecución y gestión de rutas idénticas en Windows, Linux y macOS. | Matriz de CI multiplataforma de GitHub Actions |
+| `INV-PARITY-07` | Compatibilidad con varios sistemas operativos | **Compatibilidad entre plataformas**: Las rutas y los ejecutables se configuran para el sistema operativo utilizado; la matriz de CI indica los sistemas operativos probados. | Matriz de CI multiplataforma de GitHub Actions |
 | `INV-SYNC-08` | Concurrencia y bloqueos | **Sincronización en la nube y disciplina de bloqueos multiagente**: Las herramientas pesadas y los proyectos se excluyen para evitar conflictos de sincronización en la nube. | Reglas de conflicto y filtros de bloqueos en `.gitignore` |
 | `INV-DOCS-09` | Accesibilidad y visibilidad | **Preparación para LLM multimodales y paridad bilingüe**: Hojas de contacto de fotogramas para LLM visuales y paridad documental completa entre EN y DE. | Pruebas de contrato de `llms.txt`, `README.md` y `README_de.md` |
 | `INV-SLA-10` | Seguridad y respuesta a incidentes | **Respuesta de seguridad en 48 h y triaje en 5 días**: Comunicación formal de vulnerabilidades mediante GitHub Advisories y correo electrónico a los mantenedores. | `SECURITY.md`, `test_security_policy_bilingual_parity` |
@@ -314,8 +314,8 @@ La arquitectura impone 10 garantías estrictas de ejecución en todos los modos:
 <a id="sec-11"></a><a id="security--privacy-sla"></a><a id="sicherheit--datenschutz-sla"></a><a id="11-security--privacy-sla"></a>
 ## 11. SLA de seguridad y privacidad
 
-- **Privacidad con prioridad local:** La transcripción, la extracción de fotogramas y el cálculo de cortes se realizan íntegramente sin conexión en el hardware local.
-- **Contención de medios sensibles:** Las grabaciones de origen y los resultados de los proyectos permanecen estrictamente dentro de `projects/` (excluido por Git).
+- **Procesamiento Local-First:** El STT local es el modo predeterminado, pero el código no fuerza la carga de modelos exclusivamente sin conexión. Con `compute.prefer=mac`, se envía la copia completa del archivo multimedia de entrada al host SSH configurado; también se envía cualquier token HF configurado.
+- **Tratamiento de medios sensibles:** `prepare` deja la grabación original en su ruta de entrada y la copia en `projects/<name>/`. El audio temporal puede guardarse en el directorio temporal del sistema operativo. El modo remoto guarda una copia de trabajo en el `workdir` SSH configurado e intenta limpiarla en un bloque `finally`, pero no verifica que la limpieza haya tenido éxito.
 - **Compromiso de respuesta ante vulnerabilidades:**
   - **SLA de respuesta inicial:** Confirmación de recepción de informes de vulnerabilidad en un plazo de 48 horas.
   - **SLA de triaje técnico:** Evaluación de la gravedad en un plazo de 5 días laborables.
@@ -453,10 +453,10 @@ Consulta [`CHANGELOG.md`](CHANGELOG.md) para ver el historial completo de versio
 <a id="sec-17"></a><a id="level-1-sbom--third-party-licenses"></a><a id="third-party-licenses--transparency"></a><a id="drittanbieter-lizenzen--transparenz"></a><a id="17-level-1-sbom--third-party-licenses"></a>
 ## 17. SBOM de nivel 1 y licencias de terceros
 
-`ai-media-editor` se ha desarrollado con un compromiso firme con la transparencia del código abierto, la ausencia de elevación de privilegios y la reproducibilidad sin conexión:
+`ai-media-editor` documenta las licencias de sus componentes y se centra en la ejecución sin privilegios:
 
-- **100 % de código abierto con licencias permisivas:** Todas las bibliotecas, motores y entornos de ejecución integrados usan licencias permisivas de código abierto (MIT, Apache-2.0, BSD, PSFL) o utilidades multimedia enlazadas dinámicamente (FFmpeg LGPL). No hay dependencias propietarias obligatorias en tiempo de ejecución ni software espía de telemetría cerrada.
-- **Sin dependencias de la nube en tiempo de ejecución (`INV-LOCAL-01`):** La transcripción, la extracción de fotogramas, la detección de pausas y la síntesis procedural de música se ejecutan 100 % sin conexión en tu hardware.
+- **Inventario de licencias de terceros:** Consulta [`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md) para ver las licencias registradas de los componentes incluidos; revisa la licencia aplicable antes de utilizarlos.
+- **STT Local-First (`INV-LOCAL-01`):** La transcripción local es el modo predeterminado. El código no fuerza la carga de modelos exclusivamente sin conexión; al elegir `compute.prefer=mac`, se envía la copia completa del archivo multimedia de entrada al host SSH configurado y también se transfiere cualquier token HF configurado.
 - **Ejecución como usuario sin privilegios (`INV-RUNAS-02`):** Todos los componentes se ejecutan estrictamente con cuentas de usuario estándar sin privilegios (`RunAsInvoker`), sin necesidad de elevación administrativa ni de root.
 - **SBOM de nivel 1 y correspondencia con la gobernanza:** Las fuentes originales, las personas responsables del mantenimiento, los textos de licencia y las invariantes aplicables se catalogan en [`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md).
 - **Licencia principal del proyecto:** [Licencia MIT](LICENSE) © 2026 ellmos-ai / open-bricks.

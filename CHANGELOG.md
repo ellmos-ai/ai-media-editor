@@ -37,6 +37,7 @@
 - Hardened `[tool.pytest.ini_options]` in `pyproject.toml` with `addopts = "-ra -v --basetemp=.pytest_temp"` and added `.pytest_temp` to `norecursedirs`.
 - Hardened `.github/workflows/stale.yml` with concurrency control (`cancel-in-progress: true`) and job timeout (`timeout-minutes: 10`).
 - Hardened `.gitignore` with multi-host host tokens (`*-WORKSTATION-LG*`, `*-LAPTOP*`, `*-Mac Studio*`, `*-MacBook*`), canonical lock patterns (`LOCK.user.*`, `LOCK.until.*`, `LOCK.condition.*`, `.automation-lock`), and test cache patterns (`.hypothesis/`, `.nyc_output/`).
+- Clarified local versus SSH STT data flow, input-media copies and temporary-file locations, lexical path-validation limits, OS-specific venv paths, and third-party license wording across the READMEs, `llms.txt`, and `SECURITY.md`.
 
 ## [0.2.3] - 2026-09-20
 
