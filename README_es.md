@@ -279,6 +279,16 @@ La exportación MIDI permite un renderizado sin pérdidas mediante soundfonts pr
   `fluidsynth -ni soundfont.sf2 out.mid -F out.wav -r 44100`
 - **Ruta B — Bibliotecas orquestales:** VSCO 2 Community Edition o Salamander Grand Piano.
 
+### Ensamblado de bucles con varios clips, control de calidad y síntesis atmosférica (`make_loop.py`, `qa_clips.py`, `atmo.py`, `synth.py`, `fx.js`)
+Adaptadas a partir del flujo de producción de proyección de ventanas de Halloween (`T-20261025-256694132`), las utilidades de `ai_media_editor.tools` también ofrecen funciones reutilizables para ensamblar bucles de escenas y diseñar sonido de forma procedimental:
+- **`ai_media_editor.tools.make_loop`**: concatena clips de escenas renderizadas (`<sid>.mp4`) con intervalos configurables de pausa en negro (`loop.json` o `--pause`) y una pista de audio AAC opcional de 48 kHz (`--audio`):
+  `python -m ai_media_editor.tools.make_loop docs/examples/loop-halloween.json renders/ -o loop.mp4 [--pause 8] [--audio atmo.wav]`
+- **`ai_media_editor.tools.qa_clips`**: verifica los clips renderizados mediante `ffprobe`, mide la luminancia (luma) del primer y último fotograma (verificación del nivel de negro), extrae fotogramas del inicio, punto medio, final y pico, y crea una hoja de contacto con `xstack` (`qa.json`, `VORSCHAU_kontaktbogen.jpg`):
+  `python -m ai_media_editor.tools.qa_clips renders/ qa_out/`
+- **`ai_media_editor.tools.synth` y `ai_media_editor.tools.atmo`**: síntesis procedimental de instrumentos y atmósferas a 48 kHz con NumPy/SciPy (`chip_pulse`, `marimba`, `glock`, `pizz`, `flute`, `fm_brass`, `fm_bell`, `make_ir`) y un generador de paisajes sonoros en bucle basado en una cuadrícula de escenas, con masterización iterativa según la sonoridad EBU R128 (`-16 LUFS-I`) y el pico verdadero (`<= -3.5 dBTP`):
+  `python -m ai_media_editor.tools.atmo docs/examples/loop-halloween.json -o atmo.wav [--pause 8]`
+- **`ai_media_editor/tools/fx.js` (`window.HFX`)**: funciones auxiliares deterministas de escenas de HyperFrames, seguras ante los saltos de posición en la línea de tiempo, incluidas `HFX.ft` (envoltorio de `fromTo` de GSAP que establece `immediateRender: false` para que los efectos permanezcan ocultos antes de que empiece la animación), `HFX.drive`, `HFX.rng` (`mulberry32`), `HFX.noise1`, `HFX.key`, `HFX.bump`, `HFX.path`, `HFX.spider` y `HFX.bat`.
+
 ---
 
 <a id="sec-10"></a><a id="governance--runtime-invariants"></a><a id="governance---laufzeit-invarianten"></a><a id="10-governance--runtime-invariants"></a>
@@ -399,6 +409,9 @@ ai-media-editor/                  (code/docs/projects)
 │   ├── frame_view.py             ← video → timestamped frames ("video-scatterer", UC3/4/8)
 │   ├── compose_cover.py          ← UC7: loop a cover over audio
 │   ├── compose_music.py          ← storyline JSON → video-synced score (NumPy waveform synthesis)
+│   ├── synth.py / atmo.py        ← 48 kHz SciPy instrument synthesis & loopable EBU R128 atmo generator
+│   ├── make_loop.py / qa_clips.py← multi-clip black-pause loop builder & ffprobe/luma QA contact sheet
+│   ├── fx.js                     ← deterministic HyperFrames scene helpers (HFX.ft, HFX.drive, SVG rigs)
 │   ├── hf.cmd / hf-hidden.vbs    ← Windows console window suppression wrappers
 │   └── hide-windows.cjs          ← Node.js preload script enforcing windowsHide: true
 ├── ai_media_editor/stt/
