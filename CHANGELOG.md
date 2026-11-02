@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- Complete Simplified Chinese README with reciprocal navigation across five documentation languages and llms.txt discovery (2026-11-03).
 - Complete French README with reciprocal EN/DE/ES/FR navigation and llms.txt discovery, translated from the corrected local/SSH processing documentation (2026-11-03).
 - Spanish README with reciprocal language navigation and llms.txt discovery, synchronized with source 54c89a0 including the Halloween loop, QA, synthesis, and HyperFrames helper documentation (2026-11-02).
 - Ported reusable Halloween Window Projection production tools (`T-20261025-256694132`) into `ai_media_editor/tools/`: `make_loop.py` (multi-clip black-pause loop assembler), `qa_clips.py` (ffprobe/luma clip QA and `xstack` contact sheet generator), `synth.py` + `atmo.py` (48 kHz NumPy/SciPy instrument and loopable atmospheric soundscape synthesis with hardened EBU R128 loudness/true-peak measurement guards), `fx.js` (deterministic HyperFrames helper library `window.HFX` including `HFX.ft` `fromTo` with `immediateRender: false`), example config `docs/examples/loop-halloween.json`, and unit test suite `tests/test_halloween_tools.py`.
