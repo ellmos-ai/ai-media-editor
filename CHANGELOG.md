@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- Complete Japanese README with reciprocal navigation across six documentation languages and llms.txt discovery (2026-11-03).
 - Complete Simplified Chinese README with reciprocal navigation across five documentation languages and llms.txt discovery (2026-11-03).
 - Complete French README with reciprocal EN/DE/ES/FR navigation and llms.txt discovery, translated from the corrected local/SSH processing documentation (2026-11-03).
 - Spanish README with reciprocal language navigation and llms.txt discovery, synchronized with source 54c89a0 including the Halloween loop, QA, synthesis, and HyperFrames helper documentation (2026-11-02).
