@@ -33,11 +33,11 @@ Include detailed reproduction steps, environment details (OS, Python version, to
 
 `ai-media-editor` is a local-first media preparation and editing orchestrator. The main security surface is local file handling, generated project files, configuration, and subprocess calls to external media tools:
 
-- **Local-First & Zero-Egress**: Local transcription is the default. It executes locally without transmitting raw media or credentials to external SaaS APIs.
-- **Sensitive Media Isolation**: Runtime media, source recordings, transcripts, frame exports, and project output are strictly contained in `projects/` and excluded from version control via `.gitignore`.
+- **Local-First & Remote Routing**: Local STT is the default, but model loading is not forced offline. With `compute.prefer=mac`, the full input media file copy is sent to the configured SSH host; any configured HF token is also transferred.
+- **Sensitive Media Handling**: `prepare` leaves the original input at its chosen path and copies it under `projects/<name>/`. Temporary audio may use the OS temp directory. Remote mode stores a working copy under the configured SSH `workdir`; cleanup is attempted in a `finally` block, but success is not verified.
 - **Credential & Secret Protection**: Real host/user/ssh paths, HuggingFace tokens, and keys must remain in `config/settings.json`, which is excluded from version control. Never commit secrets.
-- **Subprocess & Path Sanitization**: Path traversal boundaries and stem containment prevent arbitrary filesystem escape. Arguments to ffmpeg, Hyperframes, video-use, and STT engines are validated.
-- **Controlled Remote Compute**: If remote compute is explicitly enabled, media transfers over configured SSH targets use temporary credential files, strict job isolation, and mandatory remote cleanup on every exit path.
+- **Subprocess & Path Handling**: Project names and transcript stems are validated in specific code paths; these checks are not a filesystem sandbox and do not prevent every possible filesystem escape.
+- **Controlled Remote Compute**: If `compute.prefer=mac` is selected, the full input media file copy is sent by SCP to the configured SSH host. Any configured HF token is also sent in a temporary file. The isolated remote job directory is cleaned up in a `finally` block on a best-effort basis; success is not verified.
 - **Production Cloud Gate**: Optional `production/` cloud workflows require explicit rights, consent, confidentiality, and licensing clearance before any material is uploaded.
 
 ### Response Time & SLA Commitments
@@ -77,11 +77,11 @@ Bitte geben Sie eine genaue Problembeschreibung, Reproduktionsschritte, Betriebs
 
 `ai-media-editor` ist ein lokaler Orchestrator für die Medienvorbereitung und den agentengesteuerten Schnitt:
 
-- **Local-First & Zero-Egress**: Lokale Transkription ist der Standard. Die Verarbeitung erfolgt vollständig lokal ohne unbefugte Datenübertragung oder Telemetrie.
-- **Schutz sensibler Mediendaten**: Rohaufnahmen, Transkripte, Frame-Exporte und Schnittdaten verbleiben isoliert in `projects/` und sind per `.gitignore` von der Versionskontrolle ausgeschlossen.
+- **Local-First & Remote-Routing**: Lokales STT ist der Standard, aber der Code erzwingt keinen Offline-Modus beim Laden der Modelle. Bei `compute.prefer=mac` wird die vollständige Kopie der Eingabemedien-Datei an den konfigurierten SSH-Host gesendet; jeder konfigurierte HF-Token wird ebenfalls übertragen.
+- **Umgang mit sensiblen Mediendaten**: `prepare` lässt die Originaldatei an ihrem Eingabepfad und kopiert sie nach `projects/<name>/`. Temporäres Audio kann im OS-Tempverzeichnis liegen. Im Remote-Modus liegt eine Arbeitskopie im konfigurierten SSH-`workdir`; die Bereinigung wird im `finally`-Block versucht, aber ihr Erfolg nicht geprüft.
 - **Zugangsdaten & Geheimnisschutz**: Reale Hostnamen, SSH-Konfigurationen und Tokens gehören ausschließlich in `config/settings.json` und werden niemals ins Repository committet.
-- **Subprozess- & Pfadvalidierung**: Pfadtraversal-Schutz und Stem-Containment verhindern Ausbrüche aus Projektverzeichnissen; Aufrufparameter für ffmpeg, Hyperframes und STT-Engines werden validiert.
-- **Isoliertes Remote-Compute**: Bei aktivierter SSH-Verarbeitung werden Zugangsdaten über temporäre Dateien geführt, Jobs isoliert und bei jedem Beendigungspfad bereinigt.
+- **Subprozess- & Pfadbehandlung**: Projektnamen und Transkript-Stems werden in bestimmten Codepfaden validiert; diese Prüfungen bilden keine Dateisystem-Sandbox und verhindern nicht jede mögliche Umgehung von Dateisystemgrenzen.
+- **Remote-Compute**: Bei `compute.prefer=mac` wird die vollständige Kopie der Eingabemedien-Datei per SCP an den konfigurierten SSH-Host gesendet. Jeder konfigurierte HF-Token wird ebenfalls in einer temporären Datei übertragen. Das isolierte Remote-Arbeitsverzeichnis wird im `finally`-Block best-effort bereinigt; der Erfolg wird nicht geprüft.
 - **Produktions-Gate**: Optionale Cloud-Workflows unter `production/` erfordern eine explizite Rechte-, Einverständnis- und Lizenzprüfung vor jedem Upload.
 
 ### Reaktionszeiten & SLA-Zusagen
