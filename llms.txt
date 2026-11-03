@@ -12,8 +12,8 @@ https://github.com/ellmos-ai/ai-media-editor
 `ai-media-editor` prepares media projects for agent-driven editing. It routes local or remote
 speech-to-text, writes the Scribe fields consumed by `video-use`, packs transcript/cut context,
 generates timestamped frame views for visual judgment, and leaves the creative cut, animation,
-and Hyperframes composition to an AI coding agent. All 10 governance invariants, dual-mermaid
-diagrams, Level 1 SBOM, and 18-point navigation ensure local-first execution, unprivileged operation,
+and Hyperframes composition to an AI coding agent. The documented runtime invariants, dual-mermaid
+diagrams, Level 1 SBOM, and 18-point navigation describe local-first defaults, unprivileged operation,
 and reproducible audio/video artifacts.
 
 ## Audience
@@ -22,12 +22,21 @@ and reproducible audio/video artifacts.
 - Developers building local-first podcast, video, and transcript-editing workflows.
 - Creators who want transcript-based cuts without sending recordings to hosted STT.
 - Tool builders comparing `video-use`, Hyperframes, faster-whisper, and WhisperX workflows.
-- Enterprise compliance officers requiring 100% zero-egress media processing under GDPR / HIPAA.
+- Organizations whose internal policies or contracts restrict sending recordings to hosted transcription providers.
 
 ## Important files
 
 - `README.md` — public overview, setup, quickstart, dual-mermaid diagrams, and 18-point navigation (English, primary).
 - `README_de.md` — German translation of the overview (language stage: Core/DE+EN) with complete anchor parity.
+- [Spanish overview](README_es.md) — complete Spanish README, including the loop/QA/atmospheric synthesis tools; runtime interfaces are unchanged.
+- [French overview](README_fr.md) — complete French README synchronized with the corrected local/SSH processing scope; CLI examples and explicit anchors are preserved.
+- [Simplified Chinese overview](README_zh.md) — complete Chinese README with matching CLI examples, invariant IDs and explicit anchors.
+- [Japanese overview](README_ja.md) — complete Japanese README with matching CLI examples, invariant IDs and explicit anchors.
+- [Russian overview](README_ru.md) — complete Russian README with matching CLI examples, invariant IDs and explicit anchors.
+- [Hindi overview](README_hi.md) — complete Hindi README with matching CLI examples, invariant IDs and explicit anchors.
+- [Arabic overview](README_ar.md) — complete Arabic README with matching CLI examples, invariant IDs and explicit anchors.
+- [Bengali overview](README_bn.md) — complete Bengali README with matching CLI examples, invariant IDs and explicit anchors.
+- [Portuguese overview](README_pt.md) — complete Portuguese README with matching CLI examples, invariant IDs and explicit anchors.
 - `CONTRIBUTING.md` — bilingual contribution guidelines, pre-commit quality gates, version freeze policy, and Plan D local dev setup.
 - `CLAUDE.md` — German agent-facing workflow guide and hard editing rules.
 - `docs/USECASES.md` — step-by-step instructions for the 8 supported media workflows.
@@ -41,22 +50,22 @@ and reproducible audio/video artifacts.
 - `production/OVERVIEW.md` — optional generative workflows and mandatory cloud/rights gates.
 - `NOTICE` — canonical open-source attribution and copyright notice for Lukas Geiger, ellmos-ai, and open-bricks.
 - `THIRD_PARTY_LICENSES.md` — Level 1 SBOM, inventory of third-party open-source components, and RunAsInvoker non-elevation certification.
-- `THIRD_PARTY_LICENSES.txt` — Plain-text Level 1 SBOM companion file and complete permissive license texts.
+- `THIRD_PARTY_LICENSES.txt` — Plain-text Level 1 SBOM companion listing recorded third-party license texts.
 - `MARKETING-LOG.txt` — discoverability, 4 target personas, 10-dimension comparative matrix, and architecture audit log.
 - `tests/test_core.py` — dependency-free regression contract for cache, remote, frames, and diarization.
 - `tests/test_metadata.py` — automated contract tests for manifests, CI parity, security SLAs, 18-point navigation, and discoverability.
 - `SECURITY.md` — bilingual vulnerability reporting and sensitive-media security scope (48h initial response SLA).
 - `brand/design-tokens.css` — design tokens for generated motion graphics.
 
-## Governance & Runtime Invariants (10 Guarantees)
+## Governance & Runtime Invariants (10 documented invariants)
 
-- `INV-LOCAL-01`: 100% Local-First & Zero Network Egress
+- `INV-LOCAL-01`: Local-first by default; optional SSH STT transfers the input media file copy and any configured HF token; model loading is not forced offline.
 - `INV-RUNAS-02`: Unprivileged Execution / RunAsInvoker Non-Elevation
-- `INV-PREV-03`: Preview-Safe & Non-Destructive Source Media Isolation
+- `INV-PREV-03`: Non-destructive input handling; `prepare` preserves the original and copies it into `projects/<name>/`. Temporary audio may use the OS temp directory; remote mode also uses the configured SSH work directory.
 - `INV-DETERM-04`: Deterministic Waveform Synthesis & Scribe JSON Schemas
-- `INV-BOUNDARY-05`: Anti-Traversal & Project Directory Containment
+- `INV-BOUNDARY-05`: Lexical project-name checks; not a filesystem sandbox.
 - `INV-SUBPROC-06`: Clean Subprocess Lifecycle & Windows Console Window Suppression
-- `INV-PARITY-07`: Cross-Platform Operating System Parity (Windows, Linux, macOS)
+- `INV-PARITY-07`: Cross-platform support with operating-system-specific path configuration (Windows, Linux, macOS).
 - `INV-SYNC-08`: Cloud-Sync & Multi-Agent Lock Concurrency Discipline
 - `INV-DOCS-09`: Transparent Multimodal Accessibility & Bilingual Documentation
 - `INV-SLA-10`: 48h Security Response & 5-Day Triage SLA

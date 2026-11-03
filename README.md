@@ -6,7 +6,7 @@
   <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/tests-95%20passed%20%7C%20100%25%20green-brightgreen" alt="Tests passed"></a>
   <a href="https://python.org"><img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue" alt="Python 3.10+"></a>
   <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/platforms-Windows%20%7C%20Linux%20%7C%20macOS-blue" alt="Platforms"></a>
-  <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/privacy-100%25%20Local--First%20%7C%20Zero--Egress-success" alt="Privacy: Local-First"></a>
+  <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/privacy-Local--First--by--default-success" alt="Privacy: local-first by default; optional SSH STT"></a>
   <a href="https://github.com/ellmos-ai/ai-media-editor"><img src="https://img.shields.io/badge/security-RunAsInvoker%20%7C%20Non--Elevation-success" alt="Security: Non-Elevation"></a>
   <a href="https://github.com/ellmos-ai/ai-media-editor/blob/main/SECURITY.md"><img src="https://img.shields.io/badge/security%20SLA-48h%20Response%20%7C%205d%20Triage-blue" alt="Security SLA"></a>
   <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/badge/code%20style-ruff-black" alt="Code Style: Ruff"></a>
@@ -19,7 +19,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License: MIT"></a>
 </p>
 
-<p align="center"><strong>English</strong> · <a href="README_de.md">Deutsch</a></p>
+<p align="center"><strong>English</strong> · <a href="README_de.md">Deutsch</a> · <a href="README_es.md">Español</a> · <a href="README_fr.md">Français</a> · <a href="README_zh.md">简体中文</a> · <a href="README_ja.md">日本語</a> · <a href="README_ru.md">Русский</a> · <a href="README_hi.md">हिन्दी</a> · <a href="README_ar.md">العربية</a> · <a href="README_bn.md">বাংলা</a> · <a href="README_pt.md">Português</a></p>
 
 # ai-media-editor — local AI media editor (Video · Audio · Podcast)
 
@@ -39,14 +39,14 @@
 | 07 | [Getting Started & Setup](#getting-started--setup) | Prerequisites, `<TOOLS_ROOT>` configuration, and environment initialization |
 | 08 | [CLI Reference & Commands](#cli-reference--commands) | Step-by-step CLI commands for `doctor`, `modes`, `prepare`, and `frames` |
 | 09 | [Motion Graphics & Music Synthesis](#motion-graphics--music-synthesis) | Hyperframes styling and offline NumPy waveform storyline scoring |
-| 10 | [Governance & Runtime Invariants](#governance--runtime-invariants) | 10 non-negotiable architectural guarantees (`INV-LOCAL-01` to `INV-SLA-10`) |
-| 11 | [Security & Privacy SLA](#security--privacy-sla) | 100% local-first zero-egress posture, 48h initial response, and 5-day triage SLA |
+| 10 | [Governance & Runtime Invariants](#governance--runtime-invariants) | 10 documented runtime invariants scoped to the selected operating mode (`INV-LOCAL-01` to `INV-SLA-10`) |
+| 11 | [Security & Privacy SLA](#security--privacy-sla) | Local-first default with optional SSH STT, 48h initial response, and 5-day triage SLA |
 | 12 | [Sibling Projects & Ecosystem Matrix](#sibling-projects--ecosystem-matrix) | 16 federated tools across `ellmos-ai`, `dev-bricks`, `file-bricks`, and `open-bricks` |
 | 13 | [Quality Gates & Testing](#quality-gates--testing) | Automated test suite, Ruff linting, compileall, and console window suppression |
 | 14 | [Machine-Readable Context (`llms.txt`)](#machine-readable-context-llmstxt) | LLM crawler manifest, search indexing keywords, and agent ingestion rules |
 | 15 | [Repository Structure](#repository-structure) | Detailed folder taxonomy across code, tools, stt, tests, and projects |
 | 16 | [Changelog & Releases](#changelog--releases) | Release history, version milestones, and Pfad B discoverability updates |
-| 17 | [Level 1 SBOM & Third-Party Licenses](#third-party-licenses--transparency) | Permissive open-source inventory, RunAsInvoker guarantee, and Level 1 SBOM |
+| 17 | [Level 1 SBOM & Third-Party Licenses](#third-party-licenses--transparency) | Third-party license inventory, RunAsInvoker guarantee, and Level 1 SBOM |
 | 18 | [Statutory Notice & Liability Limitation](#statutory-notice--liability-limitation) | MIT license, § 521 BGB Gefälligkeitsrecht disclaimer, and liability limits |
 | 19 | [Sister Project: `clip-storyboard-director`](#19-sister-project-clip-storyboard-director) | The Director half of the Director/Cutter duo, bundled as a pinned optional dependency |
 
@@ -136,7 +136,7 @@ sequenceDiagram
     Dev->>Visual: cut_view.py (find speech pauses & stumbles)
     Visual-->>Dev: Return pause cut candidate intervals
     Dev->>Render: Formulate cut list & motion graphics
-    Render->>FS: Render final clean MP4 / WAV with zero network egress
+    Render->>FS: Render final clean MP4 / WAV
     FS-->>Dev: Deliver production media artifact
 ```
 
@@ -156,7 +156,7 @@ sequenceDiagram
 ### [PERSONA-02] Local-First Podcasters & Content Creators
 - **Profile:** Independent podcasters, interviewers, and creators managing weekly audio/video releases.
 - **Pain Point:** Exorbitant monthly subscription costs for cloud editing SaaS (Descript, Riverside) and slow upload times for multi-gigabyte recordings.
-- **Solution:** 100% offline faster-whisper transcription, speaker-separated audio tracks, automated pause trimming, and procedural animated cover video generation.
+- **Solution:** Local-mode faster-whisper transcription, speaker-separated audio tracks, automated pause trimming, and procedural animated cover video generation. The code does not force model loading to remain offline.
 - **High-Intent Query:** `"local first podcast editing AI agent workflow"`
 
 ### [PERSONA-03] AI Video & Motion Graphics Engineers
@@ -167,8 +167,8 @@ sequenceDiagram
 
 ### [PERSONA-04] Enterprise Media Security & Compliance Officers
 - **Profile:** Compliance and information security officers in regulated industries (healthcare, legal, banking).
-- **Pain Point:** Legal prohibitions (GDPR Art. 28, HIPAA, confidential M&A data) against uploading proprietary company recordings to cloud-hosted transcription providers.
-- **Solution:** Verifiable zero-network-egress guarantee (`INV-LOCAL-01`), unprivileged `RunAsInvoker` non-elevation (`INV-RUNAS-02`), Level 1 SBOM, and a formal 48-hour vulnerability response SLA.
+- **Pain Point:** Organizational policies or contractual requirements may prohibit sending proprietary recordings to hosted transcription providers.
+- **Solution:** Local STT is the default; when `compute.prefer=mac` is selected, the full input media file copy is sent to the configured SSH host. The selected mode should match the organization’s data-handling requirements. Unprivileged `RunAsInvoker` execution (`INV-RUNAS-02`), Level 1 SBOM, and a formal 48-hour vulnerability response SLA are also documented.
 - **High-Intent Query:** `"zero egress video transcription and cutting"`
 
 ---
@@ -176,17 +176,17 @@ sequenceDiagram
 <a id="sec-05"></a><a id="comparative-matrix-vs-alternatives"></a><a id="comparative-matrix--alternatives"></a><a id="vergleichsmatrix-gegenueber-alternativen"></a><a id="5-comparative-matrix-vs-alternatives"></a>
 ## 5. Comparative Matrix vs. Alternatives
 
-The following 10-dimension matrix compares `ai-media-editor` against legacy and competing approaches mapped to our non-negotiable runtime invariants:
+The following 10-dimension matrix compares `ai-media-editor` against legacy and competing approaches using documented runtime invariants scoped to the selected operating mode:
 
 | Dimension & Invariant | ai-media-editor | Cloud SaaS (Descript / ElevenLabs) | Commercial NLEs (Premiere / DaVinci) | Raw CLI / Shell (FFmpeg) | Hosted APIs (Whisper API / Google STT) |
 |---|:---:|:---:|:---:|:---:|:---:|
-| **1. Local-First & Zero Egress (`INV-LOCAL-01`)** | :white_check_mark: 100% Offline Local | :x: Mandatory Cloud Upload | :warning: Local (Proprietary Telemetry) | :white_check_mark: 100% Offline Local | :x: External Cloud Processing |
+| **1. Local-First & Mode-Specific Data Flow (`INV-LOCAL-01`)** | :white_check_mark: Local-first default; optional SSH STT | :x: Mandatory Cloud Upload | :warning: Local (Proprietary Telemetry) | :white_check_mark: 100% Offline Local | :x: External Cloud Processing |
 | **2. Unprivileged User-Mode (`INV-RUNAS-02`)** | :white_check_mark: `RunAsInvoker` Standard | :warning: Browser / Helper App | :warning: Admin Installer / Daemon | :white_check_mark: User Privileges | :white_check_mark: API Client Level |
-| **3. Non-Destructive Source Safety (`INV-PREV-03`)** | :white_check_mark: Read-Only Media Input | :warning: Cloud Media Duplication | :white_check_mark: Non-Destructive Projects | :warning: Easy Overwrite Accident | :white_check_mark: Input Media Preserved |
+| **3. Non-Destructive Source Safety (`INV-PREV-03`)** | :white_check_mark: `prepare` preserves the original input | :warning: Cloud Media Duplication | :white_check_mark: Non-Destructive Projects | :warning: Easy Overwrite Accident | :white_check_mark: Input Media Preserved |
 | **4. Deterministic Synthesis (`INV-DETERM-04`)** | :white_check_mark: Scribe JSON & Seeded Score | :x: Stochastic Cloud Drift | :warning: Complex Project State | :warning: Unstructured Outputs | :x: Non-Deterministic Latency |
-| **5. Anti-Traversal Containment (`INV-BOUNDARY-05`)** | :white_check_mark: Strict Project Jail | :warning: Hosted Cloud Bucket | :warning: Arbitrary Filesystem | :x: No Path Validation | :white_check_mark: Cloud Tenant Boundary |
+| **5. Project-Name Validation (`INV-BOUNDARY-05`)** | :white_check_mark: Lexical name checks; not a filesystem jail | :warning: Hosted Cloud Bucket | :warning: Arbitrary Filesystem | :x: No Path Validation | :white_check_mark: Cloud Tenant Boundary |
 | **6. Window Flashing Suppression (`INV-SUBPROC-06`)** | :white_check_mark: `windowsHide` Preloaded | :heavy_minus_sign: N/A (Web UI) | :heavy_minus_sign: N/A (Desktop GUI) | :x: Disruptive Console Bursts | :heavy_minus_sign: N/A (HTTP Requests) |
-| **7. Cross-Platform Parity (`INV-PARITY-07`)** | :white_check_mark: Windows, Linux, macOS | :warning: Browser-Dependent | :x: OS-Specific Features | :white_check_mark: POSIX / Windows | :white_check_mark: Cross-Platform HTTP |
+| **7. Cross-Platform Support (`INV-PARITY-07`)** | :white_check_mark: Windows, Linux, macOS with OS-specific paths | :warning: Browser-Dependent | :x: OS-Specific Features | :white_check_mark: POSIX / Windows | :white_check_mark: Cross-Platform HTTP |
 | **8. Multi-Agent Concurrency (`INV-SYNC-08`)** | :white_check_mark: Lock Discipline & Clean Git | :x: Single-User SaaS Session | :x: Single-Editor Project Locks | :warning: Concurrency Conflicts | :warning: Rate Limiting Bottlenecks |
 | **9. Agent & LLM Readability (`INV-DOCS-09`)** | :white_check_mark: Scribe JSON, Contact Sheets, `llms.txt` | :x: Closed Binary / HTML DOM | :x: Complex Binary Project Files | :warning: Raw Text stdout/stderr | :warning: Text Transcripts Only |
 | **10. Coordinated Security SLA (`INV-SLA-10`)** | :white_check_mark: 48h Response / 5d Triage | :warning: Enterprise Support Queue | :warning: Quarterly Commercial Updates | :heavy_minus_sign: Unmaintained Scripts | :warning: Standard Cloud SLA |
@@ -216,7 +216,7 @@ For complete step-by-step guides for each mode, refer to [`docs/USECASES.md`](do
 <a id="sec-07"></a><a id="getting-started--setup"></a><a id="erste-schritte--einrichtung"></a><a id="7-getting-started--setup"></a>
 ## 7. Getting Started & Setup
 
-1. **Create config:** Copy `config/settings.example.json` → `config/settings.json` and configure local compute options (`local`/`mac`, engines, `paths.*`).
+1. **Create config:** Copy `config/settings.example.json` → `config/settings.json` and configure local compute options (`local`/`mac`, engines, `paths.*`). Set `paths.venv_python` to this operating system’s Python executable; the configured value is used directly. The example’s `.venv/Scripts/python.exe` path is Windows-specific; POSIX environments typically use `.venv/bin/python`.
 2. **Tools Directory (`<TOOLS_ROOT>`):** `paths.tools_root` in your `settings.json` specifies the root for heavy tools (`video-use`, ffmpeg, Node ≥ 22). Do **not** locate this inside a cloud-synchronized folder.
 3. **External Prerequisites:**
    - **Local:** `ffmpeg`, `Node.js >= 22` (for Hyperframes), Python 3.10–3.13 venv.
@@ -294,17 +294,17 @@ Ported from the Halloween Window Projection production pipeline (`T-20261025-256
 <a id="sec-10"></a><a id="governance--runtime-invariants"></a><a id="governance---laufzeit-invarianten"></a><a id="10-governance--runtime-invariants"></a>
 ## 10. Governance & Runtime Invariants
 
-The architecture enforces 10 strict runtime guarantees across all operating modes:
+The architecture documents 10 runtime invariants; behavior depends on the selected operating mode:
 
 | Invariant ID | Operational Domain | Guarantee & Enforcement Rule | Verification Mechanism |
 |---|---|---|---|
-| `INV-LOCAL-01` | Privacy & Data Egress | **100% Local-First Execution**: Raw media, transcripts, and embeddings never leave localhost. Zero cloud calls by default. | `tests/test_core.py`, no cloud sockets in core pipeline |
+| `INV-LOCAL-01` | Privacy & Data Egress | **Local-First by Default**: With `compute.prefer=local`, STT runs on this machine; model loading is not forced offline. With `compute.prefer=mac`, the full input media file copy is sent to the configured SSH host, and a configured HF token is also sent. Remote cleanup is attempted in a `finally` block, but success is not verified. | `tests/test_core.py`, `editor.py`, `ai_media_editor/stt/mac_remote.py` |
 | `INV-RUNAS-02` | Privilege & Sandbox | **Unprivileged User-Mode (`RunAsInvoker`)**: Zero administrative or elevated privileges required. | Standard user execution across all scripts |
-| `INV-PREV-03` | Storage & Immutability | **Preview-Safe & Non-Destructive Source Media**: Input files are strictly read-only; all artifacts write to `projects/<name>/`. | Isolation checks in `tests/test_core.py` |
+| `INV-PREV-03` | Storage & Immutability | **Non-Destructive Input Handling**: `prepare` leaves the original input unchanged and copies it to `projects/<name>/`. Temporary audio may use the OS temp directory; remote mode also uses the configured SSH work directory. | Isolation checks in `tests/test_core.py` |
 | `INV-DETERM-04` | Reproducibility | **Deterministic Synthesis & Schema Stability**: Fixed seed for procedural audio and rigid adherence to Scribe JSON schema. | `tests/test_compose_music.py`, `ai_media_editor/stt/scribe_schema.py` |
-| `INV-BOUNDARY-05` | File Traversal Safety | **Anti-Traversal & Project Containment**: Filenames and project stems cannot escape the project boundaries. | `test_project_names_cannot_escape_projects` |
+| `INV-BOUNDARY-05` | Project-Name Validation | **Lexical Project-Name Checks**: Project names are checked as single path components; this is not a filesystem sandbox. | `test_project_names_cannot_escape_projects` |
 | `INV-SUBPROC-06` | Process Sanitation | **Clean Lifecycle & Window Suppression**: Preloaded wrappers suppress console window flashing on Windows. | `ai_media_editor/tools/hf.cmd`, `ai_media_editor/tools/hide-windows.cjs` |
-| `INV-PARITY-07` | Multi-OS Support | **Cross-Platform OS Parity**: Identical execution and path handling across Windows, Linux, and macOS. | Multi-OS GitHub Actions CI matrix |
+| `INV-PARITY-07` | Multi-OS Support | **Cross-Platform Support**: Paths and executables are configured for the operating system in use; see the CI matrix for tested operating systems. | Multi-OS GitHub Actions CI matrix |
 | `INV-SYNC-08` | Concurrency & Locks | **Cloud-Sync & Multi-Agent Lock Discipline**: Heavy tools and projects excluded from cloud sync conflicts. | `.gitignore` conflict & lock filter rules |
 | `INV-DOCS-09` | Accessibility & Discovery | **Multimodal LLM Readiness & Bilingual Parity**: Frame contact sheets for vision LLMs; full EN/DE documentation parity. | `llms.txt`, `README.md`, `README_de.md` contract tests |
 | `INV-SLA-10` | Security & Incident Response | **48h Security Response & 5-Day Triage SLA**: Formal vulnerability reporting via GitHub Advisories and maintainer emails. | `SECURITY.md`, `test_security_policy_bilingual_parity` |
@@ -314,8 +314,8 @@ The architecture enforces 10 strict runtime guarantees across all operating mode
 <a id="sec-11"></a><a id="security--privacy-sla"></a><a id="sicherheit--datenschutz-sla"></a><a id="11-security--privacy-sla"></a>
 ## 11. Security & Privacy SLA
 
-- **Local-First Privacy**: Transcription, frame extraction, and cut calculation run entirely offline on local hardware.
-- **Sensitive Media Containment**: Source recordings and project output reside strictly within `projects/` (gitignored).
+- **Local-First Processing**: Local STT is the default, but model loading is not forced offline. With `compute.prefer=mac`, the full input media file copy is sent to the configured SSH host; a configured HF token is also sent.
+- **Sensitive Media Handling**: `prepare` leaves the original recording at its input path and copies it under `projects/<name>/`. Temporary audio may use the OS temp directory. Remote mode stores a working copy under the configured SSH `workdir`; cleanup is attempted in a `finally` block, but success is not verified.
 - **Vulnerability Response Commitment**:
   - **Initial Response SLA**: Within 48 hours for confirmation of submitted vulnerability reports.
   - **Technical Triage SLA**: Within 5 business days with severity assessment.
@@ -453,10 +453,10 @@ See [`CHANGELOG.md`](CHANGELOG.md) for full version history.
 <a id="sec-17"></a><a id="level-1-sbom--third-party-licenses"></a><a id="third-party-licenses--transparency"></a><a id="drittanbieter-lizenzen--transparenz"></a><a id="17-level-1-sbom--third-party-licenses"></a>
 ## 17. Level 1 SBOM & Third-Party Licenses
 
-`ai-media-editor` is engineered with an uncompromising commitment to open-source transparency, non-elevation, and offline reproducibility:
+`ai-media-editor` documents its component licenses and focuses on unprivileged execution:
 
-- **100% Permissive Open-Source**: All integrated libraries, engines, and runtimes are licensed under permissive open-source licenses (MIT, Apache-2.0, BSD, PSFL) or dynamically linked media utilities (FFmpeg LGPL). There are zero proprietary runtime locks or closed telemetry spyware.
-- **Zero Runtime Cloud Dependencies (`INV-LOCAL-01`)**: All transcription, frame extraction, pause detection, and procedural music synthesis execute 100% offline on your hardware.
+- **Third-Party License Inventory**: See [`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md) for the recorded licenses of listed components; check the applicable license before use.
+- **Local-First STT (`INV-LOCAL-01`)**: Local transcription is the default. Model loading is not forced offline; selecting `compute.prefer=mac` sends the full input media file copy to the configured SSH host, and a configured HF token is also sent.
 - **Unprivileged User Execution (`INV-RUNAS-02`)**: All components execute strictly under standard unprivileged user accounts (`RunAsInvoker`) with zero administrative or root elevation required.
 - **Level 1 SBOM & Governance Mapping**: Upstream sources, maintainers, license texts, and governing invariants are cataloged in [`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md).
 - **Core Project License**: [MIT License](LICENSE) © 2026 ellmos-ai / open-bricks.
