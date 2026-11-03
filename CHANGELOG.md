@@ -3,6 +3,13 @@
 ## [Unreleased]
 
 ### Added
+- Complete Arabic README with reciprocal navigation across nine documentation languages and llms.txt discovery (2026-11-03).
+- Complete Hindi README with reciprocal navigation across eight documentation languages and llms.txt discovery (2026-11-03).
+- Complete Russian README with reciprocal navigation across seven documentation languages and llms.txt discovery (2026-11-03).
+- Complete Japanese README with reciprocal navigation across six documentation languages and llms.txt discovery (2026-11-03).
+- Complete Simplified Chinese README with reciprocal navigation across five documentation languages and llms.txt discovery (2026-11-03).
+- Complete French README with reciprocal EN/DE/ES/FR navigation and llms.txt discovery, translated from the corrected local/SSH processing documentation (2026-11-03).
+- Spanish README with reciprocal language navigation and llms.txt discovery, synchronized with source 54c89a0 including the Halloween loop, QA, synthesis, and HyperFrames helper documentation (2026-11-02).
 - Ported reusable Halloween Window Projection production tools (`T-20261025-256694132`) into `ai_media_editor/tools/`: `make_loop.py` (multi-clip black-pause loop assembler), `qa_clips.py` (ffprobe/luma clip QA and `xstack` contact sheet generator), `synth.py` + `atmo.py` (48 kHz NumPy/SciPy instrument and loopable atmospheric soundscape synthesis with hardened EBU R128 loudness/true-peak measurement guards), `fx.js` (deterministic HyperFrames helper library `window.HFX` including `HFX.ft` `fromTo` with `immediateRender: false`), example config `docs/examples/loop-halloween.json`, and unit test suite `tests/test_halloween_tools.py`.
 - Provided CI lifecycle workflows `.github/workflows/auto-assign.yml` (assigns author on issue/PR creation, `actions/github-script@v7`, `timeout-minutes: 5`, `cancel-in-progress: true`, least-privilege `issues: write`, `pull-requests: write`) and `.github/workflows/label-sync.yml` (`EndBug/label-sync@v2`, `timeout-minutes: 5`, `cancel-in-progress: true`, least-privilege `issues: write`).
 - Created canonical `.github/labels.yml` with 11 standard labels (`bug`, `documentation`, `duplicate`, `enhancement`, `good first issue`, `help wanted`, `invalid`, `question`, `wontfix`, `security`, `dependencies`) per GOVERNANCE.md.
@@ -36,6 +43,7 @@
 - Hardened `[tool.pytest.ini_options]` in `pyproject.toml` with `addopts = "-ra -v --basetemp=.pytest_temp"` and added `.pytest_temp` to `norecursedirs`.
 - Hardened `.github/workflows/stale.yml` with concurrency control (`cancel-in-progress: true`) and job timeout (`timeout-minutes: 10`).
 - Hardened `.gitignore` with multi-host host tokens (`*-WORKSTATION-LG*`, `*-LAPTOP*`, `*-Mac Studio*`, `*-MacBook*`), canonical lock patterns (`LOCK.user.*`, `LOCK.until.*`, `LOCK.condition.*`, `.automation-lock`), and test cache patterns (`.hypothesis/`, `.nyc_output/`).
+- Clarified local versus SSH STT data flow, input-media copies and temporary-file locations, lexical path-validation limits, OS-specific venv paths, and third-party license wording across the READMEs, `llms.txt`, and `SECURITY.md`.
 
 ## [0.2.3] - 2026-09-20
 
