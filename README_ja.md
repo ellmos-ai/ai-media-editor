@@ -19,7 +19,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="ライセンス：MIT"></a>
 </p>
 
-<p align="center"><a href="README.md">English</a> · <a href="README_de.md">Deutsch</a> · <a href="README_es.md">Español</a> · <a href="README_fr.md">Français</a> · <a href="README_zh.md">简体中文</a> · <strong>日本語</strong></p>
+<p align="center"><a href="README.md">English</a> · <a href="README_de.md">Deutsch</a> · <a href="README_es.md">Español</a> · <a href="README_fr.md">Français</a> · <a href="README_zh.md">简体中文</a> · <strong>日本語</strong> · <a href="README_ru.md">Русский</a></p>
 
 # ai-media-editor — ローカル AI メディア編集ツール（動画・音声・ポッドキャスト）
 
