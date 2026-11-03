@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- Complete Hindi README with reciprocal navigation across eight documentation languages and llms.txt discovery (2026-11-03).
 - Complete Russian README with reciprocal navigation across seven documentation languages and llms.txt discovery (2026-11-03).
 - Complete Japanese README with reciprocal navigation across six documentation languages and llms.txt discovery (2026-11-03).
 - Complete Simplified Chinese README with reciprocal navigation across five documentation languages and llms.txt discovery (2026-11-03).
