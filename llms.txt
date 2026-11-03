@@ -34,6 +34,7 @@ and reproducible audio/video artifacts.
 - [Japanese overview](README_ja.md) — complete Japanese README with matching CLI examples, invariant IDs and explicit anchors.
 - [Russian overview](README_ru.md) — complete Russian README with matching CLI examples, invariant IDs and explicit anchors.
 - [Hindi overview](README_hi.md) — complete Hindi README with matching CLI examples, invariant IDs and explicit anchors.
+- [Arabic overview](README_ar.md) — complete Arabic README with matching CLI examples, invariant IDs and explicit anchors.
 - `CONTRIBUTING.md` — bilingual contribution guidelines, pre-commit quality gates, version freeze policy, and Plan D local dev setup.
 - `CLAUDE.md` — German agent-facing workflow guide and hard editing rules.
 - `docs/USECASES.md` — step-by-step instructions for the 8 supported media workflows.

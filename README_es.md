@@ -19,7 +19,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="Licencia: MIT"></a>
 </p>
 
-<p align="center"><a href="README.md">English</a> · <a href="README_de.md">Deutsch</a> · <strong>Español</strong> · <a href="README_fr.md">Français</a> · <a href="README_zh.md">简体中文</a> · <a href="README_ja.md">日本語</a> · <a href="README_ru.md">Русский</a> · <a href="README_hi.md">हिन्दी</a></p>
+<p align="center"><a href="README.md">English</a> · <a href="README_de.md">Deutsch</a> · <strong>Español</strong> · <a href="README_fr.md">Français</a> · <a href="README_zh.md">简体中文</a> · <a href="README_ja.md">日本語</a> · <a href="README_ru.md">Русский</a> · <a href="README_hi.md">हिन्दी</a> · <a href="README_ar.md">العربية</a></p>
 
 # ai-media-editor — editor local de medios con IA (vídeo · audio · pódcast)
 
