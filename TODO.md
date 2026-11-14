@@ -44,6 +44,12 @@ corresponding Taskplan task.
   Erledigt 2026-11-14: macOS-Lock per `--require-hashes` installiert und alle Paketmetadaten gelesen, die zwei
   abweichenden Windows-Pins aus ihren Wheels; Inventur und Copyleft-Grenzen (MPL-2.0, LGPL, FFmpeg in PyAV)
   in `THIRD_PARTY_LICENSES.md`/`.txt`. Nicht einzeln geprüft: gebündelte Codec-Bibliotheken der PyAV-Wheels.
+- [ ] **Lizenz-Audit: Restpunkte aus der Zweitprüfung von PR #11** (`effort=small`, `scope=local`, `priority=low`):
+  1. Gebündelte Codec-Bibliotheken der PyAV-Wheels (dav1d, opus, mp3lame, opencore-amr, SVT-AV1 …) einzeln
+     prüfen und das Windows-Wheel von PyAV (FFmpeg-Build-Optionen) nachmessen.
+  2. In der Lizenztext-Übersicht von `THIRD_PARTY_LICENSES.md`/`.txt` Kurzfassungen zu MPL-2.0 und LGPL-3.0 ergänzen.
+  3. `test_third_party_licenses_audit_20261114` härten: Versionen mitprüfen und fehlschlagen, wenn keine
+     Lock-Datei gefunden wird (sonst bliebe er still grün).
 
 ## Offene Befunde aus den Release-Gates (2026-11-14)
 
