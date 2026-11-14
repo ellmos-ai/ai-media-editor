@@ -19,6 +19,8 @@ docs/OPENMONTAGE-KOMPONENTEN.pdf
 *.png
 *.jpg
 *.jpeg
+# synthetic, rights-free release-gate fixture (tests/e2e/fixture/README.md)
+!tests/e2e/fixture/fixture.mp4
 
 # --- Python / build ---
 __pycache__/
