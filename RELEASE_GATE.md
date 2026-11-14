@@ -2,8 +2,8 @@
 
 **Reviewed:** 2026-11-14
 **Version:** 0.3.0 (released 2026-11-14, tag `v0.3.0`; single version across all sources, see tasks 1245/1246)
-**Decision:** tasks 1240–1245 green on the supported matrix; the stable tag is prepared but not
-created — it needs maintainer approval (task 1246).
+**Decision:** tasks 1240–1245 green on the supported matrix; release `v0.3.0` approved by the
+maintainer on 2026-11-14 (task 1246) and tagged on `main` after this follow-up.
 
 ## Supported environment matrix (task 1240)
 

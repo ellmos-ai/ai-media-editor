@@ -37,6 +37,7 @@ corresponding Taskplan task.
   zuletzt gebaute Wheel stehen auf 0.2.3; 0.2.3 bleibt die eine Version (Version-Freeze), nur
   `RELEASE_GATE.md` (0.2.0) war veraltet.
 - [x] **Task 1246** — Release `v0.3.0` am 2026-11-14 (Freigabe Lukas): Version, Badges und Tag
+- [ ] **Lizenz-Audit für 0.3.0 nachholen:** `THIRD_PARTY_LICENSES.md`/`.txt` beschreiben den Audit-Stand 0.2.3; die neuen Runtime-Locks (`requirements/runtime-*.txt`) sind dort noch nicht erfasst (Hinweis der Zweitprüfung PR #8)
   (`effort=special`, `scope=local`, `priority=high`; abhängig von 1240–1245 und expliziter Freigabe).
   Vorbereitet 2026-11-14 (Befehle in `RELEASE_GATE.md`); offen: Freigabe durch Lukas und Wahl der
   Release-Version (Vorschlag 0.3.0, Alternative 1.0.0).
@@ -97,7 +98,7 @@ Optional cloud providers and WhisperX are still not claimed.
 | Remote command handling | Green | Quoting, isolation, validation, cleanup regression-tested; real SSH gate green |
 | Dependency reproducibility | Green | Hash locks for Windows x64 and macOS arm64 (Python 3.12) |
 | Real integration | Green | ffmpeg, faster-whisper, video-use render, SSH, Ocean 3b (2026-11-14) |
-| Overall | Release-ready | Stable tag prepared; maintainer approval pending (task 1246) |
+| Overall | Released | `v0.3.0` approved 2026-11-14 (task 1246); third-party license audit still on 0.2.3, see open item |
 
 ## Intentionally excluded
 
