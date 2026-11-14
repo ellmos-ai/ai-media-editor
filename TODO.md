@@ -37,10 +37,10 @@ corresponding Taskplan task.
   zuletzt gebaute Wheel stehen auf 0.2.3; 0.2.3 bleibt die eine Version (Version-Freeze), nur
   `RELEASE_GATE.md` (0.2.0) war veraltet.
 - [x] **Task 1246** — Release `v0.3.0` am 2026-11-14 (Freigabe Lukas): Version, Badges und Tag
-- [ ] **Lizenz-Audit für 0.3.0 nachholen:** `THIRD_PARTY_LICENSES.md`/`.txt` beschreiben den Audit-Stand 0.2.3; die neuen Runtime-Locks (`requirements/runtime-*.txt`) sind dort noch nicht erfasst (Hinweis der Zweitprüfung PR #8)
   (`effort=special`, `scope=local`, `priority=high`; abhängig von 1240–1245 und expliziter Freigabe).
-  Vorbereitet 2026-11-14 (Befehle in `RELEASE_GATE.md`); offen: Freigabe durch Lukas und Wahl der
-  Release-Version (Vorschlag 0.3.0, Alternative 1.0.0).
+  Erledigt 2026-11-14: Lukas hat 0.3.0 gewählt und freigegeben; Version in PR #8, Tag `v0.3.0` auf `main`.
+- [ ] **Lizenz-Audit für 0.3.0 nachholen:** `THIRD_PARTY_LICENSES.md`/`.txt` beschreiben den Audit-Stand 0.2.3;
+  die neuen Runtime-Locks (`requirements/runtime-*.txt`) sind dort noch nicht erfasst (Hinweis der Zweitprüfung PR #8).
 
 ## Offene Befunde aus den Release-Gates (2026-11-14)
 
