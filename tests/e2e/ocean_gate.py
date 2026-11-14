@@ -14,6 +14,7 @@ import argparse
 import hashlib
 import json
 import os
+import shutil
 import sys
 import tempfile
 import time
@@ -85,12 +86,14 @@ def main() -> int:
                 raise SystemExit("GATE_FAIL: no verified checkpoint")
             payload = json.loads(checkpoint.payload_json)
             exited = all(run.exited and run.child.poll() is not None for run in executor._executions.values())
+            released = arbiter.status()["torch"] is None
         finally:
             executor.close()
     takes = home / "projects" / "ocean" / "edit" / "takes_packed.md"
     checks = {"checkpoint_exit_0": payload["exit_code"] == 0, "owned_tree_exited": exited,
-              "takes_packed": takes.is_file() and takes.stat().st_size > 0, "torch_released": arbiter.status()["torch"] is None}
+              "takes_packed": takes.is_file() and takes.stat().st_size > 0, "torch_released": released}
     ok = all(checks.values())
+    shutil.rmtree(tmp, ignore_errors=True)
     print(json.dumps({"gate": "ocean-3b", "pass": ok, "seconds": round(time.monotonic() - started, 1),
                       "checks": checks, "payload": payload}))
     print("GATE_OK" if ok else "GATE_FAIL")

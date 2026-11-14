@@ -20,6 +20,7 @@ import argparse
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -29,6 +30,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[2]
 FIXTURE = REPO / "tests" / "e2e" / "fixture" / "fixture.mp4"
 KEYWORDS = ("synthetic", "second", "pause")
+BASE = Path(tempfile.mkdtemp(prefix="ame-gates-"))  # removed at the end of main()
 
 
 def run(cmd: list[str], env: dict | None = None, timeout: int = 1800) -> subprocess.CompletedProcess:
@@ -45,7 +47,7 @@ def probe(path: Path) -> dict:
 
 
 def make_home(args, prefer: str) -> tuple[Path, dict]:
-    home = Path(tempfile.mkdtemp(prefix="ame-gate-"))
+    home = Path(tempfile.mkdtemp(dir=BASE))
     (home / "config").mkdir()
     settings = {
         "compute": {"prefer": prefer, "fallback": "local"},
@@ -159,6 +161,7 @@ def main() -> int:
         ok &= passed
         print(json.dumps({"gate": name, "pass": passed, "seconds": round(time.monotonic() - started, 1),
                           **result}, ensure_ascii=False), flush=True)
+    shutil.rmtree(BASE, ignore_errors=True)
     print("GATE_OK" if ok else "GATE_FAIL")
     return 0 if ok else 1
 
