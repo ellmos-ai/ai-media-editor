@@ -3,6 +3,8 @@
 ## [Unreleased]
 
 ### Added
+- Release gates for tasks 1240-1243 (2026-11-14): supported environment matrix in `RELEASE_GATE.md` (Windows 11 x64 and macOS arm64 with Python 3.12 for STT and render; Linux only for CI unit tests), hash-locked runtimes `requirements/runtime-windows-x64-py312.txt` and `requirements/runtime-macos-arm64-py312.txt` compiled on each platform with `uv pip compile --generate-hashes`, the synthetic rights-free fixture `tests/e2e/fixture/` (ffmpeg `testsrc2` + eSpeak NG), the gate runner `tests/e2e/release_gates.py` (ffmpeg, faster-whisper, video-use render, SSH remote STT) and the workflow `.github/workflows/release-gates.yml` that installs each lock on a clean runner.
+- Open Ocean pipeline 3b executor: `ai_media_editor/ocean_worker.py` implements the `ocean-owned-process.v1` worker protocol of open-ocean's `OwnedProcessExecutor` (stdlib-only, below 8 KiB for `frozen-python` mode), declared as `adapters[]` seam in `ellmos-module.v2.json`; verified by `tests/e2e/ocean_gate.py` and `tests/test_ocean_worker.py`.
 - Complete Bengali and Portuguese READMEs with reciprocal navigation across all eleven documentation languages and llms.txt discovery (2026-11-03).
 - Complete Arabic README with reciprocal navigation across nine documentation languages and llms.txt discovery (2026-11-03).
 - Complete Hindi README with reciprocal navigation across eight documentation languages and llms.txt discovery (2026-11-03).
@@ -45,6 +47,14 @@
 - Hardened `.github/workflows/stale.yml` with concurrency control (`cancel-in-progress: true`) and job timeout (`timeout-minutes: 10`).
 - Hardened `.gitignore` with multi-host host tokens (`*-WORKSTATION-LG*`, `*-LAPTOP*`, `*-Mac Studio*`, `*-MacBook*`), canonical lock patterns (`LOCK.user.*`, `LOCK.until.*`, `LOCK.condition.*`, `.automation-lock`), and test cache patterns (`.hypothesis/`, `.nyc_output/`).
 - Clarified local versus SSH STT data flow, input-media copies and temporary-file locations, lexical path-validation limits, OS-specific venv paths, and third-party license wording across the READMEs, `llms.txt`, and `SECURITY.md`.
+
+### Fixed
+- SSH remote STT: files are transferred with `ssh ... cat` instead of `scp`. Since OpenSSH 9, `scp` defaults to SFTP and no longer shell-parses the quoted `"$HOME"/'...'` remote path, so every upload failed and `prepare` silently fell back to local transcription.
+- `editor.py frames --contact-sheet` produced nothing with ffmpeg builds lacking `drawtext` (Homebrew ffmpeg 8.1.1); sheets now fall back to unlabeled tiles and `frame_view.md` states the tile-to-second mapping.
+- Runtime locks cap `av<19`: av 19 removed the `metadata_errors` argument that faster-whisper 1.2.1 passes, which broke every transcription.
+
+### Version decision (task 1245)
+- Measured 2026-11-14: `VERSION`, `pyproject.toml`, `ellmos-module.v2.json`, README badges and the last built wheel all say 0.2.3; only `RELEASE_GATE.md` still named 0.2.0. 0.2.3 stays the single version under the version freeze (T-20260920-167562623); no version was skipped or bumped. The stable release version (proposal 0.3.0) and tag remain a maintainer decision (task 1246).
 
 ## [0.2.3] - 2026-09-20
 

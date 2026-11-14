@@ -1,0 +1,19 @@
+# Runtime stack for the supported STT/render hosts (see RELEASE_GATE.md, task 1240).
+# Compile one hash-locked file per supported platform ON that platform (task 1241):
+#   uv pip compile requirements/runtime.in --generate-hashes --python-version 3.12 \
+#     -o requirements/runtime-<platform>-py312.txt
+# Install:  python -m pip install --require-hashes -r requirements/runtime-<platform>-py312.txt
+#
+# STT (default single- and multi-speaker engine). WhisperX/pyannote is optional and NOT locked.
+faster-whisper==1.2.1
+# av 19 dropped av.open(metadata_errors=...), which faster-whisper 1.2.1 passes (TypeError, measured
+# 2026-11-14 on macOS arm64); av 18.1.0 and 17.1.0 accept it.
+av<19
+# browser-use/video-use helpers (pinned checkout cf12ac3, see RELEASE_GATE.md): its pyproject deps
+requests
+librosa
+matplotlib
+pillow
+numpy
+# ai_media_editor.tools synth/atmo
+scipy

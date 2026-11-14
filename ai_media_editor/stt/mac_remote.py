@@ -7,7 +7,7 @@ If SSH fails, the caller falls back to local transcription.
 Transport flow (over existing SSH key without password):
   1. Check reachability (ssh echo, short timeout)
   2. Mirror transcribe_local.py + scribe_schema.py to the Mac
-  3. Upload input media file via scp
+  3. Upload input media file over ssh (cat; no scp, see _transfer)
   4. Transcribe remotely (in remote venv)
   5. Fetch back transcripts/<stem>.json
   6. Clean up remote working directory
@@ -53,7 +53,7 @@ def _target(cfg: dict) -> str:
 
 
 def _remote_spec(cfg: dict, path: str) -> str:
-    """Build an scp remote spec whose path remains one shell argument."""
+    """Build a remote spec whose path remains one shell argument (see _transfer)."""
     return f"{_target(cfg)}:{shq(path)}"
 
 
@@ -68,15 +68,27 @@ def is_reachable(cfg: dict) -> bool:
         return False
 
 
-def _scp(cfg: dict, src: str, dst: str) -> bool:
+def _transfer(cfg: dict, src: str, dst: str) -> bool:
+    """Copy one file to or from a ``_remote_spec`` over plain ssh (``cat``).
+
+    Not scp: since OpenSSH 9 scp defaults to SFTP, where the remote path is not
+    shell-parsed, so the quoted ``"$HOME"/'...'`` spec failed every upload (measured
+    2026-11-14, Windows OpenSSH and Git-for-Windows scp). The shell route matches every
+    other remote command in this module.
+    """
+    prefix = _target(cfg) + ":"
+    upload = dst.startswith(prefix)
+    if not upload and not src.startswith(prefix):
+        return False
+    remote = (dst if upload else src)[len(prefix):]
     try:
-        r = subprocess.run(
-            ["scp", "-i", cfg["ssh_key"],
-             "-o", f"ConnectTimeout={cfg.get('connect_timeout', 12)}",
-             "-o", "BatchMode=yes", "-o", "StrictHostKeyChecking=accept-new",
-             src, dst],
-            capture_output=True, text=True, timeout=1800,
-        )
+        with open(src if upload else dst, "rb" if upload else "wb") as local:
+            r = subprocess.run(
+                _ssh_base(cfg) + [_target(cfg), f"cat > {remote}" if upload else f"cat {remote}"],
+                stdin=local if upload else subprocess.DEVNULL,
+                stdout=subprocess.DEVNULL if upload else local,
+                stderr=subprocess.PIPE, timeout=1800,
+            )
         return r.returncode == 0
     except Exception:
         return False
@@ -140,7 +152,7 @@ def run_remote(
                 print(f"  [mac] mkdir fehlgeschlagen: {err.strip()[:200]}")
             return None
         for fname in ("transcribe_local.py", "scribe_schema.py"):
-            if not _scp(cfg, str(HERE / fname), _remote_spec(cfg, f"{remote_root}/{fname}")):
+            if not _transfer(cfg, str(HERE / fname), _remote_spec(cfg, f"{remote_root}/{fname}")):
                 if verbose:
                     print(f"  [mac] Upload {fname} fehlgeschlagen -> lokaler Fallback")
                 return None
@@ -148,7 +160,7 @@ def run_remote(
         # 2. Upload the complete input media. Remote paths are shell-quoted.
         if verbose:
             print(f"  [mac] lade {media.name} hoch ...", flush=True)
-        if not _scp(cfg, str(media), _remote_spec(cfg, remote_media)):
+        if not _transfer(cfg, str(media), _remote_spec(cfg, remote_media)):
             if verbose:
                 print("  [mac] Medien-Upload fehlgeschlagen -> lokaler Fallback")
             return None
@@ -163,7 +175,7 @@ def run_remote(
             if hf_token:
                 token_path = Path(secret_dir) / "hf_token.txt"
                 token_path.write_text(hf_token, encoding="utf-8")
-                if not _scp(cfg, str(token_path), _remote_spec(cfg, remote_token)):
+                if not _transfer(cfg, str(token_path), _remote_spec(cfg, remote_token)):
                     if verbose:
                         print("  [mac] Token-Upload fehlgeschlagen -> lokaler Fallback")
                     return None
@@ -199,7 +211,7 @@ def run_remote(
         # 4. Download to temporary files and validate before replacing a good cache.
         remote_json = _remote_spec(cfg, f"{remote_edit}/transcripts/{stem}.json")
         remote_meta = _remote_spec(cfg, f"{remote_edit}/transcripts/{stem}.meta")
-        if not _scp(cfg, remote_json, str(json_tmp)) or not _scp(cfg, remote_meta, str(meta_tmp)):
+        if not _transfer(cfg, remote_json, str(json_tmp)) or not _transfer(cfg, remote_meta, str(meta_tmp)):
             if verbose:
                 print("  [mac] Download Ergebnis fehlgeschlagen -> lokaler Fallback")
             return None

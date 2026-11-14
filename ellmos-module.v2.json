@@ -47,7 +47,16 @@
     "path": ".",
     "repository": "https://github.com/ellmos-ai/ai-media-editor.git"
   },
-  "adapters": [],
+  "adapters": [
+    {
+      "type": "seam",
+      "id": "ocean-owned-process.v1",
+      "target": "open-ocean",
+      "status": "contract",
+      "role": "executor for pipeline 3b (video-render)",
+      "note": "ai_media_editor/ocean_worker.py implements the OwnedProcessExecutor worker protocol (open-ocean PR #70); verified with fixture admission by tests/e2e/ocean_gate.py on 2026-11-14. Production admission needs a reviewed workload profile."
+    }
+  ],
   "roles": [
     {
       "id": "media-creator",

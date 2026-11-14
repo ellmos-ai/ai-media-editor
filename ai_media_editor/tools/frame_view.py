@@ -189,8 +189,12 @@ def sample_frames(video: Path, frames_dir: Path, timestamps: list[float],
 # Contact-Sheet (gekachelte Übersicht, ein ffmpeg-Pass)
 # --------------------------------------------------------------------------- #
 def contact_sheet(video: Path, frames_dir: Path, every: float, cols: int, rows: int,
-                  width: int, font: str | None) -> list[str]:
-    """Generate tiled thumbnail contact sheet with burned-in pts timestamps."""
+                  width: int, font: str | None) -> tuple[list[str], bool]:
+    """Generate tiled thumbnail contact sheets; returns (sheet names, timestamps burned in).
+
+    Falls back to unlabeled tiles when ffmpeg lacks drawtext (e.g. Homebrew ffmpeg 8.x
+    without freetype); tile n then shows second n * every.
+    """
     frames_dir.mkdir(parents=True, exist_ok=True)
     for old in frames_dir.glob("sheet_*.jpg"):
         old.unlink()
@@ -198,19 +202,19 @@ def contact_sheet(video: Path, frames_dir: Path, every: float, cols: int, rows: 
     # %{pts:hms} brennt die echte Quellzeit je Frame ein. In Single-Quotes
     # wrappen UND den Doppelpunkt der pts-Funktion escapen (Windows-ffmpeg).
     dt = _drawtext("text='%{pts\\:hms}'", font, thumb_w)
-    vf = f"fps=1/{every},scale={thumb_w}:-2,{dt},tile={cols}x{rows}"
+    base, tile = f"fps=1/{every},scale={thumb_w}:-2", f"tile={cols}x{rows}"
     out_pat = str(frames_dir / "sheet_%03d.jpg")
-    cmd = ["ffmpeg", "-nostdin", "-y", "-i", str(video), "-vf", vf, "-q:v", "3", out_pat]
-    try:
-        r = subprocess.run(cmd, capture_output=True, text=True)
-    except OSError:
-        return []
-    if r.returncode != 0:
+    for vf, labeled in ((f"{base},{dt},{tile}", True), (f"{base},{tile}", False)):
+        cmd = ["ffmpeg", "-nostdin", "-y", "-i", str(video), "-vf", vf, "-q:v", "3", out_pat]
+        try:
+            r = subprocess.run(cmd, capture_output=True, text=True)
+        except OSError:
+            return [], True
+        if r.returncode == 0:
+            return sorted(p.name for p in frames_dir.glob("sheet_*.jpg")), labeled
         for partial in frames_dir.glob("sheet_*.jpg"):
             partial.unlink()
-        return []
-    sheets = sorted(p.name for p in frames_dir.glob("sheet_*.jpg"))
-    return sheets
+    return [], True
 
 
 # --------------------------------------------------------------------------- #
@@ -234,7 +238,12 @@ def write_markdown(edit_dir: Path, video: Path, duration: float, mode: str,
         "Bildinhalt beurteilen, dann für einen Bereich feiner nachsampeln: "
         "`--from x --to y --step z` (oder `--step-ms l`)."
     )
-    if burn_fail:
+    if burn_fail and mode == "sheet":
+        lines.append(
+            "> Hinweis: Contact-Sheet ohne eingebrannte Zeit (ffmpeg ohne drawtext) — "
+            f"Kachel n (zeilenweise über alle Blätter, ab 0) zeigt Sekunde n × {every:g}."
+        )
+    elif burn_fail:
         lines.append(
             f"> Hinweis: bei {burn_fail} Frame(s) konnte der Zeitstempel nicht eingebrannt "
             "werden (kein Font/drawtext) — Zeit steht im Dateinamen + dieser Tabelle."
@@ -321,8 +330,10 @@ def run(video: Path, edit_dir: Path, every: float, frm: float | None, to: float 
     elif sheet:
         # ÜBERSICHT als Contact-Sheet
         mode = "sheet"
-        sheets = contact_sheet(video, frames_dir, every, cols, rows, width, font_path)
-        print(f"  Contact-Sheet alle {every:g}s ({cols}x{rows}) → {len(sheets)} Blatt/Blätter")
+        sheets, labeled = contact_sheet(video, frames_dir, every, cols, rows, width, font_path)
+        burn_fail = 0 if labeled else len(sheets)
+        print(f"  Contact-Sheet alle {every:g}s ({cols}x{rows}) → {len(sheets)} Blatt/Blätter"
+              + ("" if labeled else "  (ohne Zeit-Einbrennung: drawtext fehlt)"))
     else:
         # ÜBERSICHT als Einzelframes
         mode = "overview"

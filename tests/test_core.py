@@ -309,8 +309,22 @@ class FrameViewTests(unittest.TestCase):
             stale = frames / "sheet_001.jpg"
             stale.write_bytes(b"stale")
             with mock.patch.object(frame_view.subprocess, "run", return_value=completed(1)):
-                self.assertEqual(frame_view.contact_sheet(Path("video.mp4"), frames, 10, 4, 4, 640, None), [])
+                self.assertEqual(frame_view.contact_sheet(Path("video.mp4"), frames, 10, 4, 4, 640, None), ([], True))
             self.assertFalse(stale.exists())
+
+    def test_sheet_falls_back_without_drawtext(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            frames = Path(tmp)
+
+            def ffmpeg(cmd, **_kwargs):
+                if "drawtext" in cmd[cmd.index("-vf") + 1]:
+                    return completed(8, stderr="No such filter: 'drawtext'")
+                (frames / "sheet_001.jpg").write_bytes(b"jpg")
+                return completed(0)
+
+            with mock.patch.object(frame_view.subprocess, "run", side_effect=ffmpeg):
+                self.assertEqual(frame_view.contact_sheet(Path("video.mp4"), frames, 10, 4, 4, 640, None),
+                                 (["sheet_001.jpg"], False))
 
     def test_run_requires_both_zoom_boundaries(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -452,6 +466,27 @@ class RemoteRoutingTests(unittest.TestCase):
         self.assertEqual(rc, -1)
         self.assertIn("ssh", err)
 
+    def test_transfer_routes_through_remote_shell_not_scp(self) -> None:
+        calls: list[tuple[list[str], dict]] = []
+
+        def fake_run(cmd, **kwargs):
+            calls.append((cmd, kwargs))
+            if kwargs["stdout"] is not subprocess.DEVNULL:
+                kwargs["stdout"].write(b"remote-bytes")
+            return completed(0)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            local = Path(tmp) / "clip.wav"
+            local.write_bytes(b"audio")
+            spec = mac_remote._remote_spec(self.CFG, "~/podcast work/job/clip.wav")
+            with mock.patch.object(mac_remote.subprocess, "run", side_effect=fake_run):
+                self.assertTrue(mac_remote._transfer(self.CFG, str(local), spec))
+                self.assertTrue(mac_remote._transfer(self.CFG, spec, str(Path(tmp) / "back.json")))
+            self.assertEqual((Path(tmp) / "back.json").read_bytes(), b"remote-bytes")
+        self.assertEqual(calls[0][0][0], "ssh")
+        self.assertEqual(calls[0][0][-1], "cat > \"$HOME\"/'podcast work/job/clip.wav'")
+        self.assertEqual(calls[1][0][-1], "cat \"$HOME\"/'podcast work/job/clip.wav'")
+
     def test_remote_failure_still_cleans_isolated_job(self) -> None:
         commands: list[str] = []
 
@@ -465,7 +500,7 @@ class RemoteRoutingTests(unittest.TestCase):
             with (
                 mock.patch.object(mac_remote, "is_reachable", return_value=True),
                 mock.patch.object(mac_remote, "_ssh_run", side_effect=fake_ssh),
-                mock.patch.object(mac_remote, "_scp", return_value=False),
+                mock.patch.object(mac_remote, "_transfer", return_value=False),
             ):
                 self.assertIsNone(mac_remote.run_remote(media, Path(tmp) / "edit", self.CFG, verbose=False))
         self.assertTrue(any(command.startswith("rm -rf") for command in commands))
@@ -493,7 +528,7 @@ class RemoteRoutingTests(unittest.TestCase):
             with (
                 mock.patch.object(mac_remote, "is_reachable", return_value=True),
                 mock.patch.object(mac_remote, "_ssh_run", side_effect=fake_ssh),
-                mock.patch.object(mac_remote, "_scp", side_effect=fake_scp),
+                mock.patch.object(mac_remote, "_transfer", side_effect=fake_scp),
                 mock.patch.object(mac_remote.transcribe_local, "cache_is_valid", return_value=True),
             ):
                 result = mac_remote.run_remote(

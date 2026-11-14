@@ -1,0 +1,56 @@
+name: Release gates
+
+# Tasks 1241/1243: install the hash-locked runtime per supported platform on a clean runner and
+# run the real ffmpeg / faster-whisper / video-use gates against the synthetic fixture.
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - "requirements/**"
+      - "tests/e2e/**"
+      - "ai_media_editor/stt/**"
+      - "ai_media_editor/tools/cut_view.py"
+      - "ai_media_editor/tools/frame_view.py"
+      - ".github/workflows/release-gates.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  locked-runtime-e2e:
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            lock: requirements/runtime-windows-x64-py312.txt
+          - os: macos-latest
+            lock: requirements/runtime-macos-arm64-py312.txt
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install locked runtime (hash-checked)
+        run: python -m pip install --require-hashes -r ${{ matrix.lock }}
+      - name: Provide ffmpeg
+        shell: bash
+        run: |
+          if ! command -v ffmpeg >/dev/null 2>&1; then
+            if [ "$RUNNER_OS" = "Windows" ]; then choco install ffmpeg -y --no-progress; else brew install ffmpeg; fi
+          fi
+          ffmpeg -version | head -1
+      - name: Check out video-use at the pinned commit
+        run: |
+          git clone https://github.com/browser-use/video-use video-use
+          git -C video-use checkout cf12ac3
+      - name: Fixture gates (ffmpeg, faster-whisper, video-use render)
+        shell: bash
+        run: python -X utf8 tests/e2e/release_gates.py --video-use video-use --model small --gates ffmpeg,stt,render
