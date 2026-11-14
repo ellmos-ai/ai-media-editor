@@ -64,11 +64,11 @@ in its output plus the per-check JSON line.
 | ssh remote STT | Windows 11 laptop (Python 3.12.10 without STT stack) → Mac Studio over Tailscale | `release_gates.py --gates ssh --model large-v3 ...` | OpenSSH client from Git for Windows | 13.5 s | `[mac] fertig`, verbatim transcript, remote job directory removed (readback count 0); `GATE_OK` |
 | unit suite + Ruff | Mac Studio, locked runtime | `python -X utf8 -m pytest -q`, `ruff check .` | pytest, Ruff 0.15.18 | 22 s | 112 passed, Ruff clean |
 | Ocean 3b binding | Mac Studio | `PYTHONPATH=<open-ocean> python tests/e2e/ocean_gate.py ...` | open-ocean `72759fc` | 8.1 s | verified checkpoint `exit_code 0`, owned tree exited, slot released; `GATE_OK` |
-| Windows clean runner | GitHub `windows-latest` | workflow `Release gates` | Windows lock, `small` model | see PR #7 checks | lock installed with hashes + ffmpeg/stt/render gates |
-| macOS clean runner | GitHub `macos-latest` | workflow `Release gates` | macOS lock, `small` model | see PR #7 checks | lock installed with hashes + ffmpeg/stt/render gates |
+| Windows clean runner | GitHub `windows-latest`, Python 3.12.10 | workflow `Release gates`, run 43615603984 (`210cd4d`) | Windows lock (`--require-hashes`), ffmpeg 9.0.2 gyan.dev, `small` CPU int8 | ffmpeg 0.4 s, stt 11.4 s, render 5.4 s | verbatim transcript, `✂✂` pause, 6.31 s render for a 6.25 s EDL; `GATE_OK` |
+| macOS clean runner | GitHub `macos-latest` (arm64) | same run | macOS lock (`--require-hashes`), ffmpeg 9.0.2, `small` CPU int8 | ffmpeg 0.3 s, stt 8.5 s, render 3.5 s | verbatim transcript, `✂✂` pause, 6.31 s render; `GATE_OK` |
 
-Mac runs used a fresh clone of commit `46fe477`; the SSH gate ran from the laptop with the same
-`mac_remote.py`. The unit suite is run on the Mac or in CI, not on the laptop.
+Mac runs were repeated on a fresh clone of the final commit `210cd4d` (same results, suite 112
+passed); the SSH gate was repeated from the laptop at `210cd4d` (15.5 s, `GATE_OK`). The unit suite is run on the Mac or in CI, not on the laptop.
 
 ### Defects found by these gates and fixed in this release
 
