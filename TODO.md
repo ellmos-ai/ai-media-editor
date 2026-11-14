@@ -4,7 +4,7 @@
 
 **Target repository:** `ellmos-ai/ai-media-editor`
 
-**Status:** Release-Gates 1240–1245 grün (Belege in [`RELEASE_GATE.md`](RELEASE_GATE.md)); Stable-Tag vorbereitet, Freigabe offen
+**Status:** Release-Gates 1240–1245 grün (Belege in [`RELEASE_GATE.md`](RELEASE_GATE.md)); Release `v0.3.0` am 2026-11-14 freigegeben
 
 ## Completed safety and correctness gates
 
@@ -36,7 +36,7 @@ corresponding Taskplan task.
   (`effort=special`, `scope=local`, `priority=high`). Erledigt 2026-11-14: alle Quellen und das
   zuletzt gebaute Wheel stehen auf 0.2.3; 0.2.3 bleibt die eine Version (Version-Freeze), nur
   `RELEASE_GATE.md` (0.2.0) war veraltet.
-- [ ] **Task 1246** — Stable-Release-Tags und Badges erst nach vollständigem Gate-Nachweis vorbereiten
+- [x] **Task 1246** — Release `v0.3.0` am 2026-11-14 (Freigabe Lukas): Version, Badges und Tag
   (`effort=special`, `scope=local`, `priority=high`; abhängig von 1240–1245 und expliziter Freigabe).
   Vorbereitet 2026-11-14 (Befehle in `RELEASE_GATE.md`); offen: Freigabe durch Lukas und Wahl der
   Release-Version (Vorschlag 0.3.0, Alternative 1.0.0).

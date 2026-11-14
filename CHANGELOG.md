@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-14
+
+Release decision: Lukas, 2026-11-14 (task 1246). Gates 1240-1245 green, see `RELEASE_GATE.md`.
+
 ### Added
 - Release gates for tasks 1240-1243 (2026-11-14): supported environment matrix in `RELEASE_GATE.md` (Windows 11 x64 and macOS arm64 with Python 3.12 for STT and render; Linux only for CI unit tests), hash-locked runtimes `requirements/runtime-windows-x64-py312.txt` and `requirements/runtime-macos-arm64-py312.txt` compiled on each platform with `uv pip compile --generate-hashes`, the synthetic rights-free fixture `tests/e2e/fixture/` (ffmpeg `testsrc2` + eSpeak NG), the gate runner `tests/e2e/release_gates.py` (ffmpeg, faster-whisper, video-use render, SSH remote STT) and the workflow `.github/workflows/release-gates.yml` that installs each lock on a clean runner.
 - Open Ocean pipeline 3b executor: `ai_media_editor/ocean_worker.py` implements the `ocean-owned-process.v1` worker protocol of open-ocean's `OwnedProcessExecutor` (stdlib-only, below 8 KiB for `frozen-python` mode), declared as `adapters[]` seam in `ellmos-module.v2.json`; verified by `tests/e2e/ocean_gate.py` and `tests/test_ocean_worker.py`.
