@@ -1,7 +1,7 @@
 # Release Gate — ai-media-editor
 
 **Reviewed:** 2026-11-14
-**Version:** 0.2.3 (single version across all sources, see task 1245)
+**Version:** 0.3.0 (released 2026-11-14, tag `v0.3.0`; single version across all sources, see tasks 1245/1246)
 **Decision:** tasks 1240–1245 green on the supported matrix; the stable tag is prepared but not
 created — it needs maintainer approval (task 1246).
 

@@ -44,7 +44,7 @@ Vor jedem Commit und Pull Request müssen folgende vier Quality Gates vollständ
 
 ### Governance, Version Freeze & Lokale Entwicklung
 
-- **Version-Freeze-Disziplin (T-20260920-167562623):** Die Version `0.2.3` bleibt strikt eingefroren. Keine eigenmächtigen Versionserhöhungen; alle Neuerungen und Wartungsschritte werden unter `## [Unreleased]` im `CHANGELOG.md` dokumentiert.
+- **Version-Freeze-Disziplin (T-20260920-167562623):** Die Version `0.3.0` (Release 2026-11-14, Freigabe Lukas) bleibt bis zur nächsten Release-Entscheidung strikt eingefroren. Keine eigenmächtigen Versionserhöhungen; alle Neuerungen und Wartungsschritte werden unter `## [Unreleased]` im `CHANGELOG.md` dokumentiert.
 - **Lokale Entwicklung (Plan D):** Der kanonische Arbeitsort und die Source of Truth ist der lokale Git-Klon (`C:\_Local_DEV\repos\ai-media-editor`).
 - **Datenschutz & Zero-Egress:** Committen Sie niemals Quellmedien, echte `config/settings.json`, Tokens, Hostnamen, SSH-Schlüssel, Modell-Caches oder virtuelle Umgebungen (`.venv`).
 - **Unprivileged User Mode (RunAsInvoker):** Alle Skripte und Tests laufen ohne administrative Privilegien.
@@ -91,7 +91,7 @@ All contributions must strictly satisfy the following four pre-commit quality ga
 
 ### Governance, Version Freeze & Local Development
 
-- **Version Freeze Policy (T-20260920-167562623):** Version `0.2.3` is strictly frozen. No unauthorized version bumps; all changes are tracked under `## [Unreleased]` in `CHANGELOG.md`.
+- **Version Freeze Policy (T-20260920-167562623):** Version `0.3.0` (released 2026-11-14, approved by Lukas) is strictly frozen until the next release decision. No unauthorized version bumps; all changes are tracked under `## [Unreleased]` in `CHANGELOG.md`.
 - **Local Development (Plan D):** Canonical development occurs in the local git repository clone (`C:\_Local_DEV\repos\ai-media-editor`).
 - **Privacy & Zero Network Egress:** Never commit raw media, private recordings, real `config/settings.json`, API credentials, tokens, or virtual environments (`.venv`).
 - **Unprivileged User Mode (RunAsInvoker):** All code operates strictly in unprivileged user space.

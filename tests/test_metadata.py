@@ -29,17 +29,17 @@ def _load_pyproject():
 def test_version_consistency():
     """Verify version consistency across VERSION, pyproject.toml, and ellmos-module.v2.json."""
     version_file = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
-    assert version_file == "0.2.3"
+    assert version_file == "0.3.0"
 
     pyproject = _load_pyproject()
     if "project" in pyproject:
-        assert pyproject["project"]["version"] == "0.2.3"
+        assert pyproject["project"]["version"] == "0.3.0"
     else:
-        assert 'version = "0.2.3"' in pyproject["raw"]
+        assert 'version = "0.3.0"' in pyproject["raw"]
 
     with (ROOT / "ellmos-module.v2.json").open(encoding="utf-8") as handle:
         manifest = json.load(handle)
-    assert manifest["version"] == "0.2.3"
+    assert manifest["version"] == "0.3.0"
 
 
 def test_manifest_parity():
@@ -99,7 +99,7 @@ def test_readme_badges_and_parity():
     """Verify that README.md and README_de.md include language switchers, up-to-date badges, and ecosystem links."""
     for filename in ("README.md", "README_de.md"):
         content = (ROOT / filename).read_text(encoding="utf-8")
-        assert "version-0.2.3" in content
+        assert "version-0.3.0" in content
         assert any(
             lc in content
             for lc in (
@@ -813,7 +813,7 @@ def test_contributing_guide_and_quality_gates():
     assert "compileall" in content
     assert "git diff --check" in content
     assert "T-20260920-167562623" in content
-    assert "0.2.3" in content
+    assert "0.3.0" in content
     assert "Plan D" in content
     assert "Developer Certificate of Origin" in content
 
