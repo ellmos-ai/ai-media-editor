@@ -1,6 +1,7 @@
 """Repository metadata, documentation, manifest, and discoverability parity tests for ai-media-editor."""
 
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -336,6 +337,7 @@ def test_third_party_licenses_inventory():
     assert any(
         s in content
         for s in (
+            "Stand: 2026-11-14",
             "Stand: 2026-09-30",
             "Stand: 2026-09-28",
             "Stand: 2026-09-21",
@@ -604,6 +606,7 @@ def test_level1_sbom_inventory_and_runasinvoker():
     assert any(
         s in content
         for s in (
+            "Stand: 2026-11-14",
             "Stand: 2026-09-30",
             "Stand: 2026-09-28",
             "Stand: 2026-09-21",
@@ -612,7 +615,7 @@ def test_level1_sbom_inventory_and_runasinvoker():
     )
     assert "Level 1 SBOM" in content
     assert "RunAsInvoker" in content
-    assert "Zero-Copyleft" in content
+    assert "Copyleft Boundaries" in content
     assert "INV-LOCAL-01" in content
     assert "INV-SLA-10" in content or "INV-DOCS-09" in content
 
@@ -685,12 +688,13 @@ def test_third_party_licenses_plain_text_companion():
     assert any(
         a in content
         for a in (
+            "Audited: 2026-11-14",
             "Audited: 2026-09-30",
             "Audited: 2026-09-28",
         )
     )
     assert "RunAsInvoker" in content
-    assert "Zero-Copyleft" in content
+    assert "Copyleft Boundaries" in content
     for inv in [
         "INV-LOCAL-01",
         "INV-RUNAS-02",
@@ -835,12 +839,19 @@ def test_pyproject_contributing_url_and_pytest_norecursedirs():
         assert ".pytest_tmp*" in raw
 
 
-def test_third_party_licenses_audit_20260930():
-    """Verify that THIRD_PARTY_LICENSES.txt and THIRD_PARTY_LICENSES.md confirm Stand 2026-09-30."""
+def test_third_party_licenses_audit_20261114():
+    """Verify that both license files carry the 0.3.0 audit and inventory every pinned runtime package."""
     txt_content = (ROOT / "THIRD_PARTY_LICENSES.txt").read_text(encoding="utf-8")
     md_content = (ROOT / "THIRD_PARTY_LICENSES.md").read_text(encoding="utf-8")
-    assert "Audited: 2026-09-30" in txt_content
-    assert "Stand: 2026-09-30" in md_content
+    assert "Audited: 2026-11-14" in txt_content
+    assert "Stand: 2026-11-14" in md_content
+    for lock in sorted((ROOT / "requirements").glob("runtime-*-py312.txt")):
+        for line in lock.read_text(encoding="utf-8").splitlines():
+            match = re.match(r"^([A-Za-z0-9_.-]+)==", line)
+            if match:
+                name = match[1].lower().replace("_", "-")
+                assert f"| `{name}` |" in md_content, f"{name} ({lock.name}) missing in THIRD_PARTY_LICENSES.md"
+                assert re.search(rf"(?m)^{re.escape(name)} ", txt_content), f"{name} missing in THIRD_PARTY_LICENSES.txt"
 
 
 def test_changelog_pfad_a_entry_20260930():

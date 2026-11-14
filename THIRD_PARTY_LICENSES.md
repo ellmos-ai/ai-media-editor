@@ -1,6 +1,6 @@
 # Third-Party Licenses / Drittanbieter-Lizenzen
 
-Stand: 2026-09-30 (Audit-Historie: 2026-09-28, 2026-09-21, 2026-09-20, 2026-09-11) | Version: 0.2.3 (Audit-Stand; für Release 0.3.0 vom 2026-11-14 noch nicht neu auditiert, siehe TODO.md) | Repository: [ellmos-ai/ai-media-editor](https://github.com/ellmos-ai/ai-media-editor)
+Stand: 2026-11-14 (Audit-Historie: 2026-09-30, 2026-09-28, 2026-09-21, 2026-09-20, 2026-09-11) | Version: 0.3.0 (Runtime-Locks gemessen, siehe „Runtime Lock Inventory 0.3.0“) | Repository: [ellmos-ai/ai-media-editor](https://github.com/ellmos-ai/ai-media-editor)
 
 This document provides a comprehensive Level 1 Software Bill of Materials (SBOM) and audit inventory of third-party open-source components, runtimes, and libraries utilized or integrated by `ai-media-editor`. A machine- and terminal-readable plain-text version is available at [`THIRD_PARTY_LICENSES.txt`](THIRD_PARTY_LICENSES.txt).
 
@@ -8,8 +8,8 @@ This document provides a comprehensive Level 1 Software Bill of Materials (SBOM)
 
 ## Architecture & Governance Commitments
 
-1. **100% Permissive Open-Source & Dynamic-Link Transparency**:
-   All runtime and test dependencies are distributed under permissive open-source licenses (MIT, Apache-2.0, BSD, PSFL) or dynamically linked media utilities (FFmpeg LGPL). There are zero proprietary runtime locks, telemetry trackers, or closed-source binary blobs.
+1. **Open-Source & Dynamic-Link Transparency** (measured 2026-11-14 for the 0.3.0 runtime locks):
+   Most runtime dependencies are permissively licensed (MIT, MIT-0, MIT-CMU, ISC, 0BSD, Zlib, CC0-1.0, Apache-2.0, BSD, PSF-2.0). Weak-copyleft components (used unmodified as separate packages): `certifi` (MPL-2.0), `tqdm` (MPL-2.0 AND MIT), `soxr` (LGPL-2.1-or-later) and the FFmpeg shared libraries bundled in the PyAV (`av`) wheels (LGPL-3.0-or-later on macOS arm64). No package declares GPL, AGPL or SSPL terms. There are zero proprietary runtime locks, telemetry trackers, or closed-source binary blobs.
 
 2. **100% Local-First & Zero Network Egress (`INV-LOCAL-01`)**:
    Every media preparation step, audio transcription, frame sampling, cut evaluation, and procedural waveform synthesis runs strictly offline on the user's workstation. No audio, video, transcript content, or telemetry is ever transmitted to external SaaS platforms.
@@ -44,6 +44,76 @@ This document provides a comprehensive Level 1 Software Bill of Materials (SBOM)
 
 ---
 
+## Runtime Lock Inventory 0.3.0 (measured)
+
+Method: on 2026-11-14 `requirements/runtime-macos-arm64-py312.txt` was installed with `--require-hashes` into a throwaway Python 3.12 environment on macOS arm64, and the license metadata of every installed distribution was read via `importlib.metadata` (`License-Expression`, else `License`, else the trove classifier). Of `requirements/runtime-windows-x64-py312.txt`, the two pins that differ from macOS (`colorama` 0.4.6, `onnxruntime` 1.32.0) were read from their win_amd64 wheels; every other Windows pin has the same version as on macOS. ¹ = taken from the trove classifier only. This is the license declared by each package, not a legal review.
+
+Weak-copyleft components (used unmodified as separate packages): `certifi` (MPL-2.0), `tqdm` (MPL-2.0 AND MIT), `soxr` (LGPL-2.1-or-later) and the FFmpeg shared libraries bundled in the PyAV (`av`) wheels (LGPL-3.0-or-later on macOS arm64). No package declares GPL, AGPL or SSPL terms.
+
+| Package | macOS arm64 | Windows x64 | Declared license |
+|:---|:---|:---|:---|
+| `anyio` | 4.16.0 | 4.16.0 | MIT |
+| `av` | 18.1.0 | 18.1.0 | BSD-3-Clause |
+| `certifi` | 2026.10.23 | 2026.10.23 | MPL-2.0 |
+| `cffi` | 2.1.1 | 2.1.1 | MIT-0 |
+| `charset-normalizer` | 3.5.2 | 3.5.2 | MIT |
+| `click` | 8.5.1 | 8.5.1 | BSD-3-Clause |
+| `cloudpickle` | 3.1.2 | 3.1.2 | BSD-3-Clause |
+| `colorama` | — | 0.4.6 | BSD License¹ |
+| `coloredlogs` | 15.0.1 | — | MIT |
+| `contourpy` | 1.4.0 | 1.4.0 | BSD-3-Clause |
+| `ctranslate2` | 4.9.0 | 4.9.0 | MIT |
+| `cycler` | 0.12.1 | 0.12.1 | BSD License¹ |
+| `decorator` | 5.3.1 | 5.3.1 | BSD-2-Clause |
+| `faster-whisper` | 1.2.1 | 1.2.1 | MIT |
+| `filelock` | 4.2.10 | 4.2.10 | MIT |
+| `flatbuffers` | 25.12.19 | 25.12.19 | Apache 2.0 |
+| `fonttools` | 4.68.0 | 4.68.0 | MIT |
+| `fsspec` | 2026.9.0 | 2026.9.0 | BSD-3-Clause |
+| `h11` | 0.16.0 | 0.16.0 | MIT |
+| `hf-xet` | 1.8.0 | 1.8.0 | Apache-2.0 |
+| `httpcore2` | 2.16.0 | 2.16.0 | BSD-3-Clause |
+| `httpx2` | 2.16.0 | 2.16.0 | BSD-3-Clause |
+| `huggingface-hub` | 2.4.0 | 2.4.0 | Apache-2.0 |
+| `humanfriendly` | 10.0 | — | MIT |
+| `idna` | 3.20 | 3.20 | BSD-3-Clause |
+| `joblib` | 1.6.0 | 1.6.0 | BSD-3-Clause |
+| `kiwisolver` | 1.5.1 | 1.5.1 | BSD License¹ |
+| `lazy-loader` | 0.6 | 0.6 | BSD-3-Clause |
+| `librosa` | 1.0.1 | 1.0.1 | ISC |
+| `llvmlite` | 0.50.0 | 0.50.0 | BSD-2-Clause AND Apache-2.0 WITH LLVM-exception |
+| `matplotlib` | 3.11.2 | 3.11.2 | Python Software Foundation License¹ |
+| `mpmath` | 1.3.0 | — | BSD |
+| `msgpack` | 1.2.4 | 1.2.4 | Apache-2.0 |
+| `narwhals` | 2.28.0 | 2.28.0 | MIT |
+| `numba` | 0.68.1 | 0.68.1 | BSD |
+| `numpy` | 2.5.4 | 2.5.4 | BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0 |
+| `onnxruntime` | 1.23.2 | 1.32.0 | MIT License |
+| `packaging` | 26.3 | 26.3 | Apache-2.0 OR BSD-2-Clause |
+| `pillow` | 13.0.0 | 13.0.0 | MIT-CMU |
+| `platformdirs` | 4.14.5 | 4.14.5 | MIT |
+| `pooch` | 1.9.0 | 1.9.0 | BSD-3-Clause |
+| `protobuf` | 7.36.2 | 7.36.2 | 3-Clause BSD License |
+| `pycparser` | 3.12 | 3.12 | BSD-3-Clause |
+| `pyparsing` | 3.3.3 | 3.3.3 | MIT |
+| `python-dateutil` | 4.0.0 | 4.0.0 | BSD-3-Clause |
+| `pyyaml` | 6.0.3 | 6.0.3 | MIT |
+| `requests` | 2.34.2 | 2.34.2 | Apache-2.0 |
+| `scikit-learn` | 1.9.1 | 1.9.1 | BSD-3-Clause |
+| `scipy` | 1.18.1 | 1.18.1 | BSD License¹ |
+| `soundfile` | 0.14.0 | 0.14.0 | BSD 3-Clause License |
+| `soxr` | 1.1.0 | 1.1.0 | LGPL-2.1-or-later |
+| `sympy` | 1.14.0 | — | BSD |
+| `threadpoolctl` | 3.8.0 | 3.8.0 | BSD-3-Clause |
+| `tokenizers` | 0.23.3 | 0.23.3 | Apache Software License¹ |
+| `tqdm` | 4.70.1 | 4.70.1 | MPL-2.0 AND MIT |
+| `truststore` | 0.10.5 | 0.10.5 | MIT |
+| `typing-extensions` | 4.16.0 | 4.16.0 | PSF-2.0 |
+| `tzdata` | 2026.6 | 2026.6 | Apache-2.0 |
+| `urllib3` | 2.8.0 | 2.8.0 | MIT |
+
+---
+
 ## RunAsInvoker Non-Elevation Certification
 
 `ai-media-editor` is explicitly designed and certified to execute strictly under standard unprivileged user accounts (`RunAsInvoker`).
@@ -53,11 +123,11 @@ This document provides a comprehensive Level 1 Software Bill of Materials (SBOM)
 
 ---
 
-## Zero-Copyleft & Dynamic Linking Isolation Boundary
+## Copyleft Boundaries & Dynamic Linking
 
-All external multimedia utilities (such as FFmpeg) are accessed strictly across CLI subprocess boundaries (`subprocess.run` / `subprocess.Popen`) using standard streams. This architecture ensures complete dynamic link isolation:
-- No proprietary or copyleft viral contamination affects downstream consumer code.
-- Users retain the unrestricted freedom to swap, patch, or upgrade external CLI utilities independently.
+- **FFmpeg CLI:** `ai-media-editor` itself calls FFmpeg only as an external program across subprocess boundaries (`subprocess.run` / `subprocess.Popen`) using standard streams. Users can swap, patch, or upgrade the FFmpeg binary independently.
+- **FFmpeg libraries via PyAV:** The locked runtime contains PyAV (`av`, BSD-3-Clause), which `faster-whisper` uses for audio decoding. Its wheels bundle FFmpeg shared libraries that are loaded dynamically in-process. On macOS arm64 (av 18.1.0) FFmpeg reports "LGPL version 3 or later" (`--enable-version3`, no `--enable-gpl`). The wheel also bundles further codec libraries (e.g. dav1d, opus, mp3lame, opencore-amr, SVT-AV1) whose individual licenses were not audited separately; the Windows wheel was not inspected.
+- **Weak-copyleft Python packages:** `certifi` (MPL-2.0), `tqdm` (MPL-2.0 AND MIT) and `soxr` (LGPL-2.1-or-later) are installed by the user from PyPI as separate, unmodified packages; `ai-media-editor` neither vendors nor modifies them.
 
 ---
 
