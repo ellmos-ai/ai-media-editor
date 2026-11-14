@@ -107,8 +107,9 @@ def gate_render(args, edit: Path) -> dict:
     edl = edit / "edl.json"
     edl.write_text(json.dumps({"sources": {"fx": str(FIXTURE)}, "ranges": ranges}), encoding="utf-8")
     out = edit / "final.mp4"
+    # video-use prints non-cp1252 characters; the documented Windows invocation sets UTF-8 I/O.
     r = run([args.python, str(Path(args.video_use) / "helpers" / "render.py"), str(edl), "-o", str(out),
-             "--no-subtitles"])
+             "--no-subtitles"], env={**os.environ, "PYTHONIOENCODING": "utf-8"})
     expected = sum(x["end"] - x["start"] for x in ranges)
     info = probe(out) if out.is_file() else {"duration": 0, "streams": []}
     checks = {"exit_0": r.returncode == 0, "streams_av": info["streams"] == ["audio", "video"],
