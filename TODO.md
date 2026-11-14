@@ -39,8 +39,11 @@ corresponding Taskplan task.
 - [x] **Task 1246** — Release `v0.3.0` am 2026-11-14 (Freigabe Lukas): Version, Badges und Tag
   (`effort=special`, `scope=local`, `priority=high`; abhängig von 1240–1245 und expliziter Freigabe).
   Erledigt 2026-11-14: Lukas hat 0.3.0 gewählt und freigegeben; Version in PR #8, Tag `v0.3.0` auf `main`.
-- [ ] **Lizenz-Audit für 0.3.0 nachholen:** `THIRD_PARTY_LICENSES.md`/`.txt` beschreiben den Audit-Stand 0.2.3;
+- [x] **Lizenz-Audit für 0.3.0 nachholen:** `THIRD_PARTY_LICENSES.md`/`.txt` beschreiben den Audit-Stand 0.2.3;
   die neuen Runtime-Locks (`requirements/runtime-*.txt`) sind dort noch nicht erfasst (Hinweis der Zweitprüfung PR #8).
+  Erledigt 2026-11-14: macOS-Lock per `--require-hashes` installiert und alle Paketmetadaten gelesen, die zwei
+  abweichenden Windows-Pins aus ihren Wheels; Inventur und Copyleft-Grenzen (MPL-2.0, LGPL, FFmpeg in PyAV)
+  in `THIRD_PARTY_LICENSES.md`/`.txt`. Nicht einzeln geprüft: gebündelte Codec-Bibliotheken der PyAV-Wheels.
 
 ## Offene Befunde aus den Release-Gates (2026-11-14)
 
